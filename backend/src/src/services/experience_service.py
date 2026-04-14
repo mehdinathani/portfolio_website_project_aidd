@@ -1,17 +1,17 @@
-"""Experience service — fetch experience entries."""
+"""Experience service — fetch experience entries using Supabase REST API."""
 
 from typing import List
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.models.experience import Experience
+from src.db.session import supabase
 from src.schemas.experience import ExperienceResponse
 
 
-async def get_experience(db: AsyncSession) -> List[ExperienceResponse]:
+async def get_experience() -> List[ExperienceResponse]:
     """Fetch all experience entries ordered by start_date descending."""
-    stmt = select(Experience).order_by(Experience.start_date.desc(), Experience.order_index.asc())
-    result = await db.execute(stmt)
-    entries = result.scalars().all()
-    return [ExperienceResponse.model_validate(e) for e in entries]
+    result = (
+        supabase.table("experience")
+        .select("*")
+        .order("start_date", desc=True)
+        .order("order_index", desc=False)
+        .execute()
+    )
+    return [ExperienceResponse(**item) for item in result.data]

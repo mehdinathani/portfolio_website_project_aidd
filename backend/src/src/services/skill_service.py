@@ -1,33 +1,37 @@
-"""Skill service — fetch skills, optionally grouped by category."""
+"""Skill service — fetch skills using Supabase REST API, optionally grouped by category."""
 
 from typing import List
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from collections import defaultdict
-
-from src.models.skill import Skill
+from src.db.session import supabase
 from src.schemas.skill import SkillResponse, SkillGroupedResponse, SkillsGroupedList
 
 
-async def get_skills(db: AsyncSession) -> List[SkillResponse]:
+async def get_skills() -> List[SkillResponse]:
     """Fetch all skills ordered by category and order_index."""
-    stmt = select(Skill).order_by(Skill.category.asc(), Skill.order_index.asc())
-    result = await db.execute(stmt)
-    skills = result.scalars().all()
-    return [SkillResponse.model_validate(s) for s in skills]
+    result = (
+        supabase.table("skills")
+        .select("*")
+        .order("category", desc=False)
+        .order("order_index", desc=False)
+        .execute()
+    )
+    return [SkillResponse(**item) for item in result.data]
 
 
-async def get_skills_grouped_by_category(db: AsyncSession) -> SkillsGroupedList:
+async def get_skills_grouped_by_category() -> SkillsGroupedList:
     """Fetch skills grouped by their category."""
-    stmt = select(Skill).order_by(Skill.category.asc(), Skill.order_index.asc())
-    result = await db.execute(stmt)
-    skills = result.scalars().all()
-
+    result = (
+        supabase.table("skills")
+        .select("*")
+        .order("category", desc=False)
+        .order("order_index", desc=False)
+        .execute()
+    )
+    
     grouped = defaultdict(list)
-    for skill in skills:
-        grouped[skill.category].append(SkillResponse.model_validate(skill))
-
+    for skill in result.data:
+        grouped[skill["category"]].append(SkillResponse(**skill))
+    
     groups = [
         SkillGroupedResponse(category=category, skills=skills_list)
         for category, skills_list in grouped.items()

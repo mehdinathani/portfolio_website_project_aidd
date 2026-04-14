@@ -54,4 +54,4 @@ class TTLCache:
 
 
 # Global cache instance — 5-minute default TTL
-cache = TTLCache(default_ttl=300)
+cache_service = TTLCache(default_ttl=300)

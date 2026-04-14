@@ -39,8 +39,9 @@ description: "Task list for Portfolio & Lead Generation Platform"
 - [X] T014 Create `migrations/008_create_knowledge_base.sql` — knowledge_base table with pgvector(768) column, HNSW index, JSONB metadata index
 - [X] T015 Create `migrations/009_create_leads.sql` — leads table with category/status/source enums via CHECK constraints, indexes
 - [X] T016 Create `migrations/seed_data.sql` — initial data: 1 profile row, 3 sample projects, 18 skills, 2 experience entries, 4 certifications, 2 testimonials, 7 knowledge base chunks with placeholder embeddings
-- [X] T017 Create `backend/src/db/session.py` — async SQLAlchemy engine + session factory connecting to Supabase via psycopg2
+- [X] T017 Create `backend/src/db/session.py` — Supabase client utility using `supabase-py` REST API (not direct PostgreSQL connection)
 - [X] T018 Create `backend/src/db/vector_extension.py` — pgvector column type registration for SQLAlchemy
+- [X] T018b Create `migrations/010_create_match_rpc.sql` — Supabase RPC function `match_knowledge` for vector similarity search using cosine distance `<=>`
 - [ ] T019 Run all migrations against local Supabase: `npx supabase db push` and verify all 9 tables exist
 - [ ] T020 Run seed data: `npx supabase db seed -- seed_data.sql` and verify data populated
 
@@ -137,14 +138,14 @@ description: "Task list for Portfolio & Lead Generation Platform"
 
 ### Implementation for User Story 2
 
-- [ ] T080 [P] [US2] Create `backend/src/schemas/chat.py` — Pydantic schemas: ChatRequest (message, session_id, history), ChatResponse (response, lead_intent, lead_prompt, sources, fallback), SourceRef (source, similarity)
-- [ ] T081 [P] [US2] Create `backend/src/services/rag_service.py` — RAG retrieval service: `retrieve_context(query: str, top_k: int = 5, threshold: float = 0.7)` — generates embedding via gemini_service, queries pgvector similarity, filters by threshold, returns top chunks
-- [ ] T082 [US2] Create `backend/src/services/prompt_builder.py` — prompt construction service: `build_system_prompt(context_chunks: list, history: list)` — assembles role definition, retrieved context, grounding constraints, JSON output schema instruction
-- [ ] T083 [US2] Update `backend/src/services/gemini_service.py` — add `generate_structured_chat(prompt: str, history: list, schema: dict) -> ChatResponse` using Gemini 1.5 Flash with `response_mime_type: "application/json"` and JSON schema
-- [ ] T084 [US2] Create `backend/src/api/v1/chat.py` — POST /api/v1/chat endpoint: validate request → check cache → rate limit → rag_service.retrieve → prompt_builder.build → gemini_service.generate_structured_chat → return ChatResponse, apply cache on success
-- [ ] T085 [US2] Integrate rate_limiter middleware into chat endpoint (15 RPM token bucket)
-- [ ] T086 [US2] Integrate cache_service into chat endpoint (5-min TTL, cache key = hash of message)
-- [ ] T087 [US2] Add error handling in chat endpoint: Gemini timeout → fallback response, Gemini 429 → queued/fallback, pgvector empty → fallback with flag, Supabase down → 503
+- [X] T080 [P] [US2] Create `backend/src/schemas/chat.py` — Pydantic schemas: ChatRequest (message, session_id, history), ChatResponse (response, lead_intent, lead_prompt, sources, fallback), SourceRef (source, similarity)
+- [X] T081 [P] [US2] Create `backend/src/services/rag_service.py` — RAG retrieval service: `retrieve_context(query: str, top_k: int = 5, threshold: float = 0.7)` — generates embedding via gemini_service, queries pgvector similarity, filters by threshold, returns top chunks
+- [X] T082 [US2] Create `backend/src/services/prompt_builder.py` — prompt construction service: `build_system_prompt(context_chunks: list, history: list)` — assembles role definition, retrieved context, grounding constraints, JSON output schema instruction
+- [X] T083 [US2] Update `backend/src/services/gemini_service.py` — add `generate_structured_chat(prompt: str, history: list, schema: dict) -> ChatResponse` using Gemini 1.5 Flash with `response_mime_type: "application/json"` and JSON schema
+- [X] T084 [US2] Create `backend/src/api/v1/chat.py` — POST /api/v1/chat endpoint: validate request → check cache → rate limit → rag_service.retrieve → prompt_builder.build → gemini_service.generate_structured_chat → return ChatResponse, apply cache on success
+- [X] T085 [US2] Integrate rate_limiter middleware into chat endpoint (15 RPM token bucket)
+- [X] T086 [US2] Integrate cache_service into chat endpoint (5-min TTL, cache key = hash of message)
+- [X] T087 [US2] Add error handling in chat endpoint: Gemini timeout → fallback response, Gemini 429 → queued/fallback, pgvector empty → fallback with flag, Supabase down → 503
 - [ ] T088 [US2] Test chat endpoint with mock knowledge base entries: verify grounding (no hallucination), source attribution, lead_intent detection, fallback behavior
 - [ ] T089 [US2] Test rate limiting: send 16 rapid requests, verify 16th returns 429 with Retry-After header
 

@@ -1,19 +1,15 @@
-"""Profile service — fetch profile data."""
+"""Profile service — fetch profile data using Supabase REST API."""
 
 from typing import Optional
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.models.profile import Profile
+from src.db.session import supabase
 from src.schemas.profile import ProfileResponse
 
 
-async def get_profile(db: AsyncSession) -> Optional[ProfileResponse]:
+async def get_profile() -> Optional[ProfileResponse]:
     """Fetch the single profile row."""
-    stmt = select(Profile).limit(1)
-    result = await db.execute(stmt)
-    profile = result.scalar_one_or_none()
-    if profile is None:
+    result = supabase.table("profiles").select("*").limit(1).execute()
+    
+    if not result.data:
         return None
-    return ProfileResponse.model_validate(profile)
+    
+    return ProfileResponse(**result.data[0])
