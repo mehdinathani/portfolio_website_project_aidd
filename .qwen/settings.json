@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(C:\\Users\\MEHDI\\AppData\\Roaming\\npm\\node_modules\\@qwen-code\\qwen-code\\bundled\\qc-helper\\docs/features/**)",
+      "Bash(qwen *)",
+      "WebSearch",
+      "WebFetch(github.com)",
+      "Bash(type *)",
+      "Bash(curl *)",
+      "Bash(npx *)",
+      "Bash(set *)",
+      "Read(C:\\Users\\MEHDI\\.qwen/**)",
+      "Bash(git log *)",
+      "Bash(mkdir *)",
+      "Bash(powershell *)",
+      "Bash(gemini *)",
+      "Bash(.specify/scripts/bash/create-phr.sh *)",
+      "Bash(git remote *)",
+      "Bash(git add *)"
+    ]
+  },
+  "mcpServers": {
+    "supabase": {
+      "transport": "http",
+      "url": "https://icaepuzqrobdvvlyquat.supabase.co"
+    }
+  },
+  "$version": 3
+}

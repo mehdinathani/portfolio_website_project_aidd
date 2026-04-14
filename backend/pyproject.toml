@@ -1,0 +1,16 @@
+[project]
+name = "mehdi-portfolio-backend"
+version = "0.1.0"
+description = "FastAPI backend for Mehdi's AI Portfolio platform"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "SIM"]
