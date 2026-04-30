@@ -1,37 +1,37 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import type { Metadata } from 'next'
+import Header from '@/components/layout/header'
+import Footer from '@/components/layout/footer'
+import dynamic from 'next/dynamic'
+const ChatWidget = dynamic(() => import('@/components/chatbot/chat-widget').then(mod => mod.default), { ssr: false })
 
 export const metadata: Metadata = {
-  title: "Mehdi Abbas Nathani — Agentic AI & Software Engineer",
-  description:
-    "Portfolio of Mehdi Abbas Nathani — transitioning from Senior Finance Executive to Agentic AI & Software Engineer. Explore projects, skills, and connect via AI chatbot.",
-  keywords: [
-    "Mehdi Nathani",
-    "Software Engineer",
-    "AI Engineer",
-    "Flutter Developer",
-    "Portfolio",
-  ],
-  authors: [{ name: "Mehdi Abbas Nathani" }],
-  openGraph: {
-    title: "Mehdi Abbas Nathani — Portfolio",
-    description:
-      "Agentic AI & Software Engineer — Finance-to-Tech transition story, projects, and skills.",
-    type: "website",
+  title: {
+    default: 'Mehdi Abbas Nathani — Portfolio',
+    template: '%s | Mehdi Abbas Nathani',
   },
-};
+  description:
+    'Portfolio of Mehdi Abbas Nathani — Agentic AI & Software Engineer building intelligent, user-centric applications.',
+  openGraph: {
+    type: 'website',
+    title: 'Mehdi Abbas Nathani — Portfolio',
+    description:
+      'Portfolio of Mehdi Abbas Nathani — Agentic AI & Software Engineer building intelligent, user-centric applications.',
+  },
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className="flex min-h-screen flex-col font-sans text-gray-900 antialiased">
+        <Header />
+        <div className="flex-1">{children}</div>
+        <Footer />
+        <ChatWidget />
+      </body>
     </html>
-  );
+  )
 }

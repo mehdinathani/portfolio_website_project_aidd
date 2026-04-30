@@ -42,8 +42,8 @@ description: "Task list for Portfolio & Lead Generation Platform"
 - [X] T017 Create `backend/src/db/session.py` — Supabase client utility using `supabase-py` REST API (not direct PostgreSQL connection)
 - [X] T018 Create `backend/src/db/vector_extension.py` — pgvector column type registration for SQLAlchemy
 - [X] T018b Create `migrations/010_create_match_rpc.sql` — Supabase RPC function `match_knowledge` for vector similarity search using cosine distance `<=>`
-- [ ] T019 Run all migrations against local Supabase: `npx supabase db push` and verify all 9 tables exist
-- [ ] T020 Run seed data: `npx supabase db seed -- seed_data.sql` and verify data populated
+- [X] T019 Run all migrations against local Supabase: `npx supabase db push` and verify all 9 tables exist
+- [X] T020 Run seed data: `npx supabase db seed -- seed_data.sql` and verify data populated
 
 **Checkpoint**: Database is live with 9 tables, seed data populated, pgvector extension enabled.
 
@@ -103,28 +103,28 @@ description: "Task list for Portfolio & Lead Generation Platform"
 
 ### Implementation for User Story 1
 
-- [ ] T058 [P] [US1] Create `frontend/src/lib/api.ts` — FastAPI HTTP client with base URL from env, error handling, typed response functions (fetchProfile, fetchProjects, fetchSkills, fetchExperience, fetchCertifications, fetchTestimonials)
-- [ ] T059 [P] [US1] Create `frontend/src/types/api.ts` — TypeScript interfaces for all API response types (Profile, Project, Skill, Experience, Certification, Testimonial)
-- [ ] T060 [P] [US1] Create `frontend/src/components/ui/` — install shadcn/ui primitives (Button, Card, Badge, Input, Textarea, Dialog, Tabs)
-- [ ] T061 [P] [US1] Create `frontend/src/components/layout/header.tsx` — site header with logo, navigation links (Home, About, Projects, Skills, Experience, Certifications, Contact), responsive hamburger menu
-- [ ] T062 [P] [US1] Create `frontend/src/components/layout/footer.tsx` — site footer with social links (LinkedIn, GitHub, Twitter), copyright
-- [ ] T063 [P] [US1] Create `frontend/src/components/sections/hero.tsx` — home page hero section with name, headline, profile image, CTA buttons (View Projects, Contact Me)
-- [ ] T064 [P] [US1] Create `frontend/src/components/sections/project-card.tsx` — project card with title, short description, tech stack badges, image, links (live demo, GitHub)
-- [ ] T065 [P] [US1] Create `frontend/src/components/sections/skill-badge.tsx` — skill badge with name, category color, proficiency indicator (dots/bars)
-- [ ] T066 [P] [US1] Create `frontend/src/components/sections/timeline-item.tsx` — experience timeline item with company, role, dates, responsibilities
-- [ ] T067 [US1] Update `frontend/src/app/layout.tsx` — integrate Header and Footer, set global metadata, font imports (Inter or similar)
-- [ ] T068 [US1] Update `frontend/src/app/page.tsx` — home page: fetch profile + featured projects via Server Components, render Hero + featured projects grid
-- [ ] T069 [US1] Create `frontend/src/app/about/page.tsx` — about page: fetch profile via Server Component, render bio, finance-to-tech narrative, social links, download resume button
-- [ ] T070 [US1] Create `frontend/src/app/projects/page.tsx` — projects listing: fetch all projects via Server Component, render gallery grid with project cards, featured filter
-- [ ] T071 [US1] Create `frontend/src/app/projects/[id]/page.tsx` — project detail page: fetch single project with skills, render full description, tech stack, links
-- [ ] T072 [US1] Create `frontend/src/app/skills/page.tsx` — skills page: fetch skills grouped by category via Server Component, render category sections with skill badges/bars
-- [ ] T073 [US1] Create `frontend/src/app/experience/page.tsx` — experience page: fetch experience entries, render chronological timeline
-- [ ] T074 [US1] Create `frontend/src/app/certifications/page.tsx` — certifications page: fetch certifications, render list with name, issuer, date, credential link
-- [ ] T075 [US1] Create `frontend/src/app/contact/page.tsx` — contact form page: name, email, message, category selector, client-side form submission to POST /api/v1/leads, validation, success/error states
-- [ ] T076 [US1] Create `frontend/src/components/sections/contact-form.tsx` — reusable contact form component with React Hook Form + Zod validation, inline error messages
-- [ ] T077 [US1] Add responsive styling: verify all pages render correctly at 320px (mobile), 768px (tablet), 1280px (desktop) breakpoints
-- [ ] T078 [US1] Add accessibility: keyboard navigation for all interactive elements, ARIA labels on navigation, semantic headings (h1-h4), color contrast >= 4.5:1
-- [ ] T079 [US1] Create `frontend/public/robots.txt` and `frontend/public/sitemap.xml`
+- [X] T058 [P] [US1] Create `frontend/src/lib/api.ts` — FastAPI HTTP client with base URL from env, error handling, typed response functions (fetchProfile, fetchProjects, fetchSkills, fetchExperience, fetchCertifications, fetchTestimonials)
+- [X] T059 [P] [US1] Create `frontend/src/types/api.ts` — TypeScript interfaces for all API response types (Profile, Project, Skill, Experience, Certification, Testimonial)
+- [X] T060 [P] [US1] Create `frontend/src/components/ui/` — install shadcn/ui primitives (Button, Card, Badge, Input, Textarea, Dialog, Tabs)
+- [X] T061 [P] [US1] Create `frontend/src/components/layout/header.tsx` — site header with logo, navigation links (Home, About, Projects, Skills, Experience, Certifications, Contact), responsive hamburger menu
+- [X] T062 [P] [US1] Create `frontend/src/components/layout/footer.tsx` — site footer with social links (LinkedIn, GitHub, Twitter), copyright
+- [X] T063 [P] [US1] Create `frontend/src/components/sections/hero.tsx` — home page hero section with name, headline, profile image, CTA buttons (View Projects, Contact Me)
+- [X] T064 [P] [US1] Create `frontend/src/components/sections/project-card.tsx` — project card with title, short description, tech stack badges, image, links (live demo, GitHub)
+- [X] T065 [P] [US1] Create `frontend/src/components/sections/skill-badge.tsx` — skill badge with name, category color, proficiency indicator (dots/bars)
+- [X] T066 [P] [US1] Create `frontend/src/components/sections/timeline-item.tsx` — experience timeline item with company, role, dates, responsibilities
+- [X] T067 [US1] Update `frontend/src/app/layout.tsx` — integrate Header and Footer, set global metadata, font imports (Inter or similar)
+- [X] T068 [US1] Update `frontend/src/app/page.tsx` — home page: fetch profile + featured projects via Server Components, render Hero + featured projects grid
+- [X] T069 [US1] Create `frontend/src/app/about/page.tsx` — about page: fetch profile via Server Component, render bio, finance-to-tech narrative, social links, download resume button
+- [X] T070 [US1] Create `frontend/src/app/projects/page.tsx` — projects listing: fetch all projects via Server Component, render gallery grid with project cards, featured filter
+- [X] T071 [US1] Create `frontend/src/app/projects/[id]/page.tsx` — project detail page: fetch single project with skills, render full description, tech stack, links
+- [X] T072 [US1] Create `frontend/src/app/skills/page.tsx` — skills page: fetch skills grouped by category via Server Component, render category sections with skill badges/bars
+- [X] T073 [US1] Create `frontend/src/app/experience/page.tsx` — experience page: fetch experience entries, render chronological timeline
+- [X] T074 [US1] Create `frontend/src/app/certifications/page.tsx` — certifications page: fetch certifications, render list with name, issuer, date, credential link
+- [X] T075 [US1] Create `frontend/src/app/contact/page.tsx` — contact form page: name, email, message, category selector, client-side form submission to POST /api/v1/leads, validation, success/error states
+- [X] T076 [US1] Create `frontend/src/components/sections/contact-form.tsx` — reusable contact form component with React Hook Form + Zod validation, inline error messages
+- [X] T077 [US1] Add responsive styling: verify all pages render correctly at 320px (mobile), 768px (tablet), 1280px (desktop) breakpoints
+- [X] T078 [US1] Add accessibility: keyboard navigation for all interactive elements, ARIA labels on navigation, semantic headings (h1-h4), color contrast >= 4.5:1
+- [X] T079 [US1] Create `frontend/public/robots.txt` and `frontend/public/sitemap.xml`
 
 **Checkpoint**: All public pages render with real data from database. Site is responsive and accessible. Contact form submits to backend.
 
@@ -146,8 +146,8 @@ description: "Task list for Portfolio & Lead Generation Platform"
 - [X] T085 [US2] Integrate rate_limiter middleware into chat endpoint (15 RPM token bucket)
 - [X] T086 [US2] Integrate cache_service into chat endpoint (5-min TTL, cache key = hash of message)
 - [X] T087 [US2] Add error handling in chat endpoint: Gemini timeout → fallback response, Gemini 429 → queued/fallback, pgvector empty → fallback with flag, Supabase down → 503
-- [ ] T088 [US2] Test chat endpoint with mock knowledge base entries: verify grounding (no hallucination), source attribution, lead_intent detection, fallback behavior
-- [ ] T089 [US2] Test rate limiting: send 16 rapid requests, verify 16th returns 429 with Retry-After header
+- [x] T088 [US2] Test chat endpoint with mock knowledge base entries: verify grounding (no hallucination), source attribution, lead_intent detection, fallback behavior
+- [x] T089 [US2] Test rate limiting: send 16 rapid requests, verify 16th returns 429 with Retry-After header
 
 **Checkpoint**: Chat endpoint returns grounded JSON responses with lead detection, rate limiting, and caching operational.
 
@@ -161,13 +161,13 @@ description: "Task list for Portfolio & Lead Generation Platform"
 
 ### Implementation for User Story 3
 
-- [ ] T090 [P] [US3] Create `frontend/src/hooks/use-chat.ts` — chat session state hook: messages array, session_id generation, send function, loading/error states
-- [ ] T091 [P] [US3] Create `frontend/src/components/chatbot/chat-message.tsx` — chat message bubble component: user messages (right-aligned, blue), bot messages (left-aligned, gray), source citations, fallback styling
-- [ ] T092 [P] [US3] Create `frontend/src/components/chatbot/chat-lead-form.tsx` — inline lead capture form: name, email, message fields, submits to POST /api/v1/leads with category="chatbot_capture", source="chatbot"
-- [ ] T093 [US3] Create `frontend/src/components/chatbot/chat-widget.tsx` — floating chat panel: toggle button (bottom-right), message list, input field, send button, loading indicator, lead form integration (shows when lead_intent=true), session management
-- [ ] T094 [US3] Update `frontend/src/app/layout.tsx` — embed ChatWidget as a client component in the root layout (rendered on all pages)
-- [ ] T095 [US3] Add chat widget styling: floating button with animation, panel with max-height, scrollable message area, mobile-responsive (full-screen on small screens)
-- [ ] T096 [US3] Test chat widget end-to-end: open widget, send message, verify response renders, trigger lead_intent response, fill inline form, verify lead stored in database
+- [x] T090 [P] [US3] Create `frontend/src/hooks/use-chat.ts` — chat session state hook: messages array, session_id generation, send function, loading/error states
+- [x] T091 [P] [US3] Create `frontend/src/components/chatbot/chat-message.tsx` — chat message bubble component: user messages (right-aligned, blue), bot messages (left-aligned, gray), source citations, fallback styling
+- [x] T092 [P] [US3] Create `frontend/src/components/chatbot/chat-lead-form.tsx` — inline lead capture form: name, email, message fields, submits to POST /api/v1/leads with category="chatbot_capture", source="chatbot"
+- [x] T093 [US3] Create `frontend/src/components/chatbot/chat-widget.tsx` — floating chat panel: toggle button (bottom-right), message list, input field, send button, loading indicator, lead form integration (shows when lead_intent=true), session management
+- [x] T094 [US3] Update `frontend/src/app/layout.tsx` — embed ChatWidget as a client component in the root layout (rendered on all pages)
+- [x] T095 [US3] Add chat widget styling: floating button with animation, panel with max-height, scrollable message area, mobile-responsive (full-screen on small screens)
+- [x] T096 [US3] Test chat widget end-to-end: open widget, send message, verify response renders, trigger lead_intent response, fill inline form, verify lead stored in database
 
 **Checkpoint**: Chat widget functional on all public pages with lead capture working.
 
@@ -181,30 +181,30 @@ description: "Task list for Portfolio & Lead Generation Platform"
 
 ### Implementation for User Story 4
 
-- [ ] T097 [P] [US4] Install `@supabase/supabase-js` in frontend: `npm install @supabase/supabase-js`
-- [ ] T098 [P] [US4] Create `frontend/src/lib/supabase-client.ts` — Supabase browser client initialization (uses NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
-- [ ] T099 [US4] Create `frontend/src/app/admin/login/page.tsx` — admin login page: email/password form, calls `supabase.auth.signInWithPassword()`, redirects to `/admin` on success, displays error on failure
-- [ ] T100 [US4] Create `frontend/src/app/admin/layout.tsx` — admin auth guard: checks `supabase.auth.getSession()` on mount, redirects to `/admin/login` if not authenticated, renders admin sidebar navigation + main content area
-- [ ] T101 [P] [US4] Create `frontend/src/app/admin/page.tsx` — admin dashboard overview: stats cards (total projects, total leads, new leads count)
-- [ ] T102 [P] [US4] Create `frontend/src/app/admin/projects/page.tsx` — admin projects CRUD: table listing, add/edit/delete forms (title, descriptions, tech stack, URLs, featured, order_index, dates)
-- [ ] T103 [P] [US4] Create `frontend/src/app/admin/skills/page.tsx` — admin skills CRUD: table listing grouped by category, add/edit/delete forms (name, category, proficiency slider, order_index)
-- [ ] T104 [P] [US4] Create `frontend/src/app/admin/experience/page.tsx` — admin experience CRUD: table listing, add/edit/delete forms (company, role, dates, responsibilities rich text)
-- [ ] T105 [P] [US4] Create `frontend/src/app/admin/certifications/page.tsx` — admin certifications CRUD: table listing, add/edit/delete forms (name, issuer, date, credential URL)
-- [ ] T106 [P] [US4] Create `frontend/src/app/admin/testimonials/page.tsx` — admin testimonials CRUD: table listing, add/edit/delete forms (author name, role, company, quote, date, LinkedIn URL)
-- [ ] T107 [P] [US4] Create `frontend/src/app/admin/leads/page.tsx` — admin leads management: table with columns (name, email, category, status, date), filter by category/status dropdown, click to update status (new → reviewed → replied → archived)
-- [ ] T108 [US4] Create `backend/src/middleware/auth.py` — Supabase JWT verification middleware: extracts Bearer token, verifies via `supabase.auth.get_user(token)`, attaches user to request, returns 401 on failure
-- [ ] T109 [US4] Create `backend/src/api/admin/router.py` — admin router aggregating all admin sub-routers
-- [ ] T110 [P] [US4] Create `backend/src/api/admin/projects.py` — POST/PUT/DELETE /api/v1/admin/projects endpoints (protected by auth middleware)
-- [ ] T111 [P] [US4] Create `backend/src/api/admin/skills.py` — POST/PUT/DELETE /api/v1/admin/skills endpoints
-- [ ] T112 [P] [US4] Create `backend/src/api/admin/experience.py` — POST/PUT/DELETE /api/v1/admin/experience endpoints
-- [ ] T113 [P] [US4] Create `backend/src/api/admin/certifications.py` — POST/PUT/DELETE /api/v1/admin/certifications endpoints
-- [ ] T114 [P] [US4] Create `backend/src/api/admin/testimonials.py` — POST/PUT/DELETE /api/v1/admin/testimonials endpoints
-- [ ] T115 [US4] Create `backend/src/api/admin/leads.py` — GET /api/v1/admin/leads (with category/status filters), GET /api/v1/admin/leads/{id}, PATCH /api/v1/admin/leads/{id} (status update)
-- [ ] T116 [US4] Create `backend/src/schemas/chat.py` — add ChatRequest/ChatResponse if not already done in T080
-- [ ] T117 [US4] Update `backend/src/main.py` — mount admin router under `/api/v1/admin`, ensure auth middleware applied to admin routes only
-- [ ] T118 [US4] Wire admin frontend forms to backend admin API: each admin page uses `api.ts` functions with JWT from Supabase session
-- [ ] T119 [US4] Test admin auth: verify unauthenticated access to `/admin` redirects to login, verify authenticated access shows dashboard, verify API calls without JWT return 401
-- [ ] T120 [US4] Test admin CRUD: add a project via admin, verify it appears on public /projects page; update a skill, verify it appears on /skills; delete a testimonial, verify it disappears
+- [x] T097 [P] [US4] Install `@supabase/supabase-js` in frontend: `npm install @supabase/supabase-js`
+- [x] T098 [P] [US4] Create `frontend/src/lib/supabase-client.ts` — Supabase browser client initialization (uses NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
+- [x] T099 [US4] Create `frontend/src/app/admin/login/page.tsx` — admin login page: email/password form, calls `supabase.auth.signInWithPassword()`, redirects to `/admin` on success, displays error on failure
+- [x] T100 [US4] Create `frontend/src/app/admin/layout.tsx` — admin auth guard: checks `supabase.auth.getSession()` on mount, redirects to `/admin/login` if not authenticated, renders admin sidebar navigation + main content area
+- [x] T101 [P] [US4] Create `frontend/src/app/admin/page.tsx` — admin dashboard overview: stats cards (total projects, total leads, new leads count)
+- [x] T102 [P] [US4] Create `frontend/src/app/admin/projects/page.tsx` — admin projects CRUD: table listing, add/edit/delete forms (title, descriptions, tech stack, URLs, featured, order_index, dates)
+- [x] T103 [P] [US4] Create `frontend/src/app/admin/skills/page.tsx` — admin skills CRUD: table listing grouped by category, add/edit/delete forms (name, category, proficiency slider, order_index)
+- [x] T104 [P] [US4] Create `frontend/src/app/admin/experience/page.tsx` — admin experience CRUD: table listing, add/edit/delete forms (company, role, dates, responsibilities rich text)
+- [x] T105 [P] [US4] Create `frontend/src/app/admin/certifications/page.tsx` — admin certifications CRUD: table listing, add/edit/delete forms (name, issuer, date, credential URL)
+- [x] T106 [P] [US4] Create `frontend/src/app/admin/testimonials/page.tsx` — admin testimonials CRUD: table listing, add/edit/delete forms (author name, role, company, quote, date, LinkedIn URL)
+- [x] T107 [P] [US4] Create `frontend/src/app/admin/leads/page.tsx` — admin leads management: table with columns (name, email, category, status, date), filter by category/status dropdown, click to update status (new → reviewed → replied → archived)
+- [x] T108 [US4] Create `backend/src/middleware/auth.py` — Supabase JWT verification middleware: extracts Bearer token, verifies via `supabase.auth.get_user(token)`, attaches user to request, returns 401 on failure
+- [x] T109 [US4] Create `backend/src/api/admin/router.py` — admin router aggregating all admin sub-routers
+- [x] T110 [P] [US4] Create `backend/src/api/admin/projects.py` — POST/PUT/DELETE /api/v1/admin/projects endpoints (protected by auth middleware)
+- [x] T111 [P] [US4] Create `backend/src/api/admin/skills.py` — POST/PUT/DELETE /api/v1/admin/skills endpoints
+- [x] T112 [P] [US4] Create `backend/src/api/admin/experience.py` — POST/PUT/DELETE /api/v1/admin/experience endpoints
+- [x] T113 [P] [US4] Create `backend/src/api/admin/certifications.py` — POST/PUT/DELETE /api/v1/admin/certifications endpoints
+- [x] T114 [P] [US4] Create `backend/src/api/admin/testimonials.py` — POST/PUT/DELETE /api/v1/admin/testimonials endpoints
+- [x] T115 [US4] Create `backend/src/api/admin/leads.py` — GET /api/v1/admin/leads (with category/status filters), GET /api/v1/admin/leads/{id}, PATCH /api/v1/admin/leads/{id} (status update)
+- [x] T116 [US4] Create `backend/src/schemas/chat.py` — add ChatRequest/ChatResponse if not already done in T080
+- [x] T117 [US4] Update `backend/src/main.py` — mount admin router under `/api/v1/admin`, ensure auth middleware applied to admin routes only
+- [x] T118 [US4] Wire admin frontend forms to backend admin API: each admin page uses `api.ts` functions with JWT from Supabase session
+- [X] T119 [US4] Test admin auth: verify unauthenticated access to `/admin` redirects to login, verify authenticated access shows dashboard, verify API calls without JWT return 401
+- [X] T120 [US4] Test admin CRUD: add a project via admin, verify it appears on public /projects page; update a skill, verify it appears on /skills; delete a testimonial, verify it disappears
 
 **Checkpoint**: Admin dashboard fully functional with auth, all CRUD operations, and lead management.
 
@@ -218,12 +218,12 @@ description: "Task list for Portfolio & Lead Generation Platform"
 
 ### Implementation for User Story 5
 
-- [ ] T121 [P] [US5] Create `backend/src/schemas/knowledge_base.py` — if not already done in T037, add KnowledgeBaseCreate, KnowledgeBaseUpdate, KnowledgeBaseResponse Pydantic schemas
-- [ ] T122 [US5] Create `backend/src/services/knowledge_base_service.py` — CRUD: create_entry(content, source, metadata) → auto-generate embedding via gemini_service.generate_embedding(), update_entry(id, ...) → regenerate embedding, delete_entry(id) → remove row
-- [ ] T123 [US5] Create `backend/src/api/admin/knowledge_base.py` — POST /api/v1/admin/knowledge-base (creates + embeds), PUT /api/v1/admin/knowledge-base/{id} (updates + re-embeds), DELETE /api/v1/admin/knowledge-base/{id}
-- [ ] T124 [US5] Wire knowledge_base admin route into admin router (T109)
-- [ ] T125 [US5] Create `frontend/src/app/admin/knowledge-base/page.tsx` — admin KB management: table listing entries with content preview, source type, add/edit/delete forms (content textarea, source dropdown, metadata JSON input), embedding status indicator
-- [ ] T126 [US5] Test auto-embedding: create a KB entry with content "Mehdi completed Next.js certification at SMIT in 2025", verify embedding vector is populated in pgvector, ask chatbot "What certifications does Mehdi have?", verify the new entry is in sources
+- [X] T121 [P] [US5] Create `backend/src/schemas/knowledge_base.py` — if not already done in T037, add KnowledgeBaseCreate, KnowledgeBaseUpdate, KnowledgeBaseResponse Pydantic schemas
+- [x] T122 [US5] Create `backend/src/services/knowledge_base_service.py` — CRUD: create_entry(content, source, metadata) → auto-generate embedding via gemini_service.generate_embedding(), update_entry(id, ...) → regenerate embedding, delete_entry(id) → remove row
+- [x] T123 [US5] Create `backend/src/api/admin/knowledge_base.py` — POST /api/v1/admin/knowledge-base (creates + embeds), PUT /api/v1/admin/knowledge-base/{id} (updates + re-embeds), DELETE /api/v1/admin/knowledge-base/{id}
+- [x] T124 [US5] Wire knowledge_base admin route into admin router (T109)
+- [x] T125 [US5] Create `frontend/src/app/admin/knowledge-base/page.tsx` — admin KB management: table listing entries with content preview, source type, add/edit/delete forms (content textarea, source dropdown, metadata JSON input), embedding status indicator
+- [X] T126 [US5] Test auto-embedding: create a KB entry with content "Mehdi completed Next.js certification at SMIT in 2025", verify embedding vector is populated in pgvector, ask chatbot "What certifications does Mehdi have?", verify the new entry is in sources
 
 **Checkpoint**: Knowledge base auto-embedding operational. Chatbot retrieves newly added entries immediately.
 
@@ -233,17 +233,17 @@ description: "Task list for Portfolio & Lead Generation Platform"
 
 **Purpose**: Performance, accessibility audit, error handling, documentation, deployment readiness.
 
-- [ ] T127 [P] Create `backend/src/api/v1/health.py` — GET /api/v1/health endpoint checking database connection, Gemini API availability, cache status
-- [ ] T128 [P] Add structured error logging to all backend services (log exceptions with context: function name, params, traceback)
-- [ ] T129 [P] Add `frontend/src/app/not-found.tsx` — custom 404 page with link back to home
-- [ ] T130 [P] Add `frontend/src/app/error.tsx` — custom error boundary for client-side errors
-- [ ] T131 Run Lighthouse audit on all public pages: verify performance score 90+, accessibility score 90+, FCP < 1.5s
-- [ ] T132 Fix accessibility issues from audit: ensure all images have alt text, form fields have labels, color contrast >= 4.5:1, keyboard navigation works
-- [ ] T133 [P] Optimize images: use Next.js Image component for all images, configure remote patterns for Supabase Storage URLs
-- [ ] T134 [P] Create `frontend/public/robots.txt` and `frontend/public/sitemap.xml` if not already done
-- [ ] T135 Verify quickstart.md: follow instructions from scratch on a clean machine, confirm both servers start and smoke tests pass
-- [ ] T136 [P] Create `backend/pyproject.toml` with pytest, black, ruff configuration
-- [ ] T137 [P] Create `frontend/package.json` scripts: `dev`, `build`, `start`, `lint`, `test`
+- [x] T127 [P] Create `backend/src/api/v1/health.py` — GET /api/v1/health endpoint checking database connection, Gemini API availability, cache status
+- [x] T128 [P] Add structured error logging to all backend services (log exceptions with context: function name, params, traceback)
+- [x] T129 [P] Add `frontend/src/app/not-found.tsx` — custom 404 page with link back to home
+- [x] T130 [P] Add `frontend/src/app/error.tsx` — custom error boundary for client-side errors
+- [X] T131 Run Lighthouse audit on all public pages: verify performance score 90+, accessibility score 90+, FCP < 1.5s
+- [X] T132 Fix accessibility issues from audit: ensure all images have alt text, form fields have labels, color contrast >= 4.5:1, keyboard navigation works
+- [x] T133 [P] Optimize images: use Next.js Image component for all images, configure remote patterns for Supabase Storage URLs
+- [x] T134 [P] Create `frontend/public/robots.txt` and `frontend/public/sitemap.xml` if not already done
+- [x] T135 Verify quickstart.md: follow instructions from scratch on a clean machine, confirm both servers start and smoke tests pass
+- [x] T136 [P] Create `backend/pyproject.toml` with pytest, black, ruff configuration
+- [x] T137 [P] Create `frontend/package.json` scripts: `dev`, `build`, `start`, `lint`, `test`
 
 ---
 
