@@ -1,7 +1,5 @@
 ---
-
 description: "Task list for Portfolio & Lead Generation Platform"
-
 ---
 
 # Tasks: Portfolio & Lead Generation Platform
@@ -43,55 +41,89 @@ description: "Task list for Portfolio & Lead Generation Platform"
 - [X] T018 Create `backend/src/db/vector_extension.py` — pgvector column type registration for SQLAlchemy
 - [X] T018b Create `migrations/010_create_match_rpc.sql` — Supabase RPC function `match_knowledge` for vector similarity search using cosine distance `<=>`
 - [X] T019 Run all migrations against local Supabase: `npx supabase db push` and verify all 9 tables exist
-- [X] T020 Run seed data: `npx supabase db seed -- seed_data.sql` and verify data populated
+- [X] T020 Run seed data: `npx supabase db seed --seed_data.sql` and verify data populated
 
 **Checkpoint**: Database is live with 9 tables, seed data populated, pgvector extension enabled.
 
 ---
 
-## Milestone 2: FastAPI Endpoints & Gemini AI Setup
+## Milestone 2: FastAPI Backend & Gemini AI Agent
 
-**Purpose**: Backend foundation — all public API endpoints, Pydantic models, services, and Gemini API client.
+**Purpose**: Backend foundation — Supabase client, SQL RPC migration, all CRUD + chat endpoints, Gemini SDK, RAG pipeline, and shared infrastructure.
 
-- [X] T021 [P] Create `backend/src/models/base.py` — SQLAlchemy declarative base with id, created_at, updated_at mixin
-- [X] T022 [P] Create `backend/src/models/profile.py` — Profile SQLAlchemy model
-- [X] T023 [P] Create `backend/src/models/project.py` — Project SQLAlchemy model with tech_stack (ARRAY)
-- [X] T024 [P] Create `backend/src/models/skill.py` — Skill + ProjectSkill SQLAlchemy models
-- [X] T025 [P] Create `backend/src/models/experience.py` — Experience SQLAlchemy model
-- [X] T026 [P] Create `backend/src/models/certification.py` — Certification SQLAlchemy model
-- [X] T027 [P] Create `backend/src/models/testimonial.py` — Testimonial SQLAlchemy model
-- [X] T028 [P] Create `backend/src/models/knowledge_base.py` — KnowledgeBase model with pgvector column (use `pgvector.sqlalchemy.Vector`)
-- [X] T029 [P] Create `backend/src/models/lead.py` — Lead SQLAlchemy model
-- [X] T030 [P] Create `backend/src/schemas/common.py` — Pydantic pagination schema (PaginatedResponse), error response schema
-- [X] T031 Create `backend/src/schemas/profile.py` — Profile Pydantic response schema
-- [X] T032 [P] Create `backend/src/schemas/project.py` — Project Pydantic request/response schemas (with nested skills)
-- [X] T033 [P] Create `backend/src/schemas/skill.py` — Skill Pydantic schemas (flat + grouped response)
-- [X] T034 [P] Create `backend/src/schemas/experience.py` — Experience Pydantic schemas
-- [X] T035 [P] Create `backend/src/schemas/certification.py` — Certification Pydantic schemas
-- [X] T036 [P] Create `backend/src/schemas/testimonial.py` — Testimonial Pydantic schemas
-- [X] T037 [P] Create `backend/src/schemas/knowledge_base.py` — KnowledgeBase Pydantic schemas
-- [X] T038 [P] Create `backend/src/schemas/lead.py` — Lead Pydantic request/response schemas
-- [X] T039 Create `backend/src/services/profile_service.py` — get_profile() async function
-- [X] T040 [P] Create `backend/src/services/project_service.py` — get_projects(), get_project_by_id() with skill joins
-- [X] T041 [P] Create `backend/src/services/skill_service.py` — get_skills(), get_skills_grouped_by_category()
-- [X] T042 [P] Create `backend/src/services/experience_service.py` — get_experience()
-- [X] T043 [P] Create `backend/src/services/certification_service.py` — get_certifications()
-- [X] T044 [P] Create `backend/src/services/testimonial_service.py` — get_testimonials()
-- [X] T045 Create `backend/src/api/v1/router.py` — version router aggregating all public sub-routers
-- [X] T046 Create `backend/src/api/v1/profile.py` — GET /api/v1/profile endpoint
-- [X] T047 [P] Create `backend/src/api/v1/projects.py` — GET /api/v1/projects, GET /api/v1/projects/{id} endpoints
-- [X] T048 [P] Create `backend/src/api/v1/skills.py` — GET /api/v1/skills endpoint (flat + grouped)
-- [X] T049 [P] Create `backend/src/api/v1/experience.py` — GET /api/v1/experience endpoint
-- [X] T050 [P] Create `backend/src/api/v1/certifications.py` — GET /api/v1/certifications endpoint
-- [X] T051 [P] Create `backend/src/api/v1/testimonials.py` — GET /api/v1/testimonials endpoint
-- [X] T052 Create `backend/src/middleware/logging.py` — structured logging middleware (log request method, path, duration, status)
-- [X] T053 Create `backend/src/middleware/rate_limiter.py` — token bucket rate limiter (15 tokens/min, in-memory)
-- [X] T054 Update `backend/src/main.py` — mount v1 router, add CORSMiddleware (allow frontend origin), attach logging middleware
-- [X] T055 Create `backend/src/services/gemini_service.py` — Gemini API client: `generate_chat_response(prompt, history)`, `generate_embedding(text)` using `google-genai` SDK with Gemini 1.5 Flash
-- [X] T056 Create `backend/src/services/cache_service.py` — in-memory TTL cache (dict-based, 5-min expiry) with `get(key)`, `set(key, value, ttl)`, `invalidate(key)`
-- [X] T057 Test all public endpoints with curl/httpx: verify each returns 200 with seed data
+### Phase 2a: Supabase Client & Configuration
 
-**Checkpoint**: All 7 public GET endpoints working, Gemini client ready, cache and rate limiter ready.
+- [X] T021 [P] Create `backend/src/config.py` — Pydantic BaseSettings class with fields: `supabase_url` (default `http://127.0.0.1:54321`), `supabase_service_role_key`, `supabase_anon_key`, `supabase_jwt_secret`, `gemini_api_key`; set `env_file=".env"`, `extra="ignore"`
+- [X] T022 [P] Create `backend/requirements.txt` — dependencies: `fastapi`, `uvicorn[standard]`, `supabase`, `google-genai`, `pydantic-settings`, `slowapi`, `httpx`
+- [X] T023 Create `backend/src/db/session.py` — `get_supabase() -> Client` function: lazily creates singleton via `create_client(settings.supabase_url, settings.supabase_service_role_key)`, stores in global `_supabase`, returns `Client`; imports from `supabase import create_client, Client`
+- [X] T024 Create `backend/src/db/vector_extension.py` — register `pgvector.sqlalchemy.Vector` as SQLAlchemy type for `vector` columns (implements `bind_expression` and `result_processor` methods)
+
+### Phase 2b: SQL Migration — match_knowledge RPC
+
+- [X] T025 Create `supabase/migrations/010_create_match_rpc.sql` — PL/pgSQL function `match_knowledge(query_embedding vector(768), match_count int DEFAULT 5, similarity_threshold float DEFAULT 0.7)` returning TABLE(id uuid, content text, metadata jsonb, source text, source_id uuid, similarity float); body: `SELECT kb.id, kb.content, kb.metadata, kb.source, kb.source_id, 1 - (kb.embedding <=> query_embedding) AS similarity FROM knowledge_base kb WHERE 1 - (kb.embedding <=> query_embedding) > similarity_threshold ORDER BY kb.embedding <=> query_embedding LIMIT match_count`; add HNSW index `idx_knowledge_base_embedding_hnsw ON knowledge_base USING hnsw (embedding vector_cosine_ops) WITH (m=16, ef_construction=64)`; add COMMENT ON FUNCTION
+- [X] T026 Verify RPC: run `npx supabase db push` then test with `supabase rpc match_knowledge '{"query_embedding": "[0.1, 0.2, ...]" , "match_count": 1}'` with a dummy 768-dim vector to confirm function executes without error
+
+### Phase 2c: Pydantic Models (Schemas)
+
+- [X] T027 [P] Create `backend/src/schemas/common.py` — `PaginatedResponse(BaseModel)` with generic `items: List[T]`, `total: int`, `page: int`, `page_size: int`; `ErrorResponse(BaseModel)` with `detail: str`, `code: Optional[str]`
+- [X] T028 Create `backend/src/schemas/profile.py` — `ProfileResponse(BaseModel)`: id, full_name, headline, bio, email, phone, location, linkedin_url, github_url, twitter_url, resume_url, profile_image_url, created_at, updated_at
+- [X] T029 [P] Create `backend/src/schemas/project.py` — `ProjectResponse(BaseModel)` with id, title, description, short_description, tech_stack (List[str]), project_url, github_url, image_url, featured, order_index, start_date, end_date, created_at; `ProjectsListResponse(BaseModel)` wrapping `List[ProjectResponse]`
+- [X] T030 [P] Create `backend/src/schemas/skill.py` — `SkillResponse(BaseModel)`: id, name, category, proficiency, icon_url, order_index; `SkillsGroupedResponse(BaseModel)`: category (str), skills (List[SkillResponse]); `SkillsListResponse(BaseModel)`: `List[SkillResponse]`
+- [X] T031 [P] Create `backend/src/schemas/experience.py` — `ExperienceResponse(BaseModel)`: id, company, role, start_date, end_date, responsibilities, order_index, created_at; `ExperienceListResponse(BaseModel)`: `List[ExperienceResponse]`
+- [X] T032 [P] Create `backend/src/schemas/certification.py` — `CertificationResponse(BaseModel)`: id, name, issuer, date_earned, credential_url, order_index, created_at; `CertificationsListResponse(BaseModel)`: `List[CertificationResponse]`
+- [X] T033 [P] Create `backend/src/schemas/testimonial.py` — `TestimonialResponse(BaseModel)`: id, author_name, author_role, author_company, quote, date, linkedin_url, order_index, created_at; `TestimonialsListResponse(BaseModel)`: `List[TestimonialResponse]`
+- [X] T034 Create `backend/src/schemas/chat.py` — `ChatMessage(BaseModel)`: role (str), content (str); `ChatRequest(BaseModel)`: message (str), session_id (Optional[str]), history (Optional[List[ChatMessage]]); `SourceRef(BaseModel)`: source (str), similarity (float); `ChatResponse(BaseModel)`: response (str), lead_intent (bool=False), lead_prompt (Optional[str]), sources (Optional[List[SourceRef]]), fallback (bool=False)
+- [X] T035 [P] Create `backend/src/schemas/lead.py` — `LeadCreate(BaseModel)`: name (str), email (str), message (str), category (Optional[str] = "other") with Literal["job_offer","freelance","collaboration","chatbot_capture","other"]; `LeadUpdate(BaseModel)`: status (Optional[str]) with Literal["new","reviewed","replied","archived"]; `LeadResponse(BaseModel)`: id, name, email, message, category, status, source, created_at
+
+### Phase 2d: CRUD Services (Supabase REST API)
+
+- [X] T036 Create `backend/src/services/profile_service.py` — `get_profile() -> dict`: calls `get_supabase().table("profiles").select("*").single().execute()`, returns data; returns `None` if no rows; handles `SupabaseError`
+- [X] T037 [P] Create `backend/src/services/project_service.py` — `get_projects(featured_only: bool = False) -> list`: queries `projects` table, orders by `order_index`, optionally filters `featured=eq.true`; `get_project_by_id(project_id: str) -> dict`: selects single project by id
+- [X] T038 [P] Create `backend/src/services/skill_service.py` — `get_skills() -> list`: queries `skills` table ordered by `category, order_index`; `get_skills_grouped() -> dict`: groups results by `category` into list of `{category, skills}`
+- [X] T039 [P] Create `backend/src/services/experience_service.py` — `get_experience() -> list`: queries `experience` table ordered by `order_index ASC` (chronological)
+- [X] T040 [P] Create `backend/src/services/certification_service.py` — `get_certifications() -> list`: queries `certifications` table ordered by `date_earned DESC`
+- [X] T041 [P] Create `backend/src/services/testimonial_service.py` — `get_testimonials() -> list`: queries `testimonials` table ordered by `order_index ASC`
+- [X] T042 Create `backend/src/services/lead_service.py` — `create_lead(name, email, message, category="other", source="contact_form") -> dict`: inserts into `leads` table with `status="new"`, returns inserted row; `get_leads(status=None, category=None) -> list`: queries with optional filters; `update_lead_status(lead_id, status) -> dict`: updates lead status
+
+### Phase 2e: Gemini API SDK Configuration
+
+- [X] T043 Create `backend/src/services/gemini_service.py` — module-level `_client = None`; `_get_client()` function: lazy-init `google.genai.Client()` via `genai.configure(api_key=settings.gemini_api_key)`; `generate_embedding(text: str) -> List[float]`: calls `client.models.embed_content(model="models/text-embedding-004", contents=text, task_type="retrieval_document")`, returns `result.embeddings[0].values` (768-dim vector); `generate_chat_response(prompt: str, history: list = None) -> dict`: calls `client.models.generate_content(model="models/gemini-1.5-flash", contents=prompt)`, returns `{"response": response.text}`; handles `GoogleAPIError` with try/except returning fallback dict
+
+### Phase 2f: RAG Logic — Retrieval & Prompt Building
+
+- [X] T044 Create `backend/src/services/rag_service.py` — `retrieve_context(query: str, top_k: int = 5, threshold: float = 0.7) -> List[dict]`: (1) calls `gemini_service.generate_embedding(query)` to get 768-dim vector, (2) calls `get_supabase().rpc("match_knowledge", {"query_embedding": embedding, "match_count": top_k, "similarity_threshold": threshold}).execute()`, (3) returns `result.data` (list of `{content, metadata, source, source_id, similarity}` dicts) or empty list on error
+- [X] T045 Create `backend/src/services/prompt_builder.py` — `build_system_prompt(context_chunks: list, history: list = None) -> str`: constructs prompt string with: (a) persona section ("You are Mehdi's AI assistant..."), (b) context section iterating `context_chunks` and appending `content` + `source`, (c) conversation history from `history` (role/content pairs), (d) lead-intent detection instruction ("If user wants to hire Mehdi, offer to collect contact info..."), (e) no-hallucination constraint ("Only use information from the provided context")
+- [X] T046 Create `backend/src/services/cache_service.py` — module-level `cache: Dict[str, tuple]` (key -> (value, expiry_timestamp)); `get(key) -> Optional[Any]`: returns value if not expired, else None; `set(key, value, ttl: int = 300)`: stores (value, time.time() + ttl); `invalidate(key)`: removes entry; auto-cleanup on `get` (remove expired entries)
+
+### Phase 2g: FastAPI Routes — Public CRUD & Chat
+
+- [X] T047 Create `backend/src/api/v1/router.py` — `APIRouter(prefix="/api/v1")`, include routers: `profile.router` (prefix="/profile"), `projects.router` (prefix="/projects"), `skills.router` (prefix="/skills"), `experience.router` (prefix="/experience"), `certifications.router` (prefix="/certifications"), `testimonials.router` (prefix="/testimonials"), `chat.router` (prefix="/chat"), `leads.router` (prefix="/leads"), `health.router` (prefix="/health")
+- [X] T048 Create `backend/src/api/v1/profile.py` — `router = APIRouter(tags=["Profile"])`; `GET /` endpoint: calls `profile_service.get_profile()`, returns `ProfileResponse` or 404 if None
+- [X] T049 [P] Create `backend/src/api/v1/projects.py` — `router = APIRouter(tags=["Projects"])`; `GET /` endpoint: accepts optional `featured: bool = False` query param, calls `project_service.get_projects(featured)`, returns `ProjectsListResponse`; `GET /{project_id}` endpoint: calls `get_project_by_id(project_id)`, returns `ProjectResponse` or 404
+- [X] T050 [P] Create `backend/src/api/v1/skills.py` — `router = APIRouter(tags=["Skills"])`; `GET /` endpoint: accepts `grouped: bool = False` query param, calls grouped or flat service method, returns appropriate response
+- [X] T051 [P] Create `backend/src/api/v1/experience.py` — `router = APIRouter(tags=["Experience"])`; `GET /` endpoint: calls `experience_service.get_experience()`, returns `ExperienceListResponse`
+- [X] T052 [P] Create `backend/src/api/v1/certifications.py` — `router = APIRouter(tags=["Certifications"])`; `GET /` endpoint: calls `certification_service.get_certifications()`, returns `CertificationsListResponse`
+- [X] T053 [P] Create `backend/src/api/v1/testimonials.py` — `router = APIRouter(tags=["Testimonials"])`; `GET /` endpoint: calls `testimonial_service.get_testimonials()`, returns `TestimonialsListResponse`
+- [X] T054 Create `backend/src/api/v1/leads.py` — `router = APIRouter(tags=["Leads"])`; `POST /` endpoint: accepts `LeadCreate`, calls `lead_service.create_lead(...)`, returns `LeadResponse` with 201 status; input validation via Pydantic
+- [X] T055 Create `backend/src/api/v1/chat.py` — `router = APIRouter(tags=["Chat"])`; `POST /` endpoint: (1) compute cache key via `sha256(message.encode()).hexdigest()[:16]`, (2) check `cache_service.get(key)`, return cached `ChatResponse` if hit, (3) call `rag_service.retrieve_context(request.message, top_k=5, threshold=0.7)`, (4) build prompt via `prompt_builder.build_system_prompt(context_chunks, request.history)`, (5) call `gemini_service.generate_chat_response(system_prompt)`, (6) detect lead intent from response text (check for hiring keywords), (7) build `ChatResponse` with sources from context_chunks, (8) cache response via `cache_service.set(key, response, ttl=300)`, (9) return `ChatResponse`; on Gemini error return fallback `ChatResponse(response="Assistant unavailable, please use contact form", fallback=True)`
+- [X] T056 Create `backend/src/api/v1/health.py` — `router = APIRouter(tags=["Health"])`; `GET /` endpoint: checks Supabase connectivity via `get_supabase().table("profiles").select("id").limit(1).execute()`, returns `{"status": "healthy", "supabase": true, "gemini": true}` or 503 on failure
+
+### Phase 2h: Middleware & App Assembly
+
+- [X] T057 Create `backend/src/middleware/logging.py` — `LoggingMiddleware(BaseHTTPMiddleware)`: on dispatch, records `time.time()` before/after, logs `{"method": request.method, "path": request.url.path, "status": response.status_code, "duration_ms": elapsed_ms, "client_ip": request.client.host}` via `logging.getLogger("api")`
+- [X] T058 Create `backend/src/middleware/rate_limiter.py` — `RateLimiter`: in-memory dict `_buckets` mapping IP -> `(tokens: int, last_refill: float)`; `token_bucket_check(ip, capacity=15, refill_rate=15/60)` returns True if token available; middleware applies only to `/api/v1/chat` path, returns `JSONResponse(status_code=429, content={"detail": "Rate limit exceeded", "retry_after": seconds})` when exhausted
+- [X] T059 Update `backend/src/main.py` — create FastAPI app with `title="Portfolio API", version="1.0"`; add `CORSMiddleware` with `allow_origins=["*"]` (configure per env later); add `LoggingMiddleware`; add `RateLimiter` only on chat route via `app.middleware("http")` or route-specific dependency; include `router` from `api.v1.router`; add exception handler for `SupabaseError` -> 500 JSON response
+
+### Phase 2i: Verification & Smoke Tests
+
+- [X] T060 Test all public GET endpoints with `curl` or `httpx`: `GET /api/v1/profile` (200 + JSON), `GET /api/v1/projects` (200 + array), `GET /api/v1/skills` (200 + array), `GET /api/v1/experience` (200 + array), `GET /api/v1/certifications` (200 + array), `GET /api/v1/testimonials` (200 + array), `GET /api/v1/health` (200 + healthy JSON)
+- [X] T061 Test `POST /api/v1/leads` with valid payload `{"name":"Test","email":"test@example.com","message":"Hello"}` -> 201; with invalid email -> 422
+- [X] T062 Test `POST /api/v1/chat` with `{"message":"Tell me about Mehdi"}`: verify non-empty response, check `response` field exists; test cache by sending same message twice (second should be faster, same response)
+- [X] T063 Test Gemini embedding: call `gemini_service.generate_embedding("test query")`, verify returns list of 768 floats; on invalid API key, verify graceful fallback
+- [X] T064 Test RAG retrieval: insert test row into `knowledge_base` with known embedding, call `rag_service.retrieve_context("test query")`, verify returns context chunks with similarity scores
+- [X] T065 Test rate limiter: send 16 rapid requests to `/api/v1/chat`, verify 16th returns 429 with `Retry-After` or similar indicator
+
+**Checkpoint**: All 7 public GET endpoints working, Gemini client initialized, RAG pipeline operational (embed -> retrieve -> prompt -> generate), caching and rate limiting active, all smoke tests passing.
 
 ---
 
@@ -142,10 +174,10 @@ description: "Task list for Portfolio & Lead Generation Platform"
 - [X] T081 [P] [US2] Create `backend/src/services/rag_service.py` — RAG retrieval service: `retrieve_context(query: str, top_k: int = 5, threshold: float = 0.7)` — generates embedding via gemini_service, queries pgvector similarity, filters by threshold, returns top chunks
 - [X] T082 [US2] Create `backend/src/services/prompt_builder.py` — prompt construction service: `build_system_prompt(context_chunks: list, history: list)` — assembles role definition, retrieved context, grounding constraints, JSON output schema instruction
 - [X] T083 [US2] Update `backend/src/services/gemini_service.py` — add `generate_structured_chat(prompt: str, history: list, schema: dict) -> ChatResponse` using Gemini 1.5 Flash with `response_mime_type: "application/json"` and JSON schema
-- [X] T084 [US2] Create `backend/src/api/v1/chat.py` — POST /api/v1/chat endpoint: validate request → check cache → rate limit → rag_service.retrieve → prompt_builder.build → gemini_service.generate_structured_chat → return ChatResponse, apply cache on success
+- [X] T084 [US2] Create `backend/src/api/v1/chat.py` — POST /api/v1/chat endpoint: validate request -> check cache -> rate limit -> rag_service.retrieve -> prompt_builder.build -> gemini_service.generate_structured_chat -> return ChatResponse, apply cache on success
 - [X] T085 [US2] Integrate rate_limiter middleware into chat endpoint (15 RPM token bucket)
 - [X] T086 [US2] Integrate cache_service into chat endpoint (5-min TTL, cache key = hash of message)
-- [X] T087 [US2] Add error handling in chat endpoint: Gemini timeout → fallback response, Gemini 429 → queued/fallback, pgvector empty → fallback with flag, Supabase down → 503
+- [X] T087 [US2] Add error handling in chat endpoint: Gemini timeout -> fallback response, Gemini 429 -> queued/fallback, pgvector empty -> fallback with flag, Supabase down -> 503
 - [x] T088 [US2] Test chat endpoint with mock knowledge base entries: verify grounding (no hallucination), source attribution, lead_intent detection, fallback behavior
 - [x] T089 [US2] Test rate limiting: send 16 rapid requests, verify 16th returns 429 with Retry-After header
 
@@ -191,7 +223,7 @@ description: "Task list for Portfolio & Lead Generation Platform"
 - [x] T104 [P] [US4] Create `frontend/src/app/admin/experience/page.tsx` — admin experience CRUD: table listing, add/edit/delete forms (company, role, dates, responsibilities rich text)
 - [x] T105 [P] [US4] Create `frontend/src/app/admin/certifications/page.tsx` — admin certifications CRUD: table listing, add/edit/delete forms (name, issuer, date, credential URL)
 - [x] T106 [P] [US4] Create `frontend/src/app/admin/testimonials/page.tsx` — admin testimonials CRUD: table listing, add/edit/delete forms (author name, role, company, quote, date, LinkedIn URL)
-- [x] T107 [P] [US4] Create `frontend/src/app/admin/leads/page.tsx` — admin leads management: table with columns (name, email, category, status, date), filter by category/status dropdown, click to update status (new → reviewed → replied → archived)
+- [x] T107 [P] [US4] Create `frontend/src/app/admin/leads/page.tsx` — admin leads management: table with columns (name, email, category, status, date), filter by category/status dropdown, click to update status (new -> reviewed -> replied -> archived)
 - [x] T108 [US4] Create `backend/src/middleware/auth.py` — Supabase JWT verification middleware: extracts Bearer token, verifies via `supabase.auth.get_user(token)`, attaches user to request, returns 401 on failure
 - [x] T109 [US4] Create `backend/src/api/admin/router.py` — admin router aggregating all admin sub-routers
 - [x] T110 [P] [US4] Create `backend/src/api/admin/projects.py` — POST/PUT/DELETE /api/v1/admin/projects endpoints (protected by auth middleware)
@@ -219,7 +251,7 @@ description: "Task list for Portfolio & Lead Generation Platform"
 ### Implementation for User Story 5
 
 - [X] T121 [P] [US5] Create `backend/src/schemas/knowledge_base.py` — if not already done in T037, add KnowledgeBaseCreate, KnowledgeBaseUpdate, KnowledgeBaseResponse Pydantic schemas
-- [x] T122 [US5] Create `backend/src/services/knowledge_base_service.py` — CRUD: create_entry(content, source, metadata) → auto-generate embedding via gemini_service.generate_embedding(), update_entry(id, ...) → regenerate embedding, delete_entry(id) → remove row
+- [x] T122 [US5] Create `backend/src/services/knowledge_base_service.py` — CRUD: create_entry(content, source, metadata) -> auto-generate embedding via gemini_service.generate_embedding(), update_entry(id, ...) -> regenerate embedding, delete_entry(id) -> remove row
 - [x] T123 [US5] Create `backend/src/api/admin/knowledge_base.py` — POST /api/v1/admin/knowledge-base (creates + embeds), PUT /api/v1/admin/knowledge-base/{id} (updates + re-embeds), DELETE /api/v1/admin/knowledge-base/{id}
 - [x] T124 [US5] Wire knowledge_base admin route into admin router (T109)
 - [x] T125 [US5] Create `frontend/src/app/admin/knowledge-base/page.tsx` — admin KB management: table listing entries with content preview, source type, add/edit/delete forms (content textarea, source dropdown, metadata JSON input), embedding status indicator
@@ -263,18 +295,18 @@ description: "Task list for Portfolio & Lead Generation Platform"
 ### User Story Dependencies
 
 ```
-M1 (Setup) → M2 (Backend Foundation)
-                      ↓
-        ┌─────────────┼─────────────┬──────────────┐
-        ↓             ↓             ↓              ↓
+M1 (Setup) -> M2 (Backend Foundation)
+                      |
+        +-------------+-------------+-------------+
+        |             |             |              |
     M3 (US1)      M4 (US2)     M6 (US4)      (Shared foundation)
     Public        RAG          Admin
     Pages         Backend      Dashboard
-        ↓             ↓              ↓
+        |             |              |
     M5 (US3)      M7 (US5)
     Chat          Auto-Embed
     Widget
-                      ↓
+                      |
                M8 (Polish)
 ```
 
@@ -290,10 +322,13 @@ M1 (Setup) → M2 (Backend Foundation)
 
 - M1: T003-T006 (env + project scaffolding) all parallel
 - M1: T008-T015 (all migration files) parallel — but sequential execution
-- M2: T021-T029 (all model files) parallel
-- M2: T030-T038 (all schema files) parallel
-- M2: T040-T044 (all service files) parallel
-- M2: T047-T051 (all endpoint files) parallel
+- M2: T021-T024 (config + requirements + session + vector) parallel
+- M2: T027-T035 (all schema files) parallel
+- M2: T036-T042 (all CRUD service files) parallel
+- M2: T043 (gemini), T044 (rag), T045 (prompt) — sequential (T044 depends on T043, T045 depends on T044)
+- M2: T047-T056 (all route files) parallel
+- M2: T057-T059 (middleware + main) parallel
+- M2: T060-T065 (all verification tests) sequential (build on each other)
 - M3 (US1): T058-T066 (all component/utility files) parallel
 - M5 (US3): T090-T092 (hook + message + lead form) parallel
 - M6 (US4): T102-T107 (all admin page files) parallel
@@ -315,19 +350,40 @@ This delivers a functional portfolio site that showcases Mehdi's background — 
 
 ---
 
-## Parallel Example: Milestone 3 (US1)
+## Parallel Example: Milestone 2 (Backend)
 
 ```bash
-# Launch all component files in parallel:
-Task: "Create frontend/src/lib/api.ts"
-Task: "Create frontend/src/types/api.ts"
-Task: "Create frontend/src/components/ui/ (shadcn/ui setup)"
-Task: "Create frontend/src/components/layout/header.tsx"
-Task: "Create frontend/src/components/layout/footer.tsx"
-Task: "Create frontend/src/components/sections/hero.tsx"
-Task: "Create frontend/src/components/sections/project-card.tsx"
-Task: "Create frontend/src/components/sections/skill-badge.tsx"
-Task: "Create frontend/src/components/sections/timeline-item.tsx"
+# Launch all schema files in parallel:
+Task: "Create backend/src/schemas/common.py"
+Task: "Create backend/src/schemas/profile.py"
+Task: "Create backend/src/schemas/project.py"
+Task: "Create backend/src/schemas/skill.py"
+Task: "Create backend/src/schemas/experience.py"
+Task: "Create backend/src/schemas/certification.py"
+Task: "Create backend/src/schemas/testimonial.py"
+Task: "Create backend/src/schemas/chat.py"
+Task: "Create backend/src/schemas/lead.py"
+
+# Launch all CRUD service files in parallel:
+Task: "Create backend/src/services/profile_service.py"
+Task: "Create backend/src/services/project_service.py"
+Task: "Create backend/src/services/skill_service.py"
+Task: "Create backend/src/services/experience_service.py"
+Task: "Create backend/src/services/certification_service.py"
+Task: "Create backend/src/services/testimonial_service.py"
+Task: "Create backend/src/services/lead_service.py"
+
+# Launch all API route files in parallel:
+Task: "Create backend/src/api/v1/router.py"
+Task: "Create backend/src/api/v1/profile.py"
+Task: "Create backend/src/api/v1/projects.py"
+Task: "Create backend/src/api/v1/skills.py"
+Task: "Create backend/src/api/v1/experience.py"
+Task: "Create backend/src/api/v1/certifications.py"
+Task: "Create backend/src/api/v1/testimonials.py"
+Task: "Create backend/src/api/v1/leads.py"
+Task: "Create backend/src/api/v1/chat.py"
+Task: "Create backend/src/api/v1/health.py"
 ```
 
 ---
@@ -344,11 +400,11 @@ Task: "Create frontend/src/components/sections/timeline-item.tsx"
 
 ### Incremental Delivery
 
-1. M1 + M2 + M3 → Public portfolio live (MVP!)
-2. + M4 + M5 → Chatbot added (differentiator)
-3. + M6 → Admin dashboard (maintainability)
-4. + M7 → Auto-embedding (AI quality)
-5. + M8 → Polish (production readiness)
+1. M1 + M2 + M3 -> Public portfolio live (MVP!)
+2. + M4 + M5 -> Chatbot added (differentiator)
+3. + M6 -> Admin dashboard (maintainability)
+4. + M7 -> Auto-embedding (AI quality)
+5. + M8 -> Polish (production readiness)
 
 ### Parallel Team Strategy
 
