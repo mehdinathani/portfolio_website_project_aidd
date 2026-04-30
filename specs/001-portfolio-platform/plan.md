@@ -1,398 +1,413 @@
 # Implementation Plan: Portfolio & Lead Generation Platform
 
-**Branch**: `001-portfolio-platform` | **Date**: 2026-04-12 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `specs/001-portfolio-platform/spec.md`
+**Feature**: 001-portfolio-platform
+**Plan Date**: 2026-04-12
+**Spec Version**: v1 (from `spec.md`)
+**API Version**: v1 (from `api-contracts.md`)
+**Data Model Version**: v1 (from `data-model.md`)
+**Status**: ✅ READY FOR IMPLEMENTATION
+
+---
+
+## Overview
+
+Build a full-stack portfolio and lead-generation platform for Mehdi Abbas Nathani, transitioning from Senior Finance Executive to Agentic AI & Software Engineer. The platform consists of:
+
+- **Frontend**: Next.js 15+ with TypeScript, Tailwind CSS, deployed on Vercel
+- **Backend**: Python FastAPI with Supabase (PostgreSQL + pgvector + Auth + Realtime), deployed on Render
+- **AI Layer**: Google Gemini 1.5 Flash (chat) + text-embedding-004 (RAG embeddings)
+- **Database**: Supabase PostgreSQL with 9 tables (profile, projects, skills, project_skills, experience, certifications, testimonials, knowledge_base, leads)
+
+---
+
+## Task Breakdown
+
+### Phase 1: Database & Foundation (Tasks 1–3)
+
+#### Task 1: Database Schema & Migrations
+**Priority**: P0 | **Est**: 1–2h | **Status**: ⬜ Not Started
+
+**Files Created**:
+```
+supabase/migrations/
+  001_enable_pgvector.sql
+  002_create_profiles.sql
+  003_create_projects.sql
+  004_create_skills.sql
+  005_create_experience.sql
+  006_create_certifications.sql
+  007_create_testimonials.sql
+  008_create_knowledge_base.sql
+  009_create_leads.sql
+supabase/seed_data.sql
+```
+
+**Actions**:
+1. Create `001_enable_pgvector.sql` — `CREATE EXTENSION IF NOT EXISTS vector;`
+2. Create `002_create_profiles.sql` — single-row profile table per `data-model.md` Section 1
+3. Create `003_create_projects.sql` — projects table with `tech_stack TEXT[]`, `featured BOOLEAN`, `order_index INTEGER`, indexes per spec
+4. Create `004_create_skills.sql` — skills table + `project_skills` junction table with CASCADE FK, per Section 4
+5. Create `005_create_experience.sql` — experience table with date range, `order_index`, per Section 5
+6. Create `006_create_certifications.sql` — certifications table per Section 6
+7. Create `007_create_testimonials.sql` — testimonials table with CHECK constraints, per Section 7
+8. Create `008_create_knowledge_base.sql` — `embedding vector(768)`, HNSW index `USING hnsw (embedding vector_cosine_ops)`, JSONB metadata, per Section 8
+9. Create `009_create_leads.sql` — leads table with `category` and `status` CHECK constraints, per Section 9
+10. Create `seed_data.sql` — Insert Mehdi's initial profile, 2 projects (BIDLY, Hospital Reception System), 8–10 skills, 1–2 experience entries, 2–3 certifications, 3–5 knowledge base chunks
+
+**Verification**:
+```bash
+npx supabase db reset
+npx supabase db seed
+# In Supabase SQL Editor: SELECT COUNT(*) FROM projects; -- expect 2
+```
+
+---
+
+#### Task 2: Backend Scaffolding (FastAPI)
+**Priority**: P0 | **Est**: 1–2h | **Status**: ⬜ Not Started
+
+**Files Created**:
+```
+backend/
+  .env.example
+  requirements.txt
+  src/
+    main.py
+    config.py
+    api/
+      v1/
+        router.py
+        profile.py, projects.py, skills.py, experience.py
+        certifications.py, testimonials.py, chat.py, leads.py
+      admin/
+        router.py
+        projects.py, skills.py, experience.py, certifications.py
+        testimonials.py, knowledge_base.py, leads.py
+    models/
+      base.py, profile.py, project.py, skill.py, experience.py
+      certification.py, testimonial.py, knowledge_base.py, lead.py
+    schemas/
+      common.py, profile.py, project.py, skill.py, experience.py
+      certification.py, testimonial.py, chat.py, lead.py, knowledge_base.py
+    services/
+      profile_service.py, project_service.py, skill_service.py
+      experience_service.py, certification_service.py, testimonial_service.py
+      lead_service.py, gemini_service.py, rag_service.py
+      prompt_builder.py, cache_service.py, knowledge_base_service.py
+    db/
+      session.py, vector_extension.py
+    middleware/
+      auth.py, logging.py, rate_limiter.py
+    tests/
+      unit/, integration/, contract/
+```
+
+**Actions**:
+1. Initialize FastAPI app in `main.py` with CORS, logging, rate limiter, health check, API routers
+2. Create `config.py` loading env vars: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET, GEMINI_API_KEY, CACHE_TTL
+3. Create `db/session.py` — Supabase client using `supabase-py`
+4. Create Pydantic schemas matching `api-contracts.md`
+5. Create model classes mapping to Supabase rows
+6. Create JWT auth middleware for `/api/v1/admin/*` routes
+7. Create rate limiter middleware (15 RPM on `/api/v1/chat`)
+8. Create `requirements.txt`: fastapi, uvicorn, supabase, python-dotenv, pydantic, google-generativeai
+
+**Verification**:
+```bash
+cd backend && pip install -r requirements.txt && uvicorn src.main:app --reload --port 8000
+curl http://localhost:8000/api/v1/health
+# Expect: {"status": "healthy"}
+```
+
+---
+
+#### Task 3: Frontend Scaffolding (Next.js)
+**Priority**: P0 | **Est**: 1–2h | **Status**: ⬜ Not Started
+
+**Files Created**:
+```
+frontend/
+  .env.example, next.config.js, tailwind.config.ts, postcss.config.js
+  src/
+    app/
+      layout.tsx, page.tsx
+      about/, projects/, projects/[id]/, skills/, experience/
+      certifications/, contact/, not-found.tsx
+      admin/
+        layout.tsx, page.tsx, login/
+        projects/, skills/, experience/, certifications/
+        testimonials/, knowledge-base/, leads/
+    components/
+      layout/header.tsx, footer.tsx
+      sections/hero.tsx, project-card.tsx, skill-badge.tsx
+                timeline-item.tsx, contact-form.tsx
+      chatbot/
+        chat-widget.tsx, chat-message.tsx, chat-lead-form.tsx
+    hooks/use-chat.ts
+    lib/api.ts, supabase-client.ts
+    types/api.ts
+```
+
+**Actions**:
+1. Initialize Next.js 15+ project with TypeScript, Tailwind, App Router
+2. Install: `@supabase/supabase-js`
+3. Configure Tailwind with custom theme
+4. Create Supabase client, API fetch wrapper, TypeScript types
+5. Create root layout with Header + Footer
+6. Create Header (nav links, admin login) and Footer (copyright, social links)
+7. Create custom 404 page
+
+**Verification**:
+```bash
+cd frontend && npm install && npm run dev
+# Visit http://localhost:3000 — expect header, footer, blank content
+npm run build  # No TypeScript errors
+```
+
+---
+
+### Phase 2: Core Public Pages (Tasks 4–7)
+
+#### Task 4: Home Page & Hero Section
+**Priority**: P1 | **Est**: 2–3h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Create hero.tsx — fetch profile, display name, headline, bio, CTA buttons
+2. Update page.tsx (Home) — render Hero + Featured Projects (3) + Skills Overview + Chat Widget
+3. Create project-card.tsx — title, description, tech_stack, hover effect, click → `/projects/[id]`
+
+**API Calls**: `GET /api/v1/profile`, `GET /api/v1/projects?featured=true&limit=3`
+
+**Verification**: Visit / — see hero, 3 featured project cards, chat widget in bottom-right
+
+---
+
+#### Task 5: Projects & Skills Pages
+**Priority**: P1 | **Est**: 2–3h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Backend: `GET /api/v1/projects` with query params (featured, sort, order, limit, offset)
+2. Backend: `GET /api/v1/projects/{id}` with JOIN to skills
+3. Frontend: `/projects` page — grid layout, featured filter toggle
+4. Frontend: `/projects/[id]` — dynamic route, full details, linked skills
+5. Backend: `GET /api/v1/skills?grouped=true` — skills grouped by category
+6. Frontend: `/skills` page — grouped skills with proficiency bars
+7. Create skill-badge.tsx component
+
+**API Calls**: `GET /api/v1/projects`, `GET /api/v1/projects/{id}`, `GET /api/v1/skills?grouped=true`
+
+**Verification**: Visit /projects — grid with filter; /projects/1 — detail page; /skills — grouped with proficiency
+
+---
+
+#### Task 6: About, Experience, Certifications Pages
+**Priority**: P1 | **Est**: 2–3h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Backend: `GET /api/v1/experience?sort=start_date&order=desc`
+2. Backend: `GET /api/v1/certifications`
+3. Frontend: `/about` — full bio, photo, social links, career journey
+4. Frontend: `/experience` — vertical timeline using timeline-item.tsx
+5. Frontend: `/certifications` — cards with name, issuer, date, credential link
+6. Create timeline-item.tsx component
+
+**API Calls**: `GET /api/v1/profile`, `GET /api/v1/experience`, `GET /api/v1/certifications`
+
+**Verification**: Visit /about, /experience, /certifications — all render correctly, timeline responsive
+
+---
+
+#### Task 7: Contact Page & Lead Capture
+**Priority**: P1 | **Est**: 2h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Backend: `POST /api/v1/leads` — validate, store lead with status="new"
+2. Frontend: contact-form.tsx — Name, Email, Message, Category fields with validation
+3. Frontend: `/contact` page — form + profile contact info
+
+**API Calls**: `POST /api/v1/leads`, `GET /api/v1/profile`
+
+**Verification**: Submit contact form → success message, lead stored in DB with status="new"
+
+---
+
+### Phase 3: AI Chatbot & RAG (Tasks 8–10)
+
+#### Task 8: Gemini Service & RAG Pipeline
+**Priority**: P2 | **Est**: 2–3h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Create gemini_service.py — init Gemini 1.5 Flash, generate_response(), generate_embedding()
+2. Create rag_service.py — cosine similarity search on knowledge_base table (top_k=5, threshold=0.7)
+3. Create prompt_builder.py — build prompt with context chunks, history, user message
+4. Create cache_service.py — in-memory cache with TTL (1 hour)
+5. Create `POST /api/v1/chat` endpoint — rate limit → cache → embed → RAG → prompt → Gemini → response
+6. Lead intent detection (keyword matching: hire, work with, contact, project)
+
+**API Request**: `POST /api/v1/chat { message, session_id, history? }`
+**API Response**: `{ response, lead_intent, lead_prompt, sources, fallback }`
+
+**Verification**:
+```bash
+curl -X POST http://localhost:8000/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Tell me about Mehdi", "session_id": "test-123"}'
+# Expect: JSON with response, sources, lead_intent=false
+```
+
+---
+
+#### Task 9: Chatbot UI (Floating Widget)
+**Priority**: P2 | **Est**: 2–3h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Create use-chat.ts hook — state management, sendMessage(), lead intent handling
+2. Create chat-message.tsx — user (right, blue) and assistant (left, gray) bubbles, sources
+3. Create chat-widget.tsx — floating button, slide-up window, auto-scroll, visible on all pages
+4. Create chat-lead-form.tsx — appears on lead_intent=true, submits to /api/v1/leads with source="chatbot"
+
+**API Calls**: `POST /api/v1/chat`, `POST /api/v1/leads` (source="chatbot")
+
+**Verification**: Click chat button → open widget → send message → see response. Type "hire" → lead form appears
+
+---
+
+#### Task 10: Knowledge Base Management & Embeddings
+**Priority**: P2 | **Est**: 2–3h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Create knowledge_base_service.py — create/update/delete with auto embedding generation
+2. Backend: `POST /api/v1/admin/knowledge-base` — create + auto-generate embedding
+3. Backend: `PUT /api/v1/admin/knowledge-base/{id}` — update + regenerate embedding
+4. Backend: `DELETE /api/v1/admin/knowledge-base/{id}` — delete entry
+
+**API Calls**: POST/PUT/DELETE `/api/v1/admin/knowledge-base`
+
+**Verification**: Create KB entry via API → embedding auto-generated. Verify in Supabase: `SELECT content, embedding IS NOT NULL FROM knowledge_base;`
+
+---
+
+### Phase 4: Admin Dashboard (Tasks 11–12)
+
+#### Task 11: Admin Dashboard Core (Auth + Layout + CRUD UI)
+**Priority**: P1 | **Est**: 3–4h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Create admin/layout.tsx — auth guard (Supabase session check), sidebar nav, responsive
+2. Create admin/login/page.tsx — email/password form, Supabase Auth signIn, redirect on success
+3. Create admin/page.tsx — dashboard home with stats, recent leads, quick links
+4. Create admin CRUD pages for Projects, Skills, Experience, Certifications, Testimonials:
+   - List view with table/grid, edit/delete buttons
+   - Create/Edit form modal or page
+   - Delete confirmation dialog
+5. Create admin/knowledge-base/page.tsx — list entries, create form, embedding status
+
+**API Calls** (admin, with JWT): GET/POST/PUT/DELETE `/api/v1/admin/{resource}`
+
+**Verification**: Login → dashboard → CRUD operations on all resources → unauthenticated redirect to login
+
+---
+
+#### Task 12: Leads Management (Admin)
+**Priority**: P1 | **Est**: 1–2h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Backend: `GET /api/v1/admin/leads` — list with filters (category, status, sort, pagination)
+2. Backend: `GET /api/v1/admin/leads/{id}` — single lead detail
+3. Backend: `PATCH /api/v1/admin/leads/{id}` — update status (new → reviewed → replied → archived)
+4. Frontend: admin/leads/page.tsx — table view, filters, status update dropdown, visual indicators
+
+**API Calls**: GET/PATCH `/api/v1/admin/leads`
+
+**Verification**: Submit contact form → appears in admin leads → filter by status → update status → verify UI updates
+
+---
+
+### Phase 5: Polish & Testing (Tasks 13–15)
+
+#### Task 13: Responsive Design & Accessibility (WCAG 2.1 AA)
+**Priority**: P1 | **Est**: 2–3h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Audit all pages at 320px, 768px, 1280px — no horizontal overflow, readable fonts, tap targets ≥ 44x44px
+2. WCAG 2.1 AA: color contrast ≥ 4.5:1, alt attributes, form labels, keyboard nav, aria attributes
+3. Run Lighthouse: target 90+ Accessibility, 90+ Performance
+4. Chat widget accessibility: aria-label, aria-live regions
+
+**Verification**: `npx lighthouse http://localhost:3000 --only-categories=accessibility,performance` → 90+
+
+---
+
+#### Task 14: Error Handling & Edge Cases
+**Priority**: P1 | **Est**: 1–2h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Frontend: API errors → user-friendly messages, network errors, 429 rate limit, 503 unavailable
+2. Backend: Global exception handler → structured JSON per api-contracts.md, correct HTTP codes
+3. Edge cases: DB unavailable → graceful message, Gemini rate limited → fallback, empty DB → "No content", invalid route → custom 404
+4. Structured logging: JSON format with timestamp, method, path, status, response time
+
+**Verification**: Stop backend → visit frontend → graceful error. Trigger 429 → rate limit message. Invalid route → custom 404
+
+---
+
+#### Task 15: Testing Suite (Unit, Integration, E2E)
+**Priority**: P1 | **Est**: 3–4h | **Status**: ⬜ Not Started
+
+**Actions**:
+1. Backend unit tests (pytest): profile, project, chat (mock Gemini), lead, rate limiter
+2. Backend integration tests: full request/response cycle for all API endpoints
+3. Backend contract tests: validate endpoints match api-contracts.md schemas
+4. Frontend unit tests (Jest + RTL): chat-widget, contact-form
+5. E2E tests (Playwright): portfolio.spec.ts (home, projects, skills, contact, chat), admin.spec.ts (login, CRUD, leads)
+
+**Verification**:
+```bash
+cd backend && pytest tests/ -v          # All pass
+cd frontend && npm run test             # Unit tests pass
+cd frontend && npx playwright test     # E2E tests pass
+```
+
+---
 
 ## Summary
 
-A dynamic portfolio website with an AI-powered chatbot and lead-generation system. The frontend is a Next.js App Router application deployed on Vercel, serving public portfolio pages and a protected admin dashboard. The backend is a FastAPI service deployed on Render, handling all content CRUD operations, RAG-powered chatbot queries via Gemini 1.5 Flash, and contact form lead storage. Supabase PostgreSQL serves as the single source of truth for all content, including pgvector embeddings for the RAG knowledge base. Supabase Auth protects the `/admin` route.
+| Phase | Tasks | Priority | Est. Total |
+|-------|-------|----------|------------|
+| Phase 1: Database & Foundation | 1–3 | P0 | 3–6h |
+| Phase 2: Core Public Pages | 4–7 | P1 | 8–12h |
+| Phase 3: AI Chatbot & RAG | 8–10 | P2 | 6–9h |
+| Phase 4: Admin Dashboard | 11–12 | P1 | 4–6h |
+| Phase 5: Polish & Testing | 13–15 | P1 | 6–9h |
+| **Total** | **15 tasks** | | **27–42h** |
 
-## Technical Context
+---
 
-**Language/Version**: TypeScript 5+ (frontend), Python 3.11+ (backend)
-**Primary Dependencies**: Next.js 14+ (App Router), FastAPI, Supabase (PostgreSQL + pgvector + Auth), Google Gemini 1.5 Flash API, Tailwind CSS + shadcn/ui
-**Storage**: Supabase PostgreSQL (relational tables for all content + pgvector for RAG embeddings)
-**Testing**: pytest + httpx (backend), Jest + React Testing Library + Playwright (frontend), custom RAG accuracy tests
-**Target Platform**: Web — Linux serverless (Vercel) + container (Render free tier)
-**Project Type**: Web application with separate frontend and backend (Constitution Principle VII)
-**Performance Goals**: FCP < 1.5s, TTI < 3.5s, API p95 < 200ms (non-chat), chat response < 30s
-**Constraints**: Gemini 1.5 Flash free tier 15 RPM; $0 hosting budget; all content from Supabase; Supabase Auth for admin only
-**Scale/Scope**: ~100-500 daily visitors; 5-10 projects; 20-30 skills; RAG knowledge base ~50-200 chunks; single admin user
+## Dependencies & Assumptions
 
-## AI Flow Architecture: Chat Payload → Structured JSON Response
+- **Supabase project** created with URL, anon key, service role key, JWT secret
+- **Google Gemini API key** obtained from Google AI Studio (free tier, 15 RPM)
+- **Node.js 18+**, **Python 3.11+** installed
+- **Single admin user** (Mehdi) — no multi-admin support needed for MVP
+- **No email notifications** for leads in MVP
+- **English-only** content for MVP
+- **HNSW index** on `knowledge_base` requires pgvector extension enabled (Task 1)
 
-This section details the complete AI request lifecycle:
+---
 
-```
-┌──────────────┐        ┌──────────────┐        ┌──────────────┐        ┌──────────────┐
-│  Next.js FE  │  HTTP  │   FastAPI    │  SQL   │   Supabase   │  HTTP  │   Gemini     │
-│  (Vercel)    │───────▶│   (Render)   │───────▶│   PostgreSQL │        │   1.5 Flash  │
-│              │◀───────│              │◀───────│   + pgvector │◀───────│   API        │
-└──────────────┘        └──────────────┘        └──────────────┘        └──────────────┘
-     │                         │
-     │                         │  SQL (if lead captured)
-     │                         ▼
-     │                  ┌──────────────┐
-     │                  │   Supabase   │
-     │                  │   leads tbl  │
-     │                  └──────────────┘
-```
-
-### Step-by-Step Flow
-
-**Step 1 — Next.js Chat Widget → FastAPI**
-
-The floating chat widget on the Next.js frontend captures the user's message. It sends a POST request to `POST /api/v1/chat` on the FastAPI backend with this payload:
-
-```json
-{
-  "message": "Tell me about Mehdi's transition from finance to tech",
-  "session_id": "anon-session-uuid",
-  "history": [
-    {"role": "user", "content": "What is Mehdi's background?"},
-    {"role": "assistant", "content": "Mehdi has 10+ years in finance..."}
-  ]
-}
-```
-
-The frontend sets `Accept: application/json` for non-streaming or `Accept: text/event-stream` for streaming responses.
-
-**Step 2 — FastAPI Receives Request, Applies Rate Limiting**
-
-FastAPI's rate limiting middleware checks the request against a token bucket (15 tokens/minute, matching Gemini free tier). If the limit is exceeded, it returns `429 Too Many Requests` immediately. If allowed, the request proceeds to the RAG pipeline.
-
-**Step 3 — Cache Check**
-
-FastAPI checks an in-memory TTL cache (5-minute expiry) for an identical query. If a cached response exists, it returns it immediately — skipping pgvector and Gemini entirely.
-
-**Step 4 — Supabase pgvector Retrieval**
-
-FastAPI generates an embedding for the user's message using the Gemini embeddings API (`models/text-embedding-004`). It then queries Supabase pgvector:
-
-```sql
-SELECT content, metadata, source, source_id, 1 - (embedding <=> $1) AS similarity
-FROM knowledge_base
-ORDER BY embedding <=> $1
-LIMIT 5;
-```
-
-This returns the top 5 most similar knowledge chunks with cosine similarity scores. Only chunks with similarity > 0.7 are used (configurable threshold).
-
-**Step 5 — Prompt Construction**
-
-FastAPI constructs a system prompt that includes:
-1. **Role definition**: "You are Mehdi's AI portfolio assistant. Answer questions about Mehdi's background, skills, projects, and career transition."
-2. **Retrieved context**: The top matching knowledge base chunks, each labeled with source type and similarity score.
-3. **Grounding constraint**: "Only use the provided context to answer. If the answer cannot be found in the context, say you don't have that information and suggest the visitor use the contact form."
-4. **Intent detection instruction**: "If the user expresses interest in hiring Mehdi or working together, set 'lead_intent': true in your response and provide a polite prompt to collect their contact info."
-5. **Structured output format**: JSON schema for the response.
-
-**Step 6 — Gemini 1.5 Flash API Call**
-
-FastAPI sends the constructed prompt to Gemini 1.5 Flash with `response_mime_type: "application/json"` and a JSON schema:
-
-```json
-{
-  "response": "string — the chatbot's answer (max 500 chars)",
-  "lead_intent": "boolean — true if user wants to hire/contact Mehdi",
-  "lead_prompt": "string — optional message to collect contact info (only if lead_intent is true)",
-  "sources": [
-    {"source": "string — source type (project, bio, career_narrative, etc.)", "similarity": "float"}
-  ],
-  "fallback": "boolean — true if no relevant context was found"
-}
-```
-
-**Step 7 — Response Handling**
-
-FastAPI receives the structured JSON from Gemini and returns it to the Next.js frontend:
-
-- If `lead_intent: true`: The chat widget displays the answer AND shows a contact form inline within the chat.
-- If `fallback: true`: The chat widget displays the answer with a suggestion to use the main contact form.
-- If normal response: The chat widget streams or displays the answer text.
-
-**Step 8 — Lead Capture (Conditional)**
-
-If `lead_intent: true` and the user provides their name, email, and message through the inline chat contact form, the frontend sends a POST to `POST /api/v1/leads`. FastAPI stores the lead in Supabase with category `"chatbot_capture"` and status `"new"`.
-
-### Error Paths
-
-| Failure Point | Detection | Response |
-|---|---|---|
-| Gemini API timeout (>20s) | httpx.TimeoutException | Return `{"response": "Mehdi's assistant is temporarily unavailable. Please use the contact form.", "fallback": true, "lead_intent": false}` |
-| Gemini rate limit (429) | HTTP 429 from Gemini | Return `{"response": "I'm getting a lot of questions right now! Please try again in a minute, or use the contact form.", "fallback": true, "lead_intent": false}` |
-| pgvector returns no matches (>0.7 threshold) | Empty or low-similarity results | Prompt Gemini with reduced context; set `fallback: true` |
-| Supabase connection failure | Connection exception | Return `503 Service Unavailable` with graceful message |
-
-## Constitution Check
-
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
-
-| Principle | Status | Notes |
-|-----------|--------|-------|
-| I. Spec-First | ✅ PASS | Spec defined at `specs/001-portfolio-platform/spec.md` with 20 FRs, 8 SCs, 5 user stories |
-| II. Test-Driven | ✅ PASS | pytest (backend), Jest+RTL (frontend), Playwright (E2E), RAG accuracy tests defined |
-| III. CLI-Compatible | ✅ PASS | Supabase CLI for migrations, uvicorn/npm for dev servers, all I/O via stdin/stdout |
-| IV. Observability | ✅ PASS | Structured logging in FastAPI, health endpoint, error context in all services |
-| V. Versioning & Breaking Changes | ✅ PASS | API URL versioning (`/api/v1/`), semantic versioning for contracts |
-| VI. Simplicity | ✅ PASS | Custom RAG (no LangChain), simplest viable stack, Gemini 1.5 Flash (free, fast) |
-| VII. Strict Separation of Concerns | ✅ PASS | Next.js = UI/routing only; FastAPI = all business logic + AI; HTTP API boundary |
-| VIII. Zero Hardcoded Data | ✅ PASS | All content from Supabase; 8 content tables; no static JSON or hardcoded strings |
-| IX. Zero-Cost Deployment | ✅ PASS | Vercel Hobby + Render Free + Supabase Free + Gemini 1.5 Flash Free tier |
-| X. RAG-Powered AI Chatbot | ✅ PASS | 8-step RAG pipeline: embed → pgvector retrieve → construct prompt → Gemini → grounded JSON |
-| XI. Modern, Accessible, Responsive UI | ✅ PASS | Tailwind + shadcn/ui; WCAG 2.1 AA; responsive at 320px/768px/1280px |
-
-**Gate Result**: ✅ ALL PASS — proceeding to Phase 0/1 artifacts
-
-## Project Structure
-
-### Documentation (this feature)
-
-```text
-specs/001-portfolio-platform/
-├── plan.md              # This file (/sp.plan command output)
-├── spec.md              # Feature specification (already created)
-├── research.md          # Phase 0 output (/sp.plan command)
-├── data-model.md        # Phase 1 output (/sp.plan command)
-├── quickstart.md        # Phase 1 output (/sp.plan command)
-├── contracts/           # Phase 1 output (/sp.plan command)
-│   └── api-contracts.md
-└── tasks.md             # Phase 2 output (/sp.tasks command — NOT created by /sp.plan)
-```
-
-### Source Code (repository root)
-
-```text
-frontend/                              # Next.js App Router (TypeScript)
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx                 # Root layout: fonts, metadata, global providers
-│   │   ├── page.tsx                   # Home page (hero, featured projects, CTA)
-│   │   ├── about/
-│   │   │   └── page.tsx               # About Me (bio, finance-to-tech narrative)
-│   │   ├── projects/
-│   │   │   ├── page.tsx               # Projects listing (gallery grid)
-│   │   │   └── [id]/
-│   │   │       └── page.tsx           # Project detail page
-│   │   ├── skills/
-│   │   │   └── page.tsx               # Skills (grouped by category, proficiency bars)
-│   │   ├── experience/
-│   │   │   └── page.tsx               # Experience timeline
-│   │   ├── certifications/
-│   │   │   └── page.tsx               # Certifications list
-│   │   ├── contact/
-│   │   │   └── page.tsx               # Contact form page
-│   │   └── admin/
-│   │       ├── login/
-│   │       │   └── page.tsx           # Supabase Auth login page
-│   │       ├── layout.tsx             # Admin auth guard (redirects if not authenticated)
-│   │       ├── page.tsx               # Admin dashboard overview
-│   │       ├── projects/
-│   │       │   └── page.tsx           # Admin: CRUD for projects
-│   │       ├── skills/
-│   │       │   └── page.tsx           # Admin: CRUD for skills
-│   │       ├── experience/
-│   │       │   └── page.tsx           # Admin: CRUD for experience
-│   │       ├── certifications/
-│   │       │   └── page.tsx           # Admin: CRUD for certifications
-│   │       ├── testimonials/
-│   │       │   └── page.tsx           # Admin: CRUD for testimonials
-│   │       ├── knowledge-base/
-│   │       │   └── page.tsx           # Admin: manage RAG knowledge base entries
-│   │       └── leads/
-│   │           └── page.tsx           # Admin: view and manage leads (contact submissions)
-│   ├── components/
-│   │   ├── ui/                        # shadcn/ui primitives (Button, Card, Input, etc.)
-│   │   ├── layout/
-│   │   │   ├── header.tsx             # Site header with navigation
-│   │   │   └── footer.tsx             # Site footer with social links
-│   │   ├── sections/
-│   │   │   ├── hero.tsx               # Home page hero section
-│   │   │   ├── project-card.tsx       # Project card component
-│   │   │   ├── skill-badge.tsx        # Skill badge with proficiency
-│   │   │   ├── timeline-item.tsx      # Experience timeline item
-│   │   │   └── contact-form.tsx       # Contact form with validation
-│   │   └── chatbot/
-│   │       ├── chat-widget.tsx        # Floating chat button + panel
-│   │       ├── chat-message.tsx       # Individual message bubble
-│   │       └── chat-lead-form.tsx     # Inline lead capture form (shown when lead_intent=true)
-│   ├── lib/
-│   │   ├── api.ts                     # FastAPI HTTP client (fetch wrapper with error handling)
-│   │   └── supabase-client.ts         # Supabase browser client (for Auth in admin)
-│   ├── hooks/
-│   │   └── use-chat.ts                # Chat session state management hook
-│   ├── types/
-│   │   └── api.ts                     # TypeScript types for API responses
-│   └── styles/
-│       └── globals.css                # Tailwind imports, CSS variables
-├── public/
-│   ├── favicon.ico
-│   ├── robots.txt
-│   └── sitemap.xml
-├── next.config.ts
-├── tailwind.config.ts
-├── tsconfig.json
-└── package.json
-
-backend/                               # FastAPI (Python 3.11+)
-├── src/
-│   ├── main.py                        # FastAPI app entry, CORS middleware, router mount
-│   ├── config.py                      # Environment variable configuration (pydantic-settings)
-│   ├── models/
-│   │   ├── base.py                    # SQLAlchemy base model
-│   │   ├── profile.py                 # Profile entity
-│   │   ├── project.py                 # Project entity
-│   │   ├── skill.py                   # Skill entity
-│   │   ├── experience.py              # Experience entity
-│   │   ├── certification.py           # Certification entity
-│   │   ├── testimonial.py             # Testimonial entity
-│   │   ├── knowledge_base.py          # Knowledge base entry (with pgvector column)
-│   │   └── lead.py                    # Lead (contact submission) entity
-│   ├── schemas/
-│   │   ├── profile.py                 # Pydantic request/response schemas
-│   │   ├── project.py
-│   │   ├── skill.py
-│   │   ├── experience.py
-│   │   ├── certification.py
-│   │   ├── testimonial.py
-│   │   ├── knowledge_base.py
-│   │   ├── lead.py
-│   │   ├── chat.py                    # Chat request/response schemas (structured JSON)
-│   │   └── common.py                  # Pagination, error response schemas
-│   ├── services/
-│   │   ├── profile_service.py         # CRUD for profiles
-│   │   ├── project_service.py         # CRUD for projects
-│   │   ├── skill_service.py           # CRUD for skills
-│   │   ├── experience_service.py      # CRUD for experience
-│   │   ├── certification_service.py   # CRUD for certifications
-│   │   ├── testimonial_service.py     # CRUD for testimonials
-│   │   ├── lead_service.py            # CRUD + status management for leads
-│   │   ├── knowledge_base_service.py  # CRUD + auto-embedding on create/update
-│   │   ├── rag_service.py             # RAG retrieval (pgvector similarity search)
-│   │   ├── gemini_service.py          # Gemini API client (chat completions + embeddings)
-│   │   └── cache_service.py           # In-memory TTL cache for chat queries
-│   ├── api/
-│   │   ├── v1/
-│   │   │   ├── profile.py             # GET /api/v1/profile
-│   │   │   ├── projects.py            # GET /api/v1/projects, GET /api/v1/projects/{id}
-│   │   │   ├── skills.py              # GET /api/v1/skills
-│   │   │   ├── experience.py          # GET /api/v1/experience
-│   │   │   ├── certifications.py      # GET /api/v1/certifications
-│   │   │   ├── testimonials.py        # GET /api/v1/testimonials
-│   │   │   ├── chat.py                # POST /api/v1/chat (RAG chatbot)
-│   │   │   ├── leads.py               # POST /api/v1/leads (contact form + chatbot lead capture)
-│   │   │   ├── health.py              # GET /api/v1/health
-│   │   │   └── router.py              # Version router aggregation
-│   │   └── admin/
-│   │       ├── projects.py            # POST/PUT/DELETE /api/v1/admin/projects
-│   │       ├── skills.py              # POST/PUT/DELETE /api/v1/admin/skills
-│   │       ├── experience.py          # POST/PUT/DELETE /api/v1/admin/experience
-│   │       ├── certifications.py      # POST/PUT/DELETE /api/v1/admin/certifications
-│   │       ├── testimonials.py        # POST/PUT/DELETE /api/v1/admin/testimonials
-│   │       ├── knowledge_base.py      # POST/PUT/DELETE /api/v1/admin/knowledge-base
-│   │       ├── leads.py               # GET/PATCH /api/v1/admin/leads
-│   │       └── router.py              # Admin router (protected by Supabase Auth verification)
-│   ├── middleware/
-│   │   ├── auth.py                    # Supabase JWT verification middleware (admin routes)
-│   │   ├── rate_limiter.py            # Token bucket rate limiter (chat endpoint)
-│   │   └── logging.py                 # Structured logging middleware
-│   └── db/
-│       ├── session.py                 # Supabase async engine + session factory
-│       └── vector_extension.py        # pgvector column type registration
-├── tests/
-│   ├── unit/
-│   │   ├── test_rag_service.py
-│   │   ├── test_gemini_service.py
-│   │   ├── test_cache_service.py
-│   │   └── test_lead_service.py
-│   ├── integration/
-│   │   ├── test_public_api.py         # All GET endpoint tests
-│   │   ├── test_chat_endpoint.py      # Chat RAG pipeline integration
-│   │   ├── test_contact_form.py       # Lead creation tests
-│   │   └── test_admin_api.py          # Admin CRUD tests (with mock auth)
-│   └── contract/
-│       └── test_api_contracts.py      # Validate responses match OpenAPI schema
-├── migrations/
-│   ├── 001_enable_pgvector.sql
-│   ├── 002_create_profiles.sql
-│   ├── 003_create_projects.sql
-│   ├── 004_create_skills.sql
-│   ├── 005_create_experience.sql
-│   ├── 006_create_certifications.sql
-│   ├── 007_create_testimonials.sql
-│   ├── 008_create_knowledge_base.sql
-│   ├── 009_create_leads.sql
-│   └── seed_data.sql                  # Initial content population
-├── requirements.txt
-├── pyproject.toml
-└── .env.example
-```
-
-**Structure Decision**: Separate `frontend/` and `backend/` directories enforce Constitution Principle VII (Strict Separation of Concerns). The Next.js frontend handles ONLY UI, routing, and client-side state. The FastAPI backend handles ALL business logic, data access, AI operations, and authentication verification. Communication is exclusively via HTTP REST API with contracts defined in `contracts/api-contracts.md`. Admin authentication uses Supabase Auth — the frontend obtains a JWT via Supabase browser client, includes it in API requests, and the backend verifies it via middleware.
-
-## Supabase Auth Integration for /admin
-
-### Authentication Flow
+## Implementation Order (Recommended)
 
 ```
-┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
-│  Next.js FE  │     │  Supabase Auth   │     │   FastAPI    │
-│  (Browser)   │     │  (Cloud Service) │     │   (Render)   │
-└──────┬───────┘     └────────┬─────────┘     └──────┬───────┘
-       │                      │                       │
-       │  1. Email/Password   │                       │
-       ├─────────────────────▶│                       │
-       │                      │                       │
-       │  2. JWT Token        │                       │
-       │◀─────────────────────┤                       │
-       │                      │                       │
-       │  3. Access /admin    │                       │
-       │  (layout.tsx guard   │                       │
-       │   checks session)    │                       │
-       │                      │                       │
-       │  4. GET /api/v1/     │                       │
-       │     admin/projects   │                       │
-       │  Header:             │                       │
-       │  Authorization:      │                       │
-       │  Bearer <JWT>        │                       │
-       ├─────────────────────────────────────────────▶│
-       │                      │                       │
-       │                      │        5. Verify JWT  │
-       │                      │        (supabase-py)  │
-       │                      │◀──────────────────────┤
-       │                      │                       │
-       │  6. 200 OK + Data    │                       │
-       │◀─────────────────────────────────────────────┤
+Task 1 (DB) → Task 2 (Backend) → Task 3 (Frontend)
+    ↓              ↓                    ↓
+Task 4-7       Task 8-10           (Public pages)
+(Public UI)    (AI Chatbot)
+                     ↓
+              Task 11-12 (Admin)
+                     ↓
+              Task 13-15 (Polish & Test)
 ```
 
-### Implementation Details
+---
 
-1. **Supabase project setup**: Email/password auth enabled. Single admin user created in Supabase dashboard.
-2. **Frontend** (`/admin/login/page.tsx`): Uses `@supabase/supabase-js` browser client to sign in with email/password. On success, stores session in cookies.
-3. **Frontend** (`/admin/layout.tsx`): Supabase Auth guard — checks `supabase.auth.getSession()` on every admin page render. If no session, redirects to `/admin/login`.
-4. **Frontend API calls**: All admin API requests include the JWT in the `Authorization: Bearer <token>` header.
-5. **Backend** (`middleware/auth.py`): FastAPI middleware extracts the JWT, verifies it using `supabase-py`'s `auth.admin.get_user(token)`, and rejects unauthenticated requests with `401 Unauthorized`.
-6. **Row Level Security (RLS)**: Supabase RLS policies ensure only authenticated admin users can write to content tables. Public GET queries use the Supabase service role key (backend only — never exposed to frontend).
-
-## Data Model Summary
-
-See `data-model.md` for full schema. Key tables:
-
-| Table | Purpose | Key Fields |
-|-------|---------|-----------|
-| `profiles` | Mehdi's bio and contact info | full_name, headline, bio, email, social URLs |
-| `projects` | Portfolio projects | title, description, tech_stack, URLs, featured, order_index |
-| `skills` | Technical competencies | name, category, proficiency (1-5), order_index |
-| `experience` | Work history | company, role, start_date, end_date, responsibilities |
-| `certifications` | Credentials | name, issuer, date, credential_url |
-| `testimonials` | Recommendations | author_name, author_role, quote, date |
-| `knowledge_base` | RAG embeddings | content, source, metadata, embedding (vector 768) |
-| `leads` | Contact submissions | name, email, message, category, status, created_at |
-
-## Complexity Tracking
-
-> No constitution violations justified. All principles pass gates cleanly.
-
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| None | N/A | N/A |
+**Status**: ✅ PLAN COMPLETE — Ready for `/sp.implement` or task-by-task execution
