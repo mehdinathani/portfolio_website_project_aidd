@@ -4,6 +4,8 @@ export const metadata = {
   title: 'Contact',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function ContactPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">

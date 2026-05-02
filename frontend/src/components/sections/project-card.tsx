@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Project } from '@/types/api'
 
@@ -9,11 +10,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       {project.image_url && (
-        <div className="aspect-video overflow-hidden">
-          <img
+        <div className="relative aspect-video overflow-hidden">
+          <Image
             src={project.image_url}
             alt={project.title}
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            fill
+            className="object-cover transition-transform group-hover:scale-105"
           />
         </div>
       )}

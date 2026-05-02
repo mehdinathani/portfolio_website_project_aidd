@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase-client'
+import Link from 'next/link'
+export const dynamic = 'force-dynamic'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+import { useEffect, useState } from 'react'
+import { apiAdmin } from '@/lib/api-admin'
 
 interface KnowledgeBaseEntry {
   id: string
@@ -27,22 +28,11 @@ export default function AdminKnowledgeBasePage() {
     metadata: '{}',
   })
 
-  async function getAuthHeaders(): Promise<Record<string, string>> {
-    const { data: sessionData } = await supabase.auth.getSession()
-    return {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionData.session?.access_token}`,
-    }
-  }
-
   async function fetchEntries() {
     setLoading(true)
     try {
-      const headers = await getAuthHeaders()
-      const res = await fetch(`${API_BASE}/api/v1/admin/knowledge-base`, { headers })
-      if (res.ok) {
-        setEntries(await res.json())
-      }
+      const data = await apiAdmin.getKnowledgeBase()
+      setEntries(data as KnowledgeBaseEntry[])
     } catch (err) {
       console.error('Failed to fetch knowledge base entries:', err)
     } finally {
@@ -50,9 +40,7 @@ export default function AdminKnowledgeBasePage() {
     }
   }
 
-  useEffect(() => {
-    fetchEntries()
-  }, [])
+  useEffect(() => { fetchEntries() }, [])
 
   function resetForm() {
     setForm({ content: '', source: 'manual', metadata: '{}' })
@@ -86,29 +74,24 @@ export default function AdminKnowledgeBasePage() {
       return
     }
 
-    const headers = await getAuthHeaders()
     const payload = {
       content: form.content,
       source: form.source,
       metadata: parsedMetadata,
     }
 
-    const url = editing
-      ? `${API_BASE}/api/v1/admin/knowledge-base/${editing.id}`
-      : `${API_BASE}/api/v1/admin/knowledge-base`
-    const method = editing ? 'PUT' : 'POST'
-
-    const res = await fetch(url, { method, headers, body: JSON.stringify(payload) })
-    if (res.ok) {
-      resetForm()
-      fetchEntries()
+    if (editing) {
+      await apiAdmin.updateKBEntry(editing.id, payload)
+    } else {
+      await apiAdmin.createKBEntry(payload)
     }
+    resetForm()
+    fetchEntries()
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this knowledge base entry?')) return
-    const headers = await getAuthHeaders()
-    await fetch(`${API_BASE}/api/v1/admin/knowledge-base/${id}`, { method: 'DELETE', headers })
+    await apiAdmin.deleteKBEntry(id)
     fetchEntries()
   }
 
@@ -116,9 +99,12 @@ export default function AdminKnowledgeBasePage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Knowledge Base</h1>
-        <button onClick={openAdd} className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+        <Link
+          href="/admin/knowledge-base/new"
+          className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 inline-block"
+        >
           Add Entry
-        </button>
+        </Link>
       </div>
 
       {showForm && (

@@ -7,6 +7,7 @@ export interface Profile {
   location?: string;
   linkedin_url?: string;
   github_url?: string;
+  twitter_url?: string;
   resume_url?: string;
   profile_image_url?: string;
   updated_at: string;
@@ -37,6 +38,11 @@ export interface Skill {
   order_index: number;
 }
 
+export interface SkillsGrouped {
+  category: string;
+  skills: Skill[];
+}
+
 export interface Experience {
   id: string;
   company: string;
@@ -65,4 +71,47 @@ export interface Testimonial {
   date: string;
   linkedin_url?: string;
   order_index: number;
+}
+
+export interface Lead {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  category: string;
+  status: string;
+  source: string;
+  created_at: string;
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatRequest {
+  message: string;
+  session_id?: string;
+  history?: ChatMessage[];
+}
+
+export interface SourceRef {
+  source: string;
+  similarity: number;
+}
+
+export interface ChatResponse {
+  response: string;
+  lead_intent?: boolean;
+  lead_prompt?: string;
+  sources?: SourceRef[];
+  fallback?: boolean;
+}
+
+export interface KnowledgeBaseEntry {
+  id: string;
+  content: string;
+  source: string;
+  metadata: Record<string, unknown>;
+  created_at: string;
 }

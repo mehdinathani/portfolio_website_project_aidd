@@ -1,18 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase-client'
+import Link from 'next/link'
+import AdminTable from '@/components/admin/AdminTable'
+import { apiAdmin } from '@/lib/api-admin'
+import type { Certification } from '@/types/api'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-
-interface Certification {
-  id: string
-  name: string
-  issuer: string
-  date_earned: string
-  credential_url: string
-  order_index: number
-}
+export const dynamic = 'force-dynamic'
 
 export default function AdminCertificationsPage() {
   const [certifications, setCertifications] = useState<Certification[]>([])
@@ -21,29 +15,14 @@ export default function AdminCertificationsPage() {
   const [editing, setEditing] = useState<Certification | null>(null)
 
   const [form, setForm] = useState({
-    name: '',
-    issuer: '',
-    date_earned: '',
-    credential_url: '',
-    order_index: 0,
+    name: '', issuer: '', date_earned: '', credential_url: '', order_index: 0,
   })
-
-  async function getAuthHeaders(): Promise<Record<string, string>> {
-    const { data: sessionData } = await supabase.auth.getSession()
-    return {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionData.session?.access_token}`,
-    }
-  }
 
   async function fetchCertifications() {
     setLoading(true)
     try {
-      const headers = await getAuthHeaders()
-      const res = await fetch(`${API_BASE}/api/v1/certifications`, { headers })
-      if (res.ok) {
-        setCertifications(await res.json())
-      }
+      const data = await apiAdmin.getCertifications()
+      setCertifications(data as Certification[])
     } catch (err) {
       console.error('Failed to fetch certifications:', err)
     } finally {
@@ -51,9 +30,7 @@ export default function AdminCertificationsPage() {
     }
   }
 
-  useEffect(() => {
-    fetchCertifications()
-  }, [])
+  useEffect(() => { fetchCertifications() }, [])
 
   function resetForm() {
     setForm({ name: '', issuer: '', date_earned: '', credential_url: '', order_index: 0 })
@@ -61,18 +38,11 @@ export default function AdminCertificationsPage() {
     setShowForm(false)
   }
 
-  function openAdd() {
-    resetForm()
-    setShowForm(true)
-  }
-
   function openEdit(cert: Certification) {
     setForm({
-      name: cert.name,
-      issuer: cert.issuer,
+      name: cert.name, issuer: cert.issuer,
       date_earned: cert.date_earned ? cert.date_earned.slice(0, 10) : '',
-      credential_url: cert.credential_url,
-      order_index: cert.order_index,
+      credential_url: cert.credential_url || '', order_index: cert.order_index,
     })
     setEditing(cert)
     setShowForm(true)
@@ -80,110 +50,84 @@ export default function AdminCertificationsPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const headers = await getAuthHeaders()
     const payload = { ...form, date_earned: form.date_earned, order_index: Number(form.order_index) }
-
-    const url = editing
-      ? `${API_BASE}/api/v1/certifications/${editing.id}`
-      : `${API_BASE}/api/v1/certifications`
-    const method = editing ? 'PUT' : 'POST'
-
-    const res = await fetch(url, { method, headers, body: JSON.stringify(payload) })
-    if (res.ok) {
-      resetForm()
-      fetchCertifications()
+    if (editing) {
+      await apiAdmin.updateCertification(editing.id, payload)
+    } else {
+      await apiAdmin.createCertification(payload)
     }
+    resetForm()
+    fetchCertifications()
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this certification?')) return
-    const headers = await getAuthHeaders()
-    await fetch(`${API_BASE}/api/v1/certifications/${id}`, { method: 'DELETE', headers })
+    await apiAdmin.deleteCertification(id)
     fetchCertifications()
   }
+
+  const columns = [
+    { key: 'name', title: 'Name', render: (c: Certification) => <Link href={`/admin/certifications/${c.id}`} className="text-blue-600 hover:underline">{c.name}</Link> },
+    { key: 'issuer', title: 'Issuer', render: (c: Certification) => c.issuer },
+    { key: 'date', title: 'Date Earned', render: (c: Certification) => c.date_earned ? c.date_earned.slice(0, 10) : '' },
+    { key: 'order', title: 'Order', render: (c: Certification) => c.order_index },
+  ]
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Certifications</h1>
-        <button onClick={openAdd} className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+        <Link
+          href="/admin/certifications/new"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-700 inline-block"
+        >
           Add Certification
-        </button>
+        </Link>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 space-y-4 rounded border border-gray-200 bg-gray-50 p-4">
-          <h2 className="text-lg font-semibold">{editing ? 'Edit Certification' : 'New Certification'}</h2>
-
+        <form onSubmit={handleSubmit} className="mb-6 space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-6">
+          <h2 className="text-lg font-semibold text-gray-900">{editing ? 'Edit Certification' : 'New Certification'}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Issuer</label>
-              <input type="text" value={form.issuer} onChange={(e) => setForm({ ...form, issuer: e.target.value })} required className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <input type="text" value={form.issuer} onChange={(e) => setForm({ ...form, issuer: e.target.value })} required className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date</label>
-              <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700">Date Earned</label>
+              <input type="date" value={form.date_earned} onChange={(e) => setForm({ ...form, date_earned: e.target.value })} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Credential URL</label>
-              <input type="url" value={form.credential_url} onChange={(e) => setForm({ ...form, credential_url: e.target.value })} className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <input type="url" value={form.credential_url} onChange={(e) => setForm({ ...form, credential_url: e.target.value })} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Order Index</label>
-              <input type="number" value={form.order_index} onChange={(e) => setForm({ ...form, order_index: Number(e.target.value) })} className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm" />
+              <label className="block text-sm font-medium text-gray-700">Order</label>
+              <input type="number" value={form.order_index} onChange={(e) => setForm({ ...form, order_index: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
           </div>
-
-          <div className="flex gap-2">
-            <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
-              {editing ? 'Update' : 'Create'}
+          <div className="flex gap-3 pt-2">
+            <button type="submit" className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700">
+              {editing ? 'Save Changes' : 'Create Certification'}
             </button>
-            <button type="button" onClick={resetForm} className="rounded border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-              Cancel
-            </button>
+            <button type="button" onClick={resetForm} className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">Cancel</button>
           </div>
         </form>
       )}
 
-      {loading ? (
-        <p className="text-gray-500">Loading...</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-gray-200 bg-gray-50 text-left">
-                <th className="px-3 py-2">Name</th>
-                <th className="px-3 py-2">Issuer</th>
-                <th className="px-3 py-2">Date Earned</th>
-                <th className="px-3 py-2">Order</th>
-                <th className="px-3 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {certifications.map((c) => (
-                <tr key={c.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-3 py-2 font-medium">{c.name}</td>
-                  <td className="px-3 py-2">{c.issuer}</td>
-                  <td className="px-3 py-2">{c.date_earned ? c.date_earned.slice(0, 10) : ''}</td>
-                  <td className="px-3 py-2">{c.order_index}</td>
-                  <td className="px-3 py-2 space-x-2">
-                    <button onClick={() => openEdit(c)} className="text-sm text-blue-600 hover:underline">Edit</button>
-                    <button onClick={() => handleDelete(c.id)} className="text-sm text-red-600 hover:underline">Delete</button>
-                  </td>
-                </tr>
-              ))}
-              {certifications.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-3 py-4 text-center text-gray-500">No certifications yet.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+      {!showForm && (
+        <AdminTable
+          columns={columns}
+          data={certifications}
+          getKey={(c) => c.id}
+          onEdit={(c) => openEdit(c)}
+          onDelete={(c) => handleDelete(c.id)}
+          emptyMessage="No certifications yet. Click 'Add Certification' to create one."
+        />
       )}
     </div>
   )

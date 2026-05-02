@@ -14,17 +14,25 @@ def _get_client():
 
 
 def generate_embedding(text: str) -> List[float]:
-    client = _get_client()
-    result = client.models.embed_content(
-        model="models/text-embedding-004",
-        contents=text,
-        task_type="retrieval_document",
-    )
-    return result.embeddings[0].values
+    try:
+        client = _get_client()
+        result = client.models.embed_content(
+            model="models/text-embedding-004",
+            contents=text,
+            task_type="retrieval_document",
+        )
+        return result.embeddings[0].values
+    except Exception as e:
+        raise RuntimeError(f"Embedding generation failed: {e}")
 
 
 def generate_chat_response(prompt: str, history: Optional[List[Dict]] = None) -> Dict:
-    client = _get_client()
-    model = client.models.get("gemini-1.5-flash")
-    response = model.generate_content(prompt)
-    return {"response": response.text}
+    try:
+        client = _get_client()
+        response = client.models.generate_content(
+            model="models/gemini-1.5-flash",
+            contents=prompt,
+        )
+        return {"response": response.text}
+    except Exception as e:
+        raise RuntimeError(f"Chat response generation failed: {e}")

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase-client'
+import { useAuth } from '@/hooks/useAuth'
 
 const navItems = [
   { label: 'Dashboard', href: '/admin' },
@@ -23,18 +23,19 @@ export default function AdminLayout({
 }) {
   const router = useRouter()
   const pathname = usePathname()
-  const [loading, setLoading] = useState(true)
+  const { isAuthenticated, isLoading, signOut } = useAuth()
+  const [checked, setChecked] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session && pathname !== '/admin/login') {
+    if (!isLoading) {
+      if (!isAuthenticated && pathname !== '/admin/login') {
         router.push('/admin/login')
       }
-      setLoading(false)
-    })
-  }, [pathname, router])
+      setChecked(true)
+    }
+  }, [isLoading, isAuthenticated, pathname, router])
 
-  if (loading) {
+  if (!checked || (isLoading && pathname !== '/admin/login')) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-gray-500">Loading...</p>
@@ -44,11 +45,6 @@ export default function AdminLayout({
 
   if (pathname === '/admin/login') {
     return <>{children}</>
-  }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/admin/login')
   }
 
   return (
@@ -71,7 +67,7 @@ export default function AdminLayout({
             </Link>
           ))}
           <button
-            onClick={handleLogout}
+            onClick={signOut}
             className="mt-4 w-full rounded px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
           >
             Logout

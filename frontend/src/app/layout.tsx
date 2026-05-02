@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import Header from '@/components/layout/header'
 import Footer from '@/components/layout/footer'
 import dynamic from 'next/dynamic'
-const ChatWidget = dynamic(() => import('@/components/chatbot/chat-widget').then(mod => mod.default), { ssr: false })
+import '@/app/globals.css'
+
+const ChatWidget = dynamic(() => import('@/components/chatbot/chat-widget').then(mod => mod.ChatWidget), { ssr: false })
 
 export const metadata: Metadata = {
   title: {
@@ -26,9 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen flex-col font-sans text-gray-900 antialiased">
+      <body className="flex min-h-screen flex-col font-sans antialiased">
         <Header />
-        <div className="flex-1">{children}</div>
+        <main className="flex-1">{children}</main>
         <Footer />
         <ChatWidget />
       </body>

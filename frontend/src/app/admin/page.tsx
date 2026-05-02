@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase-client'
+export const dynamic = 'force-dynamic'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+import { useEffect, useState } from 'react'
+import { apiAdmin } from '@/lib/api-admin'
 
 interface Project {
   id: string
@@ -29,27 +29,17 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     async function fetchStats() {
-      const { data: sessionData } = await supabase.auth.getSession()
-      const token = sessionData.session?.access_token
-      if (!token) return
-
-      const headers: Record<string, string> = {
-        Authorization: `Bearer ${token}`,
-      }
-
       try {
-        const [projectsRes, leadsRes] = await Promise.all([
-          fetch(`${API_BASE}/api/v1/projects`, { headers }),
-          fetch(`${API_BASE}/api/v1/admin/leads`, { headers }),
+        const [projects, leads] = await Promise.all([
+          apiAdmin.getProjects(),
+          apiAdmin.getLeads(),
         ])
 
-        const projects: Project[] = projectsRes.ok ? await projectsRes.json() : []
-        const leads: Lead[] = leadsRes.ok ? await leadsRes.json() : []
-
+        const leadList = leads as Lead[]
         setStats({
-          totalProjects: projects.length,
-          totalLeads: leads.length,
-          newLeads: leads.filter((l) => l.status === 'new').length,
+          totalProjects: (projects as Project[]).length,
+          totalLeads: leadList.length,
+          newLeads: leadList.filter((l) => l.status === 'new').length,
         })
       } catch (err) {
         console.error('Failed to fetch stats:', err)

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from src.schemas.profile import ProfileResponse
 from src.services.profile_service import get_profile
 
@@ -9,5 +9,5 @@ router = APIRouter()
 async def read_profile():
     profile = get_profile()
     if not profile:
-        return {"detail": "Profile not found"}, 404
+        raise HTTPException(status_code=404, detail="Profile not found")
     return profile

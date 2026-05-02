@@ -6,10 +6,17 @@ import type { Profile, Project } from '@/types/api'
 export const revalidate = 60
 
 export default async function HomePage() {
-  const [profile, projects] = await Promise.all([
-    api.getProfile() as Promise<Profile>,
-    api.getProjects(true) as Promise<Project[]>,
-  ])
+  let profile: Profile | null = null
+  let projects: Project[] = []
+
+  try {
+    [profile, projects] = await Promise.all([
+      api.getProfile() as Promise<Profile>,
+      api.getProjects(true) as Promise<Project[]>,
+    ])
+  } catch {
+    // During build or when backend is unavailable, use empty/fallback data
+  }
 
   return (
     <main>

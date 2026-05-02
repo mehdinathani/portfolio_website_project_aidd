@@ -1,5 +1,8 @@
 'use client'
 
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
 interface Source {
   source: string
   similarity: number
@@ -24,7 +27,13 @@ export function ChatMessage({ role, content, sources, fallback }: ChatMessagePro
             : 'bg-gray-100 text-gray-900 rounded-bl-sm'
         }`}
       >
-        <p className="whitespace-pre-wrap break-words">{content}</p>
+        {isUser ? (
+          <p className="whitespace-pre-wrap break-words">{content}</p>
+        ) : (
+          <div className="prose prose-sm max-w-none break-words">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+          </div>
+        )}
 
         {fallback && (
           <p className={`mt-2 text-xs italic ${isUser ? 'text-blue-200' : 'text-gray-500'}`}>

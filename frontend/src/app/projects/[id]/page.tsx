@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { api } from '@/lib/api'
 import type { Project } from '@/types/api'
@@ -22,9 +23,11 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       </Link>
 
       {project.image_url && (
-        <img
+        <Image
           src={project.image_url}
           alt={project.title}
+          width={1200}
+          height={600}
           className="mb-8 w-full rounded-xl object-cover shadow-md"
         />
       )}

@@ -495,9 +495,9 @@ Visitor Message
 | `services/cache_service.py` | ✅ Done | In-memory TTL cache |
 | `middleware/rate_limiter.py` | ✅ Done | 15 RPM limit on chat |
 | CRUD endpoints (profile, projects, etc.) | ✅ Done | All routers and services exist |
-| API contracts documentation | 🔲 Pending | Generate `contracts/openapi.yaml` |
-| Integration tests | 🔲 Pending | Test Supabase RPC, Gemini API, full RAG flow |
-| Error handling edge cases | 🔲 Pending | Test fallbacks, rate limits, invalid inputs |
+| API contracts documentation | ✅ Done | `contracts/openapi.yaml` generated |
+| Integration tests | ✅ Done | 23 tests in `tests/test_integration.py` |
+| Error handling edge cases | ✅ Done | Enhanced Gemini/RAG error handling, rate limiter improvements |
 
 ---
 
@@ -529,10 +529,669 @@ Visitor Message
 
 ---
 
-## Next Steps (Post-Milestone 2)
+---
 
-1. **Milestone 3**: Next.js Frontend — public pages (Home, About, Projects, Skills, Experience, Certifications)
-2. **Milestone 4**: Admin Dashboard — Supabase Auth protected CRUD interface
-3. **Milestone 5**: Chat Widget — floating widget integration on all public pages
-4. Generate OpenAPI contract file from FastAPI routes
-5. Write integration tests for RAG pipeline and all CRUD endpoints
+## Milestone 3: Next.js Frontend & Admin Panel
+
+**Objective**: Build the complete frontend using Next.js 14+ (App Router), TypeScript, and TailwindCSS. Includes public portfolio pages, a floating AI chat widget, and a Supabase Auth-protected admin dashboard for content management.
+
+**Status**: 🔵 PLANNING
+
+---
+
+### 1. Technical Context
+
+| Item | Value |
+|------|-------|
+| **Language/Version** | TypeScript 5+, Next.js 14+ (App Router) |
+| **Primary Dependencies** | next, react@18+, tailwindcss, @supabase/ssr, @supabase/supabase-js, react-markdown, remarkable (or marked) |
+| **Styling** | TailwindCSS 3.x (utility-first) |
+| **Auth** | Supabase Auth (cookie-based sessions via @supabase/ssr) |
+| **Data Fetching** | Next.js Server Components (`fetch` with `cache: 'no-store'` or `revalidate`), Client Components for interactive UI |
+| **State Management (Client)** | React useState/useReducer for chat widget, React Context for auth state |
+| **Testing** | Jest + React Testing Library, Playwright (E2E for chat + admin flows) |
+| **Target Platform** | Vercel (frontend), Render (backend API) |
+| **Performance Goals** | FCP < 1.5s, Lighthouse 90+ (perf + a11y), chat response rendered < 2s |
+| **Constraints** | Must use existing FastAPI backend at `/api/v1/*`; all content dynamic from Supabase via backend; WCAG 2.1 AA compliance |
+| **Scale/Scope** | ~100-500 daily visitors; single admin user |
+
+---
+
+### 2. Directory Structure
+
+```
+frontend/
+├── public/
+│   └── images/                  # Static assets (profile photo, project thumbnails)
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx          # Root layout: HTML shell, fonts, global styles, ChatWidget
+│   │   ├── page.tsx             # Home page (Server Component)
+│   │   ├── about/
+│   │   │   └── page.tsx        # About page (Server Component)
+│   │   ├── projects/
+│   │   │   ├── page.tsx        # Projects listing (Server Component)
+│   │   │   └── [id]/page.tsx  # Single project detail (Server Component)
+│   │   ├── experience/
+│   │   │   └── page.tsx        # Experience timeline (Server Component)
+│   │   ├── certifications/
+│   │   │   └── page.tsx        # Certifications list (Server Component)
+│   │   ├── contact/
+│   │   │   └── page.tsx        # Contact form page (Client Component)
+│   │   ├── admin/
+│   │   │   ├── layout.tsx      # Admin layout with auth guard + sidebar
+│   │   │   ├── page.tsx        # Admin dashboard overview (Server Component)
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx    # Login form (Client Component)
+│   │   │   ├── projects/
+│   │   │   │   ├── page.tsx    # Project list + create button (Server Component)
+│   │   │   │   └── [id]/
+│   │   │   │       ├── page.tsx      # Edit project form (Client Component)
+│   │   │   │       └── new/
+│   │   │   │           └── page.tsx  # Create project form (Client Component)
+│   │   │   ├── skills/
+│   │   │   │   ├── page.tsx    # Skills management (Server Component)
+│   │   │   │   └── [id]/
+│   │   │   │       └── page.tsx     # Edit skill form (Client Component)
+│   │   │   ├── experience/
+│   │   │   │   └── page.tsx    # Experience management (Server Component)
+│   │   │   ├── certifications/
+│   │   │   │   └── page.tsx    # Certifications management (Server Component)
+│   │   │   ├── testimonials/
+│   │   │   │   └── page.tsx    # Testimonials management (Server Component)
+│   │   │   ├── knowledge-base/
+│   │   │   │   └── page.tsx    # KB entry management (Server Component)
+│   │   │   └── leads/
+│   │   │       └── page.tsx    # Leads inbox (Server Component)
+│   │   ├── api/
+│   │   │   └── chat/
+│   │   │       └── route.ts    # Optional: proxy chat to backend (Server-side)
+│   │   ├── globals.css         # Tailwind directives + global styles
+│   │   └── not-found.tsx       # Custom 404 page
+│   ├── components/
+│   │   ├── ui/                 # Reusable UI primitives
+│   │   │   ├── Button.tsx
+│   │   │   ├── Input.tsx
+│   │   │   ├── TextArea.tsx
+│   │   │   ├── Select.tsx
+│   │   │   ├── Card.tsx
+│   │   │   ├── Badge.tsx
+│   │   │   ├── LoadingSpinner.tsx
+│   │   │   └── TypingIndicator.tsx
+│   │   ├── layout/             # Layout components
+│   │   │   ├── Header.tsx     # Site navigation (Client Component for mobile menu)
+│   │   │   ├── Footer.tsx     # Site footer (Server Component)
+│   │   │   └── AdminSidebar.tsx  # Admin nav (Client Component)
+│   │   ├── portfolio/          # Portfolio-specific components
+│   │   │   ├── HeroSection.tsx      # Home page hero (Server Component)
+│   │   │   ├── ProjectCard.tsx      # Project display card (Server Component)
+│   │   │   ├── ProjectGallery.tsx  # Projects grid (Server Component)
+│   │   │   ├── SkillsGroup.tsx      # Skills by category (Server Component)
+│   │   │   ├── ExperienceTimeline.tsx # Experience entries (Server Component)
+│   │   │   ├── CertificationsList.tsx  # Certifications (Server Component)
+│   │   │   └── ContactForm.tsx     # Lead capture form (Client Component)
+│   │   ├── chat/               # Chat widget components
+│   │   │   ├── ChatWidget.tsx       # Floating trigger + panel (Client Component)
+│   │   │   ├── ChatMessage.tsx      # Single message bubble (Client Component)
+│   │   │   ├── ChatInput.tsx        # Message input field (Client Component)
+│   │   │   ├── ChatHistory.tsx      # Scrollable message list (Client Component)
+│   │   │   └── TypingIndicator.tsx # "Bot is typing..." animation
+│   │   └── admin/              # Admin-specific components
+│   │       ├── AdminHeader.tsx      # Admin top bar with user menu
+│   │       ├── LeadTable.tsx        # Leads data table (Client Component)
+│   │       └── StatusBadge.tsx     # Lead status indicator
+│   ├── lib/
+│   │   ├── api.ts              # API client functions (fetch wrappers for FastAPI)
+│   │   ├── types.ts            # TypeScript types generated from OpenAPI schema
+│   │   ├── supabase.ts         # Supabase server client (for Server Components)
+│   │   ├── supabase-client.ts  # Supabase browser client (for Client Components)
+│   │   ├── chat.ts             # Chat API interaction logic
+│   │   └── utils.ts            # Formatting helpers, date utils, etc.
+│   ├── middleware.ts           # Next.js middleware for Supabase Auth + route protection
+│   └── hooks/
+│       ├── useAuth.ts          # Auth hook (Client Components)
+│       └── useChat.ts          # Chat state management hook (Client Components)
+├── next.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+├── package.json
+├── .env.local.example          # NEXT_PUBLIC_BACKEND_URL, NEXT_PUBLIC_SUPABASE_URL, etc.
+└── postcss.config.js
+```
+
+---
+
+### 3. Supabase Auth Implementation
+
+#### 3.1 Next.js Middleware (`src/middleware.ts`)
+
+Uses `@supabase/ssr` to create a server client that reads/writes cookies. The middleware runs on every request (except static assets) to:
+
+1. **Refresh the auth token** — keeps the session alive via `supabase.auth.getUser()`
+2. **Protect `/admin/*` routes** — redirect unauthenticated users to `/admin/login`
+3. **Allow public routes** — `/`, `/about`, `/projects/*`, `/experience`, `/certifications`, `/contact`
+
+```typescript
+// src/middleware.ts (conceptual)
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
+
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({ request })
+  
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll() },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+
+  // IMPORTANT: Always call getUser() to validate the session
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Protect admin routes
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
+  const isLoginRoute = request.nextUrl.pathname === '/admin/login'
+
+  if (isAdminRoute && !isLoginRoute && !user) {
+    const redirectUrl = new URL('/admin/login', request.url)
+    redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Redirect logged-in users away from login page
+  if (isLoginRoute && user) {
+    return NextResponse.redirect(new URL('/admin', request.url))
+  }
+
+  return response
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*'],
+}
+```
+
+#### 3.2 Supabase Client Setup
+
+**Server Client** (`src/lib/supabase.ts`) — for Server Components, Route Handlers, and Server Actions:
+- Uses `cookies()` from `next/headers` to read request cookies
+- Creates a Supabase client with `createServerClient` from `@supabase/ssr`
+- Used in Server Components to verify auth for admin pages
+
+**Browser Client** (`src/lib/supabase-client.ts`) — for Client Components:
+- Uses `createBrowserClient` from `@supabase/ssr`
+- Singleton pattern to avoid multiple instances
+- Used in login form, auth state hooks
+
+#### 3.3 Auth Flow
+
+```
+/admin/* request
+     │
+     ▼
+Middleware: supabase.auth.getUser()
+     │
+     ├── No user → redirect to /admin/login?redirect=<original_url>
+     │
+     └── Has user → allow request to proceed
+              │
+              ▼
+         Admin layout: Double-check auth via server-side Supabase client
+              │
+              ├── Authenticated → render admin page
+              └── Not authenticated → redirect to login (defense-in-depth)
+```
+
+---
+
+### 4. Data Fetching Strategy
+
+#### 4.1 Principle: Server Components Fetch Directly
+
+All public pages use **Server Components** that fetch data from the FastAPI backend at build time (ISR) or request time (SSR), depending on content volatility.
+
+```typescript
+// src/app/projects/page.tsx (Server Component)
+async function getProjects(): Promise<ProjectResponse[]> {
+  const res = await fetch(`${process.env.BACKEND_URL}/api/v1/projects/`, {
+    cache: 'no-store', // Always fresh for dynamic content
+  })
+  if (!res.ok) throw new Error('Failed to fetch projects')
+  return res.json()
+}
+
+export default async function ProjectsPage() {
+  const projects = await getProjects()
+  return <ProjectGallery projects={projects} />
+}
+```
+
+#### 4.2 API Client Layer (`src/lib/api.ts`)
+
+Centralized fetch wrappers for each backend resource:
+
+| Function | Method | Endpoint | Used In |
+|----------|--------|----------|---------|
+| `getProfile()` | GET | `/api/v1/profile/` | Home, About pages |
+| `getProjects(featured?)` | GET | `/api/v1/projects/` | Projects page |
+| `getProject(id)` | GET | `/api/v1/projects/{id}` | Project detail |
+| `getSkillsGrouped()` | GET | `/api/v1/skills/grouped` | Skills section |
+| `getExperience()` | GET | `/api/v1/experience/` | Experience page |
+| `getCertifications()` | GET | `/api/v1/certifications/` | Certifications page |
+| `getTestimonials()` | GET | `/api/v1/testimonials/` | Home page |
+| `submitLead(data)` | POST | `/api/v1/leads/` | Contact form |
+| `sendChatMessage(msg, history)` | POST | `/api/v1/chat/` | Chat widget |
+| `getAdminProjects()` | GET | `/api/v1/admin/projects/` | Admin (with auth header) |
+| `createProject(data)` | POST | `/api/v1/admin/projects/` | Admin (with auth header) |
+| `updateProject(id, data)` | PUT | `/api/v1/admin/projects/{id}` | Admin (with auth header) |
+| `deleteProject(id)` | DELETE | `/api/v1/admin/projects/{id}` | Admin (with auth header) |
+| `getLeads(filters)` | GET | `/api/v1/admin/leads/` | Admin leads page |
+| `updateLeadStatus(id, status)` | PATCH | `/api/v1/admin/leads/{id}` | Admin leads page |
+
+#### 4.3 Admin API Calls with Auth
+
+For admin routes, API calls from Server Components include the Supabase JWT as a Bearer token:
+
+```typescript
+// In Server Component for admin pages
+const supabase = createServerClient(...)
+const { data: { session } } = await supabase.auth.getSession()
+
+const res = await fetch(`${BACKEND_URL}/api/v1/admin/projects/`, {
+  headers: {
+    'Authorization': `Bearer ${session?.access_token}`,
+  },
+  cache: 'no-store',
+})
+```
+
+#### 4.4 Revalidation Strategy
+
+| Content Type | Strategy | Reason |
+|-------------|-----------|--------|
+| Profile, Projects, Skills, Experience, Certifications | `cache: 'no-store'` | Content changes via admin dashboard should appear immediately |
+| Testimonials | `cache: 'no-store'` | New testimonials added via admin |
+| Health check | `revalidate: 60` | Infrequent changes, can be slightly stale |
+| Chat responses | N/A (Client-side) | Handled by chat widget in browser |
+
+---
+
+### 5. AI Chat Widget Architecture
+
+#### 5.1 Component Hierarchy
+
+```
+ChatWidget (Client Component — 'use client')
+├── ChatTrigger (floating button, fixed position)
+└── ChatPanel (shown/hidden on trigger click)
+    ├── ChatHistory (scrollable message list)
+    │   ├── ChatMessage (user bubble) — renders markdown
+    │   └── ChatMessage (assistant bubble) — renders markdown + sources
+    ├── TypingIndicator ("Bot is typing..." animation)
+    └── ChatInput (text input + send button)
+        └── LeadCaptureForm (conditionally shown when lead_intent = true)
+```
+
+#### 5.2 State Management (`useChat` hook)
+
+The `useChat` hook manages the entire chat lifecycle:
+
+```typescript
+// src/hooks/useChat.ts (conceptual)
+'use client'
+
+interface Message {
+  role: 'user' | 'assistant'
+  content: string
+  sources?: SourceRef[]
+}
+
+interface UseChatReturn {
+  messages: Message[]
+  isLoading: boolean
+  leadIntent: boolean
+  sendMessage: (message: string) => Promise<void>
+  clearChat: () => void
+}
+
+export function useChat(sessionId: string): UseChatReturn {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [leadIntent, setLeadIntent] = useState(false)
+
+  const sendMessage = async (message: string) => {
+    setIsLoading(true)
+    // Add user message immediately
+    setMessages(prev => [...prev, { role: 'user', content: message }])
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/v1/chat/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          session_id: sessionId,
+          history: messages.map(m => ({ role: m.role, content: m.content })),
+        }),
+      })
+
+      const data: ChatResponse = await response.json()
+
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: data.response,
+        sources: data.sources,
+      }])
+
+      if (data.lead_intent) {
+        setLeadIntent(true)
+      }
+    } catch (error) {
+      // Show fallback message
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "Mehdi's assistant is temporarily unavailable. Please use the contact form.",
+      }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { messages, isLoading, leadIntent, sendMessage, clearChat }
+}
+```
+
+#### 5.3 Markdown Rendering
+
+Assistant messages contain markdown (from Gemini responses). Use `react-markdown` with `remark-gfm` for GitHub-flavored markdown support:
+
+```typescript
+// ChatMessage.tsx (conceptual)
+'use client'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
+export function ChatMessage({ message, role }: { message: Message, role: 'user' | 'assistant' }) {
+  return (
+    <div className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
+      <div className={`rounded-lg px-4 py-2 max-w-[80%] ${
+        role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'
+      }`}>
+        {role === 'assistant' ? (
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {message.content}
+          </ReactMarkdown>
+        ) : (
+          <p>{message.content}</p>
+        )}
+        {message.sources && (
+          <div className="mt-2 text-xs text-gray-500">
+            Sources: {message.sources.map(s => s.source).join(', ')}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
+#### 5.4 Loading States & Typing Indicator
+
+- **TypingIndicator**: Animated dots (CSS animation or Lottie) shown while `isLoading === true`
+- **Disabled input**: Chat input is disabled while `isLoading === true`
+- **Error state**: If the chat API returns an error (429, 503), display a user-friendly fallback message
+- **Lead intent prompt**: When `leadIntent` becomes `true`, render `LeadCaptureForm` inside the chat panel (name, email, message fields) instead of the input
+
+#### 5.5 Chat Widget Positioning & Persistence
+
+- **Position**: Fixed bottom-right corner (`fixed bottom-4 right-4`)
+- **Default state**: Collapsed (trigger button only)
+- **Open state**: Shows a 380x600px panel with header "Ask Mehdi's AI Assistant"
+- **Session persistence**: `sessionId` stored in `localStorage` to maintain conversation across page navigations
+- **Global presence**: ChatWidget rendered in `src/app/layout.tsx` so it appears on ALL pages (including admin, though possibly hidden there)
+
+---
+
+### 6. Admin CRUD Forms
+
+#### 6.1 Architecture Pattern
+
+All admin forms are **Client Components** that:
+1. Receive initial data as props (for edit forms) from the Server Component parent
+2. Manage form state locally via `useState`
+3. Validate inputs client-side before submission
+4. Call the FastAPI backend with the Supabase JWT in the `Authorization` header
+5. On success: show toast notification + redirect or revalidate
+6. On error: display field-level errors
+
+#### 6.2 Form Structure (Example: Project Form)
+
+```typescript
+// src/components/admin/ProjectForm.tsx (Client Component)
+'use client'
+
+export function ProjectForm({ project, onSubmit, onCancel }: ProjectFormProps) {
+  const [formData, setFormData] = useState<ProjectCreate | ProjectUpdate>(
+    project ?? defaultProject
+  )
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    // Client-side validation
+    const validationErrors = validateProject(formData)
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      const token = await getSupabaseToken() // Get current session token
+      const res = await fetch(
+        project
+          ? `${BACKEND_URL}/api/v1/admin/projects/${project.id}`
+          : `${BACKEND_URL}/api/v1/admin/projects/`,
+        {
+          method: project ? 'PUT' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      )
+
+      if (!res.ok) throw new Error('Failed to save')
+      onSubmit() // Callback: redirect or refresh
+    } catch (error) {
+      setErrors({ general: 'Failed to save project. Please try again.' })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Title */}
+      <Input label="Title" value={formData.title} onChange={...} error={errors.title} />
+      {/* Description */}
+      <TextArea label="Description" value={formData.description} onChange={...} />
+      {/* Tech Stack (comma-separated input) */}
+      <Input label="Tech Stack" value={formData.tech_stack.join(', ')} onChange={...} />
+      {/* URLs */}
+      <Input label="Project URL" value={formData.project_url} onChange={...} />
+      <Input label="GitHub URL" value={formData.github_url} onChange={...} />
+      {/* Featured toggle */}
+      <Checkbox label="Featured" checked={formData.featured} onChange={...} />
+      {/* Order index */}
+      <Input type="number" label="Display Order" value={formData.order_index} onChange={...} />
+
+      {errors.general && <p className="text-red-500">{errors.general}</p>}
+
+      <div className="flex gap-2">
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : 'Save Project'}
+        </Button>
+        <Button type="button" variant="secondary" onClick={onCancel}>Cancel</Button>
+      </div>
+    </form>
+  )
+}
+```
+
+#### 6.3 Admin Resource Pages
+
+| Page | Server Component | Client Components |
+|------|-----------------|-------------------|
+| `/admin` | Dashboard overview (counts from API) | — |
+| `/admin/projects` | Fetch projects list, pass to table | `ProjectTable` (delete button, edit link) |
+| `/admin/projects/new` | — | `ProjectForm` (create mode) |
+| `/admin/projects/[id]` | Fetch project data, pass to form | `ProjectForm` (edit mode) |
+| `/admin/skills` | Fetch skills list | `SkillTable`, `SkillForm` (inline create) |
+| `/admin/experience` | Fetch experience list | `ExperienceTable`, `ExperienceForm` |
+| `/admin/certifications` | Fetch certifications list | `CertificationTable`, `CertificationForm` |
+| `/admin/testimonials` | Fetch testimonials list | `TestimonialTable`, `TestimonialForm` |
+| `/admin/knowledge-base` | Fetch KB entries | `KBTable`, `KBForm` (triggers embedding) |
+| `/admin/leads` | Fetch leads with filters | `LeadTable` (status update, filter controls) |
+
+#### 6.4 Lead Management
+
+The leads page allows Mehdi to:
+- View all leads in a sortable, filterable table (filter by category, status)
+- Update lead status: `new` → `reviewed` → `replied` → `archived`
+- View lead details (name, email, message, category, date)
+- Each status update calls `PATCH /api/v1/admin/leads/{id}` with `{ "status": "reviewed" }`
+
+---
+
+### 7. TypeScript Types (from OpenAPI)
+
+Generate types from the OpenAPI schema (`specs/001-portfolio-platform/contracts/openapi.yaml`):
+
+```typescript
+// src/lib/types.ts (generated/conceptual)
+export interface ProfileResponse {
+  id: string
+  full_name: string
+  headline: string | null
+  bio: string | null
+  email: string | null
+  phone: string | null
+  location: string | null
+  linkedin_url: string | null
+  github_url: string | null
+  twitter_url: string | null
+  resume_url: string | null
+  profile_image_url: string | null
+  created_at: string  // ISO datetime
+  updated_at: string | null
+}
+
+export interface ProjectResponse {
+  id: string
+  title: string
+  description: string | null
+  short_description: string | null
+  tech_stack: string[] | null
+  project_url: string | null
+  github_url: string | null
+  image_url: string | null
+  featured: boolean
+  order_index: number
+  start_date: string | null  // ISO date
+  end_date: string | null    // ISO date
+  created_at: string
+  updated_at: string | null
+}
+
+export interface ChatRequest {
+  message: string
+  session_id?: string | null
+  history?: ChatMessage[] | null
+}
+
+export interface ChatResponse {
+  response: string
+  lead_intent?: boolean
+  lead_prompt?: string | null
+  sources?: SourceRef[] | null
+  fallback?: boolean
+}
+
+export interface SourceRef {
+  source: string
+  similarity: number
+}
+
+// ... additional types for Skill, Experience, Certification, Testimonial, Lead, etc.
+```
+
+---
+
+### 8. Environment Configuration
+
+```bash
+# .env.local (frontend)
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+**Note**: The Supabase service role key is NOT needed in the frontend — admin auth uses the logged-in user's JWT, which is forwarded to the FastAPI backend. The backend uses its own service role key for Supabase operations.
+
+---
+
+### 9. Milestone 3 Implementation Status
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Next.js project initialization | ⏳ Pending | `create-next-app` with TypeScript + TailwindCSS |
+| Root layout + navigation | ⏳ Pending | Header, Footer, global styles |
+| Public pages (Server Components) | ⏳ Pending | Home, About, Projects, Experience, Certifications |
+| Chat widget (Client Components) | ⏳ Pending | Floating widget, useChat hook, markdown rendering |
+| Contact form + lead submission | ⏳ Pending | Client Component with validation |
+| Supabase Auth middleware | ⏳ Pending | `@supabase/ssr` middleware + route protection |
+| Admin login page | ⏳ Pending | Login form with Supabase Auth |
+| Admin layout + sidebar | ⏳ Pending | Protected layout with auth guard |
+| Admin CRUD forms | ⏳ Pending | Projects, Skills, Experience, Certifications, Testimonials |
+| Admin leads management | ⏳ Pending | Lead table with status updates |
+| Admin knowledge base | ⏳ Pending | KB entry CRUD (embedding handled by backend) |
+| TypeScript types from OpenAPI | ⏳ Pending | Generated types for all API responses |
+| Responsive design + a11y | ⏳ Pending | TailwindCSS, WCAG 2.1 AA compliance |
+
+---
+
+### 10. Key Design Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Server vs Client Components** | Server by default, Client only for interactivity | Aligns with Next.js 14 best practices; better perf (less JS shipped) |
+| **Chat widget state** | Custom `useChat` hook with `useState` | Sufficient for single-widget; no need for Redux/Zustand |
+| **Auth strategy** | Supabase Auth with `@supabase/ssr` cookies | Official Next.js integration; works across Server + Client Components |
+| **API calls from Server Components** | Direct `fetch` to FastAPI backend | No need for SWR/React Query on server; revalidated per request |
+| **Admin API auth** | Forward Supabase JWT as Bearer token | Backend verifies JWT and uses service role for Supabase operations |
+| **Chat message rendering** | `react-markdown` + `remark-gfm` | Gemini returns markdown; this handles rendering + GitHub-flavored extensions |
+| **Form state** | Local `useState` + manual validation | Admin forms are simple; no need for react-hook-form yet |
+| **No API route proxy** | Frontend calls FastAPI backend directly | Simpler architecture; CORS handled by FastAPI backend |
+
+---
+
+## Next Steps (Post-Milestone 3)
+
+1. **Milestone 4**: Deploy frontend to Vercel, backend to Render, configure production environment
+2. **Milestone 5**: End-to-end testing, Lighthouse audits, accessibility compliance
+3. Set up CI/CD pipeline (GitHub Actions) for automated testing and deployment
+4. Configure custom domain + SSL for production

@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://mehdinathani.com/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin/

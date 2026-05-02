@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from uuid import UUID
 from typing import Optional
@@ -21,7 +21,7 @@ class LeadResponse(BaseModel):
 
 class LeadCreate(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     message: str
     category: Optional[str] = None
     source: Optional[str] = None

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from src.schemas.chat import ChatRequest, ChatResponse, SourceRef
 from src.services import rag_service
 from src.services import gemini_service
@@ -25,7 +25,7 @@ async def chat_endpoint(request: ChatRequest):
     # RAG: retrieve context
     context_chunks = rag_service.retrieve_context(request.message, top_k=5, threshold=0.7)
 
-    # Build prompt
+    # Build prompt (handles empty context gracefully)
     history = [{"role": m.role, "parts": [m.content]} for m in (request.history or [])]
     system_prompt = build_system_prompt(context_chunks, history)
 
@@ -44,10 +44,17 @@ async def chat_endpoint(request: ChatRequest):
         SourceRef(source=c.get("source", ""), similarity=c.get("similarity", 0.0))
         for c in context_chunks
     ]
+    lead_intent = any(
+        kw in result.get("response", "").lower()
+        for kw in ["hire", "contract", "work together", "job", "collaborate", "project"]
+    )
     response = ChatResponse(
         response=result.get("response", ""),
-        lead_intent=result.get("lead_intent", False),
-        lead_prompt=result.get("lead_prompt"),
+        lead_intent=lead_intent,
+        lead_prompt=(
+            "I'd love to discuss this further. Please share your contact details."
+            if lead_intent else None
+        ),
         sources=sources,
         fallback=result.get("fallback", False),
     )

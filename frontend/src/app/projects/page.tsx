@@ -3,6 +3,8 @@ import ProjectCard from '@/components/sections/project-card'
 import { api } from '@/lib/api'
 import type { Project } from '@/types/api'
 
+export const dynamic = 'force-dynamic'
+
 export const revalidate = 60
 
 export default async function ProjectsPage({

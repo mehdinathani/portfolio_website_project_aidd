@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase-client'
+export const dynamic = 'force-dynamic'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+import { useEffect, useState } from 'react'
+import { apiAdmin } from '@/lib/api-admin'
 
 type LeadStatus = 'new' | 'reviewed' | 'replied' | 'archived'
 
@@ -30,22 +30,11 @@ export default function AdminLeadsPage() {
   const [filterCategory, setFilterCategory] = useState('')
   const [filterStatus, setFilterStatus] = useState<LeadStatus | ''>('')
 
-  async function getAuthHeaders(): Promise<Record<string, string>> {
-    const { data: sessionData } = await supabase.auth.getSession()
-    return {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionData.session?.access_token}`,
-    }
-  }
-
   async function fetchLeads() {
     setLoading(true)
     try {
-      const headers = await getAuthHeaders()
-      const res = await fetch(`${API_BASE}/api/v1/admin/leads`, { headers })
-      if (res.ok) {
-        setLeads(await res.json())
-      }
+      const data = await apiAdmin.getLeads()
+      setLeads(data as Lead[])
     } catch (err) {
       console.error('Failed to fetch leads:', err)
     } finally {
@@ -53,26 +42,16 @@ export default function AdminLeadsPage() {
     }
   }
 
-  useEffect(() => {
-    fetchLeads()
-  }, [])
+  useEffect(() => { fetchLeads() }, [])
 
   async function updateStatus(id: string, newStatus: LeadStatus) {
-    const headers = await getAuthHeaders()
-    const res = await fetch(`${API_BASE}/api/v1/admin/leads/${id}`, {
-      method: 'PATCH',
-      headers,
-      body: JSON.stringify({ status: newStatus }),
-    })
-    if (res.ok) {
-      fetchLeads()
-    }
+    await apiAdmin.updateLeadStatus(id, newStatus)
+    fetchLeads()
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this lead?')) return
-    const headers = await getAuthHeaders()
-    await fetch(`${API_BASE}/api/v1/admin/leads/${id}`, { method: 'DELETE', headers })
+    await apiAdmin.deleteLead(id)
     fetchLeads()
   }
 

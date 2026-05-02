@@ -1,5 +1,8 @@
+import Image from 'next/image'
 import { api } from '@/lib/api'
 import type { Profile } from '@/types/api'
+
+export const dynamic = 'force-dynamic'
 
 export const revalidate = 60
 
@@ -11,10 +14,12 @@ export default async function AboutPage() {
       <h1 className="mb-6 text-3xl font-bold text-gray-900">About Me</h1>
 
       {profile.profile_image_url && (
-        <img
+        <Image
           src={profile.profile_image_url}
           alt={profile.full_name}
-          className="mb-8 h-48 w-48 rounded-full object-cover shadow-md"
+          width={192}
+          height={192}
+          className="mb-8 rounded-full object-cover shadow-md"
         />
       )}
 
@@ -61,7 +66,7 @@ export default async function AboutPage() {
             href={profile.resume_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow transition-colors hover:bg-blue-700"
+            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-700"
           >
             Download Resume
           </a>

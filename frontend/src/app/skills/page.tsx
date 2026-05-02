@@ -1,6 +1,8 @@
 import SkillBadge from '@/components/sections/skill-badge'
 import { api } from '@/lib/api'
 
+export const dynamic = 'force-dynamic'
+
 export const revalidate = 60
 
 export default async function SkillsPage() {

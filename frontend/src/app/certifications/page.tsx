@@ -1,6 +1,8 @@
 import { api } from '@/lib/api'
 import type { Certification } from '@/types/api'
 
+export const dynamic = 'force-dynamic'
+
 export const revalidate = 60
 
 export default async function CertificationsPage() {

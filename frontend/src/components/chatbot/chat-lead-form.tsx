@@ -14,7 +14,7 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
