@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Ensure the backend directory is in sys.path so 'src' imports work
+_backend_root = Path(__file__).resolve().parent.parent
+if str(_backend_root) not in sys.path:
+    sys.path.insert(0, str(_backend_root))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.v1.router import router as v1_router
@@ -6,12 +14,24 @@ from src.middleware.logging import LoggingMiddleware
 from src.middleware.rate_limiter import RateLimiterMiddleware
 from src.middleware.auth import AuthMiddleware
 
-app = FastAPI(title="Mehdi Portfolio API", version="1.0.0")
+app = FastAPI(title="Mehdi Portfolio API", version="1.0.0", redirect_slashes=False)
+
+
+@app.on_event("startup")
+async def startup_validate_supabase():
+    from src.db.session import get_supabase
+    try:
+        get_supabase()
+        print("✓ Supabase client initialized successfully")
+    except Exception as e:
+        print(f"✗ WARNING: Could not initialize Supabase client: {e}")
+        print("  API endpoints requiring Supabase will return errors.")
+        print("  Check your SUPABASE_SERVICE_ROLE_KEY in backend/.env")
 
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
