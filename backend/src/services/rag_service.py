@@ -15,5 +15,6 @@ def retrieve_context(query: str, top_k: int = 5, threshold: float = 0.7) -> List
             "similarity_threshold": threshold,
         }).execute()
         return result.data or []
-    except Exception:
+    except Exception as e:
+        print(f"RAG retrieval error: {e}")
         return []

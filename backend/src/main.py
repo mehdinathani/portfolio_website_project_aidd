@@ -14,7 +14,7 @@ from src.middleware.logging import LoggingMiddleware
 from src.middleware.rate_limiter import RateLimiterMiddleware
 from src.middleware.auth import AuthMiddleware
 
-app = FastAPI(title="Mehdi Portfolio API", version="1.0.0", redirect_slashes=False)
+app = FastAPI(title="Mehdi Portfolio API", version="1.0.0")
 
 
 @app.on_event("startup")

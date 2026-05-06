@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from src.schemas.chat import ChatRequest, ChatResponse, SourceRef
 from src.services import rag_service
 from src.services import gemini_service
-from src.services.prompt_builder import build_system_prompt
+from src.services.prompt_builder import build_system_prompt, build_user_message
 from src.services.cache_service import cache_service
 from hashlib import sha256
 from typing import List, Optional
@@ -26,12 +26,12 @@ async def chat_endpoint(request: ChatRequest):
     context_chunks = rag_service.retrieve_context(request.message, top_k=5, threshold=0.7)
 
     # Build prompt (handles empty context gracefully)
-    history = [{"role": m.role, "parts": [m.content]} for m in (request.history or [])]
-    system_prompt = build_system_prompt(context_chunks, history)
+    system_prompt = build_system_prompt(context_chunks)
+    user_message = build_user_message(request.message)
 
     # Call Gemini
     try:
-        result = gemini_service.generate_chat_response(system_prompt, history=history)
+        result = gemini_service.generate_chat_response(system_prompt, user_message)
     except Exception:
         return ChatResponse(
             response="Mehdi's assistant is temporarily unavailable. Please use the contact form.",
