@@ -42,6 +42,9 @@ export function ChatWidget() {
       {/* Chat Panel */}
       {isOpen && (
         <div
+          role="dialog"
+          aria-modal="false"
+          aria-label="Chat with Mehdi's AI assistant"
           className={`fixed z-40 flex flex-col rounded-xl bg-white shadow-2xl border border-gray-200 overflow-hidden
                      w-80 sm:w-96 h-[500px]
                      sm:bottom-24 sm:right-6 sm:rounded-xl sm:h-[500px]
@@ -78,7 +81,11 @@ export function ChatWidget() {
           {showLeadForm && (
             <div className="border-t border-gray-200 p-3 bg-white">
               <ChatLeadForm
-                onSubmitSuccess={() => setShowLeadForm(false)}
+                onSubmitSuccess={() => {
+                  // Keep the form mounted briefly so the "Thank you!" success
+                  // state is visible to the user before the form unmounts.
+                  setTimeout(() => setShowLeadForm(false), 3000)
+                }}
               />
             </div>
           )}

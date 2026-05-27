@@ -24,7 +24,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden gap-6 md:flex">
+        <nav aria-label="Primary" className="hidden gap-6 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -40,7 +40,9 @@ export default function Header() {
         <button
           className="flex flex-col gap-1.5 md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
+          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-nav"
         >
           <span className={`h-0.5 w-6 bg-gray-800 transition-transform ${mobileOpen ? 'translate-y-2 rotate-45' : ''}`} />
           <span className={`h-0.5 w-6 bg-gray-800 transition-opacity ${mobileOpen ? 'opacity-0' : ''}`} />
@@ -50,7 +52,11 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <nav className="flex flex-col gap-4 border-t border-gray-100 px-6 py-4 md:hidden">
+        <nav
+          id="mobile-nav"
+          aria-label="Mobile"
+          className="flex flex-col gap-4 border-t border-gray-100 px-6 py-4 md:hidden"
+        >
           {navLinks.map((link) => (
             <Link
               key={link.href}

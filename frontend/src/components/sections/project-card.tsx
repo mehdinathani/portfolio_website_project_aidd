@@ -10,18 +10,25 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       {project.image_url && (
-        <div className="relative aspect-video overflow-hidden">
+        <Link
+          href={`/projects/${project.id}`}
+          className="relative block aspect-video overflow-hidden"
+        >
           <Image
             src={project.image_url}
             alt={project.title}
             fill
             className="object-cover transition-transform group-hover:scale-105"
           />
-        </div>
+        </Link>
       )}
 
       <div className="flex flex-col gap-3 p-5">
-        <h3 className="text-lg font-semibold text-gray-900">{project.title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">
+          <Link href={`/projects/${project.id}`} className="hover:text-blue-700">
+            {project.title}
+          </Link>
+        </h3>
 
         <p className="text-sm text-gray-600">{project.short_description}</p>
 

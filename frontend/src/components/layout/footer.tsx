@@ -10,11 +10,12 @@ export default function Footer() {
           &copy; {year} Mehdi Abbas Nathani. All rights reserved.
         </p>
 
-        <div className="flex gap-4">
+        <nav aria-label="Social media" className="flex gap-4">
           <Link
             href="https://linkedin.com"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="LinkedIn profile (opens in new tab)"
             className="text-sm text-gray-500 transition-colors hover:text-blue-600"
           >
             LinkedIn
@@ -23,11 +24,12 @@ export default function Footer() {
             href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="GitHub profile (opens in new tab)"
             className="text-sm text-gray-500 transition-colors hover:text-blue-600"
           >
             GitHub
           </Link>
-        </div>
+        </nav>
       </div>
     </footer>
   )

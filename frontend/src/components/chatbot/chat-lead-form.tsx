@@ -22,7 +22,7 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
     setError(null)
 
     try {
-      const response = await fetch(`${apiUrl}/api/v1/leads`, {
+      const response = await fetch(`${apiUrl}/api/v1/leads/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

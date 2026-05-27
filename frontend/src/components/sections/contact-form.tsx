@@ -68,6 +68,8 @@ export default function ContactForm() {
         <input
           id="name"
           type="text"
+          required
+          autoComplete="name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -83,6 +85,8 @@ export default function ContactForm() {
         <input
           id="email"
           type="email"
+          required
+          autoComplete="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -115,6 +119,7 @@ export default function ContactForm() {
         <textarea
           id="message"
           rows={5}
+          required
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
           className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -124,7 +129,7 @@ export default function ContactForm() {
 
       {/* Error */}
       {status === 'error' && errorMsg && (
-        <p className="text-sm text-red-600">{errorMsg}</p>
+        <p role="alert" className="text-sm text-red-600">{errorMsg}</p>
       )}
 
       {/* Submit */}

@@ -1,9 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from src.schemas.project import ProjectCreate, ProjectUpdate, ProjectResponse
 from src.db.session import get_supabase
+from src.services.project_service import get_projects
 from uuid import UUID
 
 router = APIRouter(prefix="/projects", tags=["Admin Projects"])
+
+
+@router.get("/", response_model=list[ProjectResponse])
+async def read_projects(featured: bool = Query(False)):
+    return get_projects(featured_only=featured)
 
 
 @router.post("/", response_model=ProjectResponse)
