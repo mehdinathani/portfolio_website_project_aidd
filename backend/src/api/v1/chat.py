@@ -23,10 +23,11 @@ async def chat_endpoint(request: ChatRequest):
         return cached
 
     # RAG: retrieve context
-    context_chunks = rag_service.retrieve_context(request.message, top_k=5, threshold=0.7)
+    context_chunks = rag_service.retrieve_context(request.message, top_k=5, threshold=0.4)
 
-    # Build prompt (handles empty context gracefully)
-    system_prompt = build_system_prompt(context_chunks)
+    # Build prompt with history (handles empty context gracefully)
+    history = [m.model_dump() for m in request.history] if request.history else []
+    system_prompt = build_system_prompt(context_chunks, history)
     user_message = build_user_message(request.message)
 
     # Call Gemini

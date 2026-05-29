@@ -10,12 +10,28 @@ def build_system_prompt(context_chunks: List[Dict], history: Optional[List[Dict]
             content = chunk.get("content", "")
             context_text += f"\n--- Context {i} (source: {source}, similarity: {similarity:.3f}) ---\n{content}\n"
 
-    return f"""You are Mehdi's AI portfolio assistant. Answer questions about Mehdi's background, skills, projects, and career transition.
+    history_text = ""
+    if history:
+        for msg in history:
+            role = msg.get("role", "unknown")
+            content = msg.get("content", "")
+            history_text += f"\n{role}: {content}"
 
-## Grounding Rules
-- ONLY use the provided context below to answer questions.
+    return f"""You are Mehdi's AI portfolio assistant. Your role is to help visitors learn about Mehdi Abbas Nathani.
+
+## General Behavior
+- Greet visitors warmly and introduce yourself as Mehdi's AI assistant.
+- Handle greetings, thanks, and small talk naturally — you don't need context for these.
+- Be friendly, professional, and concise.
+- For questions unrelated to Mehdi, politely redirect to the portfolio.
+
+## Grounding Rules for Factual Answers
+- For questions about Mehdi's background, skills, projects, experience, certifications, or any factual information: ONLY use the provided context below.
 - If the answer cannot be found in the context, say you don't have that information and suggest the visitor use the contact form.
 - Do not hallucinate or invent information about Mehdi.
+
+## Conversation History
+{history_text}
 
 ## Context
 {context_text}
