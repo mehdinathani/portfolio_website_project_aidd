@@ -1,35 +1,62 @@
 import Link from 'next/link'
+import { ExternalLink, Mail } from 'lucide-react'
 
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-gray-200 bg-gray-50 py-8">
-      <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 sm:flex-row sm:justify-between">
-        <p className="text-sm text-gray-500">
-          &copy; {year} Mehdi Abbas Nathani. All rights reserved.
-        </p>
+    <footer className="border-t border-border/40 bg-background py-12">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 sm:grid-cols-3">
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-foreground">Navigation</h3>
+          <nav aria-label="Footer" className="flex flex-col gap-2">
+            <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Home</Link>
+            <Link href="/projects" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Projects</Link>
+            <Link href="/about" className="text-sm text-muted-foreground transition-colors hover:text-foreground">About</Link>
+            <Link href="/contact" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Contact</Link>
+          </nav>
+        </div>
 
-        <nav aria-label="Social media" className="flex gap-4">
-          <Link
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn profile (opens in new tab)"
-            className="text-sm text-gray-500 transition-colors hover:text-blue-600"
-          >
-            LinkedIn
-          </Link>
-          <Link
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub profile (opens in new tab)"
-            className="text-sm text-gray-500 transition-colors hover:text-blue-600"
-          >
-            GitHub
-          </Link>
-        </nav>
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-foreground">Connect</h3>
+          <div className="flex flex-col gap-2">
+            <Link
+              href="https://linkedin.com/in/mehdinathani"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ExternalLink className="h-4 w-4" />
+              LinkedIn
+            </Link>
+            <Link
+              href="https://github.com/mehdinathani"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ExternalLink className="h-4 w-4" />
+              GitHub
+            </Link>
+            <Link
+              href="mailto:mehdi@example.com"
+              className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Mail className="h-4 w-4" />
+              Email
+            </Link>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-foreground">Colophon</h3>
+          <p className="text-sm text-muted-foreground">
+            Built with Next.js, Tailwind, shadcn/ui &amp; Three.js
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            &copy; {year} Mehdi Abbas Nathani
+          </p>
+        </div>
       </div>
     </footer>
   )

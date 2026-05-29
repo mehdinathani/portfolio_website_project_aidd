@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { api } from '@/lib/api'
+import { Button } from '@/components/ui/button'
 
 const CATEGORIES = ['General Inquiry', 'Project Collaboration', 'Job Opportunity', 'Other']
 
@@ -49,9 +50,9 @@ export default function ContactForm() {
 
   if (status === 'success') {
     return (
-      <div className="rounded-lg border border-green-200 bg-green-50 p-6 text-center">
-        <h3 className="text-lg font-semibold text-green-800">Message Sent!</h3>
-        <p className="mt-2 text-sm text-green-700">
+      <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 text-center">
+        <h3 className="text-lg font-semibold text-foreground">Message Sent!</h3>
+        <p className="mt-2 text-sm text-muted-foreground">
           Thank you for reaching out. I&apos;ll get back to you soon.
         </p>
       </div>
@@ -59,10 +60,9 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-4">
-      {/* Name */}
+    <form onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-5 text-left">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-foreground">
           Name
         </label>
         <input
@@ -72,14 +72,13 @@ export default function ContactForm() {
           autoComplete="name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           placeholder="Your name"
         />
       </div>
 
-      {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">
           Email
         </label>
         <input
@@ -89,21 +88,20 @@ export default function ContactForm() {
           autoComplete="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           placeholder="you@example.com"
         />
       </div>
 
-      {/* Category */}
       <div>
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="category" className="mb-1.5 block text-sm font-medium text-foreground">
           Category
         </label>
         <select
           id="category"
           value={form.category}
           onChange={(e) => setForm({ ...form, category: e.target.value })}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         >
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>{c}</option>
@@ -111,9 +109,8 @@ export default function ContactForm() {
         </select>
       </div>
 
-      {/* Message */}
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-foreground">
           Message
         </label>
         <textarea
@@ -122,24 +119,23 @@ export default function ContactForm() {
           required
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           placeholder="Your message..."
         />
       </div>
 
-      {/* Error */}
       {status === 'error' && errorMsg && (
-        <p role="alert" className="text-sm text-red-600">{errorMsg}</p>
+        <p role="alert" className="text-sm text-destructive">{errorMsg}</p>
       )}
 
-      {/* Submit */}
-      <button
+      <Button
         type="submit"
         disabled={status === 'loading'}
-        className="w-full rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-700 disabled:opacity-50"
+        className="w-full"
+        size="lg"
       >
         {status === 'loading' ? 'Sending...' : 'Send Message'}
-      </button>
+      </Button>
     </form>
   )
 }

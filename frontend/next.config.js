@@ -13,6 +13,16 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      { source: '/experience', destination: '/about', permanent: true },
+      { source: '/skills', destination: '/about', permanent: true },
+    ]
+  },
 }
 
-module.exports = nextConfig
+const withBundleAnalyzer = process.env.ANALYZE === 'true'
+  ? require('@next/bundle-analyzer')()
+  : (config) => config
+
+module.exports = withBundleAnalyzer(nextConfig)

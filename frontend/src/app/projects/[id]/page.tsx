@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { api } from '@/lib/api'
 import type { Project } from '@/types/api'
@@ -14,68 +13,60 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   const project = await api.getProject(id) as Project
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
+    <main className="mx-auto max-w-4xl px-6 py-24">
       <Link
         href="/projects"
-        className="mb-6 inline-block text-sm text-blue-600 transition-colors hover:text-blue-700"
+        className="mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         &larr; Back to Projects
       </Link>
 
-      {project.image_url && (
-        <Image
-          src={project.image_url}
-          alt={project.title}
-          width={1200}
-          height={600}
-          className="mb-8 w-full rounded-xl object-cover shadow-md"
-        />
-      )}
+      <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+        {project.title}
+      </h1>
 
-      <h1 className="mb-2 text-3xl font-bold text-gray-900">{project.title}</h1>
-
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap gap-2">
         {project.tech_stack.map((tech) => (
           <span
             key={tech}
-            className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700"
+            className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
           >
             {tech}
           </span>
         ))}
       </div>
 
-      <div className="prose prose-gray max-w-none">
-        <p className="leading-relaxed text-gray-700">{project.description}</p>
+      <div className="prose prose-invert mt-8 max-w-none text-muted-foreground">
+        <p className="text-lg leading-relaxed">{project.description}</p>
       </div>
 
       {(project.start_date || project.end_date) && (
-        <p className="mt-6 text-sm text-gray-500">
+        <p className="mt-6 text-sm text-muted-foreground">
           {project.start_date}
           {project.end_date ? ` — ${project.end_date}` : ''}
         </p>
       )}
 
-      <div className="mt-8 flex gap-4">
+      <div className="mt-10 flex flex-wrap gap-4">
         {project.project_url && (
-          <Link
+          <a
             href={project.project_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-700"
+            className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow transition-colors hover:bg-primary/90"
           >
-            Live Demo
-          </Link>
+            Live Demo &rarr;
+          </a>
         )}
         {project.github_url && (
-          <Link
+          <a
             href={project.github_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="rounded-lg border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
-            GitHub
-          </Link>
+            GitHub &rarr;
+          </a>
         )}
       </div>
     </main>
