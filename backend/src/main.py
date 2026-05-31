@@ -13,6 +13,7 @@ from src.api.admin.router import router as admin_router
 from src.middleware.logging import LoggingMiddleware
 from src.middleware.rate_limiter import RateLimiterMiddleware
 from src.middleware.auth import AuthMiddleware
+from src.config import settings
 
 app = FastAPI(title="Mehdi Portfolio API", version="1.0.0")
 
