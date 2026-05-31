@@ -3,9 +3,16 @@ import { api } from '@/lib/api'
 import TimelineItem from '@/components/sections/timeline-item'
 import SkillsCluster from '@/components/sections/skills-cluster'
 import type { Profile, Experience, Skill } from '@/types/api'
+import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'About',
+  description:
+    'Learn about Mehdi Abbas Nathani — from finance to Agentic AI engineering. Background, experience, skills, and journey.',
+}
 
 export default async function AboutPage() {
   const [profile, experiences, skills] = await Promise.all([

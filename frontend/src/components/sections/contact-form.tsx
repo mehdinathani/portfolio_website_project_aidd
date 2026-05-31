@@ -1,26 +1,67 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
+import { toast } from 'sonner'
 import { api } from '@/lib/api'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 
 const CATEGORIES = ['General Inquiry', 'Project Collaboration', 'Job Opportunity', 'Other']
+
+function SuccessAnimation() {
+  return (
+    <motion.div
+      className="flex flex-col items-center gap-4 py-12"
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+    >
+      <svg className="h-16 w-16" viewBox="0 0 64 64" fill="none">
+        <motion.circle
+          cx="32" cy="32" r="28"
+          stroke="hsl(var(--primary))"
+          strokeWidth="3"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        />
+        <motion.path
+          d="M20 32l8 8 16-16"
+          stroke="hsl(var(--primary))"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
+        />
+      </svg>
+      <p className="text-lg font-medium text-foreground">Message sent!</p>
+      <p className="text-sm text-muted-foreground">Thank you — I&apos;ll get back to you soon.</p>
+    </motion.div>
+  )
+}
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', message: '', category: CATEGORIES[0] })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   function validate(): boolean {
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      setErrorMsg('All fields are required.')
-      return false
+    const newErrors: Record<string, string> = {}
+    if (!form.name.trim()) newErrors.name = 'Name is required'
+    if (!form.email.trim()) {
+      newErrors.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = 'Please enter a valid email address'
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      setErrorMsg('Please enter a valid email address.')
-      return false
-    }
-    return true
+    if (!form.message.trim()) newErrors.message = 'Message is required'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -42,89 +83,94 @@ export default function ContactForm() {
       })
       setStatus('success')
       setForm({ name: '', email: '', message: '', category: CATEGORIES[0] })
+      setErrors({})
+      toast.success('Message sent! I\'ll get back to you soon.')
     } catch {
       setStatus('error')
       setErrorMsg('Failed to submit. Please try again later.')
+      toast.error('Failed to send message. Please try again.')
     }
   }
 
-  if (status === 'success') {
-    return (
-      <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 text-center">
-        <h3 className="text-lg font-semibold text-foreground">Message Sent!</h3>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Thank you for reaching out. I&apos;ll get back to you soon.
-        </p>
-      </div>
-    )
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-5 text-left">
+    <AnimatePresence mode="wait">
+      {status === 'success' ? (
+        <SuccessAnimation key="success" />
+      ) : (
+    <form key="form" onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-5 text-left">
       <div>
         <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-foreground">
           Name
         </label>
-        <input
+        <Input
           id="name"
           type="text"
           required
           autoComplete="name"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          onChange={(e) => { setForm({ ...form, name: e.target.value }); setErrors((prev) => ({ ...prev, name: '' })) }}
           placeholder="Your name"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? 'name-error' : undefined}
         />
+        {errors.name && <p id="name-error" className="mt-1 text-xs text-destructive">{errors.name}</p>}
       </div>
 
       <div>
         <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">
           Email
         </label>
-        <input
+        <Input
           id="email"
           type="email"
           required
           autoComplete="email"
           value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          onChange={(e) => { setForm({ ...form, email: e.target.value }); setErrors((prev) => ({ ...prev, email: '' })) }}
           placeholder="you@example.com"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? 'email-error' : undefined}
         />
+        {errors.email && <p id="email-error" className="mt-1 text-xs text-destructive">{errors.email}</p>}
       </div>
 
       <div>
         <label htmlFor="category" className="mb-1.5 block text-sm font-medium text-foreground">
           Category
         </label>
-        <select
-          id="category"
+        <Select
           value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          onValueChange={(value) => setForm({ ...form, category: value })}
         >
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+          <SelectTrigger id="category">
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            {CATEGORIES.map((c) => (
+              <SelectItem key={c} value={c}>{c}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
         <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-foreground">
           Message
         </label>
-        <textarea
+        <Textarea
           id="message"
           rows={5}
           required
           value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          onChange={(e) => { setForm({ ...form, message: e.target.value }); setErrors((prev) => ({ ...prev, message: '' })) }}
           placeholder="Your message..."
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? 'message-error' : undefined}
         />
+        {errors.message && <p id="message-error" className="mt-1 text-xs text-destructive">{errors.message}</p>}
       </div>
 
-      {status === 'error' && errorMsg && (
+      {status === 'error' && errorMsg && !Object.keys(errors).length && (
         <p role="alert" className="text-sm text-destructive">{errorMsg}</p>
       )}
 
@@ -137,5 +183,7 @@ export default function ContactForm() {
         {status === 'loading' ? 'Sending...' : 'Send Message'}
       </Button>
     </form>
+      )}
+    </AnimatePresence>
   )
 }

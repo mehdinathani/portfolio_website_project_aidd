@@ -1,6 +1,12 @@
 import Link from 'next/link'
 import { ExternalLink, Mail } from 'lucide-react'
 
+const SOCIAL_LINKS = {
+  linkedin: process.env.NEXT_PUBLIC_LINKEDIN_URL || 'https://linkedin.com/in/mehdinathani',
+  github: process.env.NEXT_PUBLIC_GITHUB_URL || 'https://github.com/mehdinathani',
+  email: process.env.NEXT_PUBLIC_EMAIL || 'mehdi@example.com',
+}
+
 export default function Footer() {
   const year = new Date().getFullYear()
 
@@ -21,7 +27,7 @@ export default function Footer() {
           <h3 className="mb-3 text-sm font-semibold text-foreground">Connect</h3>
           <div className="flex flex-col gap-2">
             <Link
-              href="https://linkedin.com/in/mehdinathani"
+              href={SOCIAL_LINKS.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -30,7 +36,7 @@ export default function Footer() {
               LinkedIn
             </Link>
             <Link
-              href="https://github.com/mehdinathani"
+              href={SOCIAL_LINKS.github}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -39,7 +45,7 @@ export default function Footer() {
               GitHub
             </Link>
             <Link
-              href="mailto:mehdi@example.com"
+              href={`mailto:${SOCIAL_LINKS.email}`}
               className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <Mail className="h-4 w-4" />

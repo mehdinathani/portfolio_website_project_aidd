@@ -1,14 +1,30 @@
+import { Suspense } from 'react'
 import HeroSection from '@/components/hero/hero-section'
 import AboutStrip from '@/components/sections/about-strip'
+import TrustStrip from '@/components/sections/trust-strip'
+import ErrorBoundary from '@/components/shared/error-boundary'
 import FeaturedProject from '@/components/sections/featured-project'
 import ProjectsBento from '@/components/sections/projects-bento'
 import SkillsCluster from '@/components/sections/skills-cluster'
 import TestimonialsMarquee from '@/components/sections/testimonials-marquee'
 import ContactCta from '@/components/sections/contact-cta'
+import RevealSection from '@/components/motion/reveal-section'
+import ParallaxSection from '@/components/motion/parallax-section'
 import { api } from '@/lib/api'
 import type { Profile, Project, Skill, Testimonial } from '@/types/api'
 
 export const revalidate = 60
+
+function SectionFallback({ height = '50vh' }: { height?: string }) {
+  return (
+    <div
+      className="flex items-center justify-center"
+      style={{ minHeight: height }}
+    >
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  )
+}
 
 export default async function HomePage() {
   let profile: Profile | null = null
@@ -24,7 +40,6 @@ export default async function HomePage() {
       api.getTestimonials() as Promise<Testimonial[]>,
     ])
   } catch {
-    // During build or when backend is unavailable, use empty/fallback data
   }
 
   const featuredProject = projects.find((p) => p.featured) || projects[0]
@@ -33,24 +48,64 @@ export default async function HomePage() {
     <>
       <HeroSection />
 
-      {profile && <AboutStrip profile={profile} />}
+      <TrustStrip />
 
-      {featuredProject && <FeaturedProject project={featuredProject} />}
+      {profile && (
+        <ParallaxSection speed={0.15}>
+          <RevealSection>
+            <AboutStrip profile={profile} />
+          </RevealSection>
+        </ParallaxSection>
+      )}
+
+      {featuredProject && (
+        <RevealSection>
+          <Suspense fallback={<SectionFallback height="75vh" />}>
+            <ErrorBoundary>
+              <FeaturedProject project={featuredProject} />
+            </ErrorBoundary>
+          </Suspense>
+        </RevealSection>
+      )}
 
       {projects.length > 0 && (
-        <ProjectsBento
-          projects={projects}
-          featuredId={featuredProject?.id}
-        />
+        <RevealSection>
+          <Suspense fallback={<SectionFallback />}>
+            <ErrorBoundary>
+              <ProjectsBento
+                projects={projects}
+                featuredId={featuredProject?.id}
+              />
+            </ErrorBoundary>
+          </Suspense>
+        </RevealSection>
       )}
 
-      {skills.length > 0 && <SkillsCluster skills={skills} />}
+      {skills.length > 0 && (
+        <RevealSection>
+          <Suspense fallback={<SectionFallback />}>
+            <ErrorBoundary>
+              <SkillsCluster skills={skills} />
+            </ErrorBoundary>
+          </Suspense>
+        </RevealSection>
+      )}
 
       {testimonials.length > 0 && (
-        <TestimonialsMarquee testimonials={testimonials} />
+        <ParallaxSection speed={-0.1}>
+          <RevealSection>
+            <Suspense fallback={<SectionFallback />}>
+              <ErrorBoundary>
+                <TestimonialsMarquee testimonials={testimonials} />
+              </ErrorBoundary>
+            </Suspense>
+          </RevealSection>
+        </ParallaxSection>
       )}
 
-      <ContactCta />
+      <RevealSection>
+        <ContactCta />
+      </RevealSection>
     </>
   )
 }

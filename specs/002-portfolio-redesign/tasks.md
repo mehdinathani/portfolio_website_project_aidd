@@ -19,26 +19,20 @@ description: "Task list for portfolio redesign — 3D Hero + Editorial Body"
 
 **Purpose**: Project initialization, design tokens, dependency installation. MUST complete before any user story.
 
-- [ ] T001 [P] [FND] Wire up Playwright MCP in `.mcp.json` — blocking for visual iteration
-- [ ] T002 [P] [FND] Create Playwright config at `frontend/playwright.config.ts` with baseURL `http://localhost:3000`
-- [ ] T003 [FND] Install shadcn/ui: `npx shadcn@latest init` — generates `components.json`, base styles, cn utility
-- [ ] T004 [FND] Add shadcn components: `npx shadcn@latest add button card input textarea badge select`
-- [ ] T005 [FND] Install core animation deps: `npm install motion@latest @use-gesture/react@latest`
-- [ ] T006 [FND] Install 3D deps: `npm install three@latest @react-three/fiber@latest @react-three/drei@latest`
-- [ ] T007 [P] [FND] Install UX deps: `npm install lenis@latest cmdk@latest lucide-react@latest`
-- [ ] T008 [P] [FND] Install dev tooling: `npm install -D @next/bundle-analyzer@latest`
-- [ ] T009 [FND] Rewrite `frontend/tailwind.config.js` with new design tokens:
-  - Colors: deep dark `#0a0a0b`, electric blue `#3b82f6`, off-white `#f5f5f4`, card surface `#1e1e2e`
-  - Font families: `Inter Display`, `JetBrains Mono`
-  - Animations: `fade-in`, `slide-up`, `marquee`, `pulse-soft`
-- [ ] T010 [FND] Rewrite `frontend/src/app/globals.css`:
-  - shadcn dark-only CSS variables matching design tokens
-  - Custom `@keyframes` for marquee, pulse-soft, fade-in, slide-up
-  - `@tailwind base/components/utilities` layer directives
-- [ ] T011 [FND] Add `next/font` imports in root layout (`Inter`, `JetBrains Mono` with `variable` fonts)
-- [ ] T012 [FND] Configure bundle-analyzer in `frontend/next.config.js`
-- [ ] T013 [FND] Delete old `frontend/src/components/ui/` files (replaced by shadcn equivalents)
-- [ ] T014 [FND] Extend `frontend/src/lib/utils.ts` with animation-related utilities if needed
+- [X] T001 [P] [FND] Wire up Playwright MCP in `.mcp.json` — blocking for visual iteration
+- [X] T002 [P] [FND] Create Playwright config at `frontend/playwright.config.ts` with baseURL `http://localhost:3000`
+- [X] T003 [FND] Install shadcn/ui: `npx shadcn@latest init` — generates `components.json`, base styles, cn utility
+- [X] T004 [FND] Add shadcn components: `npx shadcn@latest add button card input textarea badge select`
+- [X] T005 [FND] Install core animation deps: `npm install motion@latest @use-gesture/react@latest`
+- [X] T006 [FND] Install 3D deps: `npm install three@latest @react-three/fiber@latest @react-three/drei@latest`
+- [X] T007 [P] [FND] Install UX deps: `npm install lenis@latest cmdk@latest lucide-react@latest`
+- [X] T008 [P] [FND] Install dev tooling: `npm install -D @next/bundle-analyzer@latest`
+- [X] T009 [FND] Rewrite `frontend/tailwind.config.js` with new design tokens:
+- [X] T010 [FND] Rewrite `frontend/src/app/globals.css`:
+- [X] T011 [FND] Add `next/font` imports in root layout (`Inter`, `JetBrains Mono` with `variable` fonts)
+- [X] T012 [FND] Configure bundle-analyzer in `frontend/next.config.js`
+- [X] T013 [FND] Delete old `frontend/src/components/ui/` files (replaced by shadcn equivalents)
+- [X] T014 [FND] Extend `frontend/src/lib/utils.ts` with animation-related utilities if needed
 
 **Checkpoint**: Design foundation ready — `npm run dev` shows new dark theme, shadcn components render, bundle-analyzer works, Playwright can navigate to dev server.
 
@@ -152,10 +146,10 @@ description: "Task list for portfolio redesign — 3D Hero + Editorial Body"
 - [X] T501 [US5] Create `frontend/src/components/chat/orb.tsx`:
 - [X] T502 [US5] Create `frontend/src/components/chat/chat-sheet.tsx`:
 - [X] T503 [US5] Update `frontend/src/app/layout.tsx`:
-- [ ] T504 [P] [US5] Performance audit:
-- [ ] T505 [P] [US5] Accessibility pass:
-- [ ] T506 [P] [US5] Mobile testing:
-- [ ] T507 [US5] Run existing test suite:
+- [ ] T504 [P] [US5] Performance audit: (manual — requires lighthouse/live infra)
+- [ ] T505 [P] [US5] Accessibility pass: (manual — requires tab-walk)
+- [ ] T506 [P] [US5] Mobile testing: (manual — requires real device)
+- [ ] T507 [US5] Run existing test suite: (manual — requires backend)
 - [X] T508 [P] [US5] Clean up:
   - Remove `/preview/hero` sandbox page
   - Delete old `frontend/src/components/sections/hero.tsx` and `project-card.tsx`

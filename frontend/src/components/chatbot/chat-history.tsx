@@ -21,11 +21,11 @@ export function ChatHistory({ messages, isLoading }: ChatHistoryProps) {
       role="log"
       aria-live="polite"
       aria-label="Chat messages"
-      className="flex-1 overflow-y-auto px-4 py-3 bg-gray-50"
+      className="flex-1 overflow-y-auto bg-background px-4 py-3"
     >
       {messages.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-sm text-gray-400">
+        <div className="py-8 text-center">
+          <p className="text-sm text-muted-foreground">
             Hi! Ask me anything about my projects, skills, or experience.
           </p>
         </div>
@@ -41,11 +41,11 @@ export function ChatHistory({ messages, isLoading }: ChatHistoryProps) {
       ))}
 
       {isLoading && (
-        <div className="flex justify-start mb-3" aria-label="Assistant is typing">
-          <div className="bg-gray-100 rounded-lg px-4 py-3 flex items-center gap-1">
-            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
-            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
-            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" />
+        <div className="mb-3 flex justify-start" aria-label="Assistant is typing">
+          <div className="flex items-center gap-1 rounded-lg bg-secondary px-4 py-3">
+            <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground [animation-delay:0ms]" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground [animation-delay:150ms]" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground [animation-delay:300ms]" />
           </div>
         </div>
       )}

@@ -17,7 +17,14 @@ export default function ProjectsPage({ projects: allProjects }: { projects: Proj
 
   const filtered = useMemo(() => {
     return allProjects.filter((p) => {
-      if (search && !p.title.toLowerCase().includes(search.toLowerCase()) && !p.short_description.toLowerCase().includes(search.toLowerCase())) return false
+      if (search) {
+        const q = search.toLowerCase()
+        const matchTitle = p.title.toLowerCase().includes(q)
+        const matchShort = p.short_description?.toLowerCase().includes(q)
+        const matchLong = p.description?.toLowerCase().includes(q)
+        const matchTech = p.tech_stack.some(t => t.toLowerCase().includes(q))
+        if (!matchTitle && !matchShort && !matchLong && !matchTech) return false
+      }
       if (activeTech && !p.tech_stack.includes(activeTech)) return false
       return true
     })

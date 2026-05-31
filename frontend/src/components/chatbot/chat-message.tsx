@@ -23,32 +23,32 @@ export function ChatMessage({ role, content, sources, fallback }: ChatMessagePro
       <div
         className={`max-w-[80%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? 'bg-blue-600 text-white rounded-br-sm'
-            : 'bg-gray-100 text-gray-900 rounded-bl-sm'
+            ? 'bg-primary text-primary-foreground rounded-br-sm'
+            : 'bg-secondary text-secondary-foreground rounded-bl-sm'
         }`}
       >
         {isUser ? (
           <p className="whitespace-pre-wrap break-words">{content}</p>
         ) : (
-          <div className="prose prose-sm max-w-none break-words">
+          <div className="prose prose-sm prose-invert max-w-none break-words">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           </div>
         )}
 
         {fallback && (
-          <p className={`mt-2 text-xs italic ${isUser ? 'text-blue-200' : 'text-gray-500'}`}>
+          <p className={`mt-2 text-xs italic ${isUser ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
             (This answer is based on general knowledge. For the most accurate information, please contact me directly.)
           </p>
         )}
 
         {!isUser && sources && sources.length > 0 && (
-          <div className="mt-2 pt-2 border-t border-gray-200">
-            <p className="text-xs font-semibold text-gray-500 mb-1">Sources:</p>
+          <div className="mt-2 border-t border-border pt-2">
+            <p className="mb-1 text-xs font-semibold text-muted-foreground">Sources:</p>
             <ul className="space-y-1">
               {sources.map((src, idx) => (
-                <li key={idx} className="text-xs text-gray-500 flex items-center gap-1">
+                <li key={idx} className="flex items-center gap-1 text-xs text-muted-foreground">
                   <svg
-                    className="w-3 h-3 shrink-0"
+                    className="h-3 w-3 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -67,7 +67,7 @@ export function ChatMessage({ role, content, sources, fallback }: ChatMessagePro
                     />
                   </svg>
                   <span className="truncate">{src.source}</span>
-                  <span className="shrink-0 text-gray-400">
+                  <span className="shrink-0 text-muted-foreground/60">
                     ({Math.round(src.similarity * 100)}% match)
                   </span>
                 </li>

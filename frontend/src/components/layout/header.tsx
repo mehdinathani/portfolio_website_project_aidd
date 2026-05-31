@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'motion/react'
 import { Button } from '@/components/ui/button'
 
 const navLinks = [
@@ -27,9 +28,10 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="group relative text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}
+              <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 bg-primary transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
           <Button variant="default" size="sm" asChild>
@@ -57,29 +59,35 @@ export default function Header() {
         </button>
       </div>
 
-      {mobileOpen && (
-        <nav
-          id="mobile-nav"
-          aria-label="Mobile"
-          className="flex flex-col gap-4 border-t border-border/40 px-6 py-4 md:hidden"
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Button variant="default" size="sm" asChild>
-            <a href="https://cal.com/mehdinathani" target="_blank" rel="noopener noreferrer">
-              Book a call
-            </a>
-          </Button>
-        </nav>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.nav
+            id="mobile-nav"
+            aria-label="Mobile"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="flex flex-col gap-4 overflow-hidden border-t border-border/40 px-6 py-4 md:hidden"
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <Button variant="default" size="sm" asChild>
+              <a href="https://cal.com/mehdinathani" target="_blank" rel="noopener noreferrer">
+                Book a call
+              </a>
+            </Button>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

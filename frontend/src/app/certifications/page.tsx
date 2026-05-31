@@ -1,9 +1,16 @@
 import { api } from '@/lib/api'
 import type { Certification } from '@/types/api'
 import { ExternalLink } from 'lucide-react'
+import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Certifications',
+  description:
+    'Professional certifications earned by Mehdi Abbas Nathani — AI, cloud, and software engineering credentials.',
+}
 
 export default async function CertificationsPage() {
   const certifications = await api.getCertifications() as Certification[]

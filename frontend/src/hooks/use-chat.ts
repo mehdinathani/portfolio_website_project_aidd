@@ -1,5 +1,5 @@
 'use client'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { api } from '@/lib/api'
 
 export interface ChatMessage {
@@ -8,11 +8,39 @@ export interface ChatMessage {
   sources?: Array<{ source: string; similarity: number }>
 }
 
+const STORAGE_KEY = 'portfolio-chat-history'
+const SESSION_KEY = 'portfolio-chat-session'
+
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [sessionId] = useState(() => crypto.randomUUID())
+  const [sessionId, setSessionId] = useState<string>('')
+
+  useEffect(() => {
+    let sid = sessionStorage.getItem(SESSION_KEY)
+    if (!sid) {
+      sid = crypto.randomUUID()
+      sessionStorage.setItem(SESSION_KEY, sid)
+    }
+    setSessionId(sid)
+
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as ChatMessage[]
+        setMessages(parsed)
+      } catch {
+        localStorage.removeItem(STORAGE_KEY)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages))
+    }
+  }, [messages])
 
   const sendMessage = useCallback(async (message: string) => {
     const userMsg: ChatMessage = { role: 'user', content: message }

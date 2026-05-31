@@ -55,9 +55,6 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# Next.js
-.vercel/
-
 # Python
 __pycache__/
 *.py[cod]
@@ -116,3 +113,16 @@ pip-log.txt
 *.db
 *.sqlite
 *.sqlite3
+
+# Playwright test artifacts
+frontend/playwright-report/
+frontend/test-results/
+
+# Lighthouse reports
+lighthouse_report.json
+localhost_*.json*
+*Zone.Identifier
+C:\\Users\\*
+
+# Generated docs
+frontend/docs/
