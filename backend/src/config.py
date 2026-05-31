@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     supabase_anon_key: str = ""
     supabase_jwt_secret: str = ""
     gemini_api_key: str = ""
+    cors_origins: str = ""
 
     class Config:
         env_file = ".env"
