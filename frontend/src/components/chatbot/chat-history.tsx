@@ -4,12 +4,20 @@ import { useEffect, useRef } from 'react'
 import type { ChatMessage as ChatMessageType } from '@/hooks/use-chat'
 import { ChatMessage } from './chat-message'
 
+const SUGGESTED_QUESTIONS = [
+  'What projects have you worked on?',
+  'What are your top skills?',
+  'Tell me about your experience',
+  'What technologies do you use?',
+]
+
 interface ChatHistoryProps {
   messages: ChatMessageType[]
   isLoading: boolean
+  onSuggestedQuestion?: (question: string) => void
 }
 
-export function ChatHistory({ messages, isLoading }: ChatHistoryProps) {
+export function ChatHistory({ messages, isLoading, onSuggestedQuestion }: ChatHistoryProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -24,10 +32,27 @@ export function ChatHistory({ messages, isLoading }: ChatHistoryProps) {
       className="flex-1 overflow-y-auto bg-background px-4 py-3"
     >
       {messages.length === 0 && (
-        <div className="py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Hi! Ask me anything about my projects, skills, or experience.
+        <div className="flex flex-col items-center py-8 text-center">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+          </div>
+          <p className="mb-1 text-sm font-medium text-foreground">Hey! I&apos;m Mehdi&apos;s AI assistant</p>
+          <p className="mb-4 text-xs text-muted-foreground">
+            Ask me anything about projects, skills, or experience
           </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {SUGGESTED_QUESTIONS.map((q) => (
+              <button
+                key={q}
+                onClick={() => onSuggestedQuestion?.(q)}
+                className="rounded-full border border-border bg-secondary/50 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -36,7 +61,6 @@ export function ChatHistory({ messages, isLoading }: ChatHistoryProps) {
           key={idx}
           role={msg.role}
           content={msg.content}
-          sources={msg.sources}
         />
       ))}
 

@@ -72,29 +72,67 @@ vec3 curlNoise(vec3 p) {
   return curl / (2.0 * e);
 }
 
+// Fractal sum of noise for layered depth.
+float fbm(vec3 p) {
+  float v = 0.0;
+  float a = 0.5;
+  for (int i = 0; i < 5; i++) {
+    v += a * snoise(p);
+    p *= 2.0;
+    a *= 0.5;
+  }
+  return v;
+}
+
+// Flowing filament intensity: advect the sample point along the curl field a
+// few steps and accumulate noise so the field reads as streaks of light, not a
+// flat wash.
+float flowStreaks(vec2 pos, float t) {
+  vec3 p = vec3(pos * 1.6, t * 0.12);
+  float streak = 0.0;
+  float amp = 1.0;
+  for (int i = 0; i < 4; i++) {
+    vec3 c = curlNoise(p);
+    p.xy += c.xy * 0.12;
+    p.z += 0.07;
+    float n = fbm(p * 1.5);
+    // Sharpen into thin bright filaments.
+    streak += amp * pow(abs(n), 2.2);
+    amp *= 0.62;
+  }
+  return streak;
+}
+
 void main() {
   vec2 uv = vUv;
   float aspect = uResolution.x / uResolution.y;
   vec2 pos = uv * 2.0 - 1.0;
   pos.x *= aspect;
 
-  vec3 p = vec3(pos * 2.0, uTime * 0.08);
-  vec3 curl = curlNoise(p);
-  float flowMag = length(curl);
+  float t = uTime;
 
+  // --- Flowing energy field --------------------------------------------------
+  float streaks = flowStreaks(pos, t);
+  float field = smoothstep(0.05, 0.85, streaks);
+
+  // Slow large-scale drift to keep the whole field breathing.
+  float drift = 0.5 + 0.5 * fbm(vec3(pos * 0.6, t * 0.05));
+
+  // --- Mouse interaction: a bright travelling light pulling the field --------
   vec2 mouseNorm = uMouse / uResolution;
   vec2 mousePos = mouseNorm * 2.0 - 1.0;
   mousePos.x *= aspect;
+  mousePos.y *= -1.0; // screen-space y is flipped vs. clip space
   float mouseDist = distance(pos, mousePos);
-  float mouseInfluence = exp(-mouseDist * 3.0);
+  float bloom = exp(-mouseDist * 2.2);
+  float mouseCore = exp(-mouseDist * 8.0);
 
-  float pattern = flowMag * 0.8 + mouseInfluence * 0.2;
-
+  // --- SDF text morph (AI -> PRODUCT -> MEHDI) -------------------------------
   float numStates = 3.0;
   float state = uProgress * (numStates - 1.0);
   float stateA = floor(state);
   float stateB = min(stateA + 1.0, numStates - 1.0);
-  float blend = fract(state);
+  float blend = smoothstep(0.0, 1.0, fract(state));
 
   float stateW = 1.0 / numStates;
   vec2 sdfUvA = vec2(uv.x * stateW + stateA * stateW, uv.y);
@@ -102,18 +140,47 @@ void main() {
   float sdfA = texture2D(uTextSDF, sdfUvA).r;
   float sdfB = texture2D(uTextSDF, sdfUvB).r;
   float sdf = mix(sdfA, sdfB, blend);
+  float textAlpha = smoothstep(0.46, 0.54, sdf);
+  float textEdge = smoothstep(0.40, 0.50, sdf) - smoothstep(0.50, 0.60, sdf);
 
-  float textAlpha = smoothstep(0.45, 0.55, sdf);
+  // --- Palette: electric-blue -> cyan -> violet ------------------------------
+  vec3 deep    = vec3(0.04, 0.07, 0.18); // near-background base
+  vec3 blue    = vec3(0.14, 0.42, 0.98); // electric blue (217 91% 60%)
+  vec3 cyan     = vec3(0.30, 0.85, 1.00);
+  vec3 violet  = vec3(0.55, 0.32, 0.98);
 
-  vec3 electricBlue = vec3(0.23, 0.51, 0.96);
-  vec3 glow = electricBlue * (0.5 + 0.5 * pattern);
+  // Ramp the field colour by intensity, then tint by drift toward violet.
+  vec3 col = mix(deep, blue, field);
+  col = mix(col, cyan, field * field * 0.9);
+  col = mix(col, violet, drift * 0.35);
 
-  vec3 finalColor = mix(glow, electricBlue * 1.3, textAlpha * 0.6);
+  // Lift overall presence so the motion is clearly visible (was ~15%).
+  col += blue * field * 0.35;
 
-  float vignette = 1.0 - dot(pos * 0.7, pos * 0.7);
-  finalColor *= smoothstep(0.0, 0.8, vignette);
+  // Mouse light: warm bloom + bright core.
+  col += cyan * bloom * 0.45;
+  col += vec3(0.7, 0.9, 1.0) * mouseCore * 0.6;
 
-  float alpha = 0.15 + 0.85 * textAlpha;
+  // Energised text: bright fill + glowing edge.
+  col = mix(col, cyan * 1.4 + violet * 0.3, textAlpha * 0.85);
+  col += cyan * textEdge * 1.2;
 
-  gl_FragColor = vec4(finalColor, alpha);
+  // --- Cinematic finishing ---------------------------------------------------
+  // Soft radial vignette toward the deep base colour.
+  float vignette = smoothstep(1.5, 0.2, length(pos * vec2(0.62, 0.8)));
+  col = mix(deep * 0.4, col, vignette);
+
+  // Subtle film grain to kill banding and add texture.
+  float grain = fract(sin(dot(uv * uResolution, vec2(12.9898, 78.233))) * 43758.5453);
+  col += (grain - 0.5) * 0.025;
+
+  // Tone map / gentle contrast.
+  col = col / (col + vec3(0.7));
+  col = pow(col, vec3(0.85));
+
+  // Opaque-ish background so the field is genuinely present, brightest where the
+  // flow, the mouse light, or the text energise it.
+  float alpha = clamp(0.55 + 0.45 * field + bloom * 0.4 + textAlpha * 0.5, 0.0, 1.0);
+
+  gl_FragColor = vec4(col, alpha);
 }

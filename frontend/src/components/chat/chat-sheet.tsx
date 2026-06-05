@@ -62,6 +62,11 @@ export default function ChatSheet() {
           className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col bg-background border-l border-border shadow-2xl transition-transform duration-300 sm:w-96 ${
             open ? 'translate-x-0' : 'translate-x-full'
           }`}
+          style={{
+            backgroundImage: 'radial-gradient(ellipse at 20% 50%, hsla(217 91% 60% / 0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, hsla(280 91% 60% / 0.04) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, hsla(180 91% 60% / 0.03) 0%, transparent 50%)',
+            backgroundSize: '200% 200%',
+            animation: 'gradientShift 16s ease-in-out infinite',
+          }}
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <div className="flex items-center gap-2">
@@ -77,7 +82,7 @@ export default function ChatSheet() {
             </button>
           </div>
 
-          <ChatHistory messages={messages} isLoading={loading} />
+          <ChatHistory messages={messages} isLoading={loading} onSuggestedQuestion={handleSend} />
 
           {error && (
             <div className="mx-3 mb-2 rounded-lg border border-destructive/20 bg-destructive/5 p-2">

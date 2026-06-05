@@ -1,21 +1,50 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-
-interface Source {
-  source: string
-  similarity: number
-}
 
 interface ChatMessageProps {
   role: 'user' | 'assistant'
   content: string
-  sources?: Source[]
-  fallback?: boolean
 }
 
-export function ChatMessage({ role, content, sources, fallback }: ChatMessageProps) {
+function TypewriterText({ text }: { text: string }) {
+  const [displayed, setDisplayed] = useState('')
+  const [done, setDone] = useState(false)
+
+  useEffect(() => {
+    setDisplayed('')
+    setDone(false)
+    let i = 0
+    const interval = setInterval(() => {
+      i++
+      setDisplayed(text.slice(0, i))
+      if (i >= text.length) {
+        clearInterval(interval)
+        setDone(true)
+      }
+    }, 15)
+    return () => clearInterval(interval)
+  }, [text])
+
+  if (done) {
+    return (
+      <div className="prose prose-sm prose-invert max-w-none break-words">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+      </div>
+    )
+  }
+
+  return (
+    <div className="prose prose-sm prose-invert max-w-none break-words">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayed}</ReactMarkdown>
+      <span className="inline-block h-4 w-0.5 animate-pulse bg-foreground ml-0.5" />
+    </div>
+  )
+}
+
+export function ChatMessage({ role, content }: ChatMessageProps) {
   const isUser = role === 'user'
 
   return (
@@ -30,50 +59,7 @@ export function ChatMessage({ role, content, sources, fallback }: ChatMessagePro
         {isUser ? (
           <p className="whitespace-pre-wrap break-words">{content}</p>
         ) : (
-          <div className="prose prose-sm prose-invert max-w-none break-words">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-          </div>
-        )}
-
-        {fallback && (
-          <p className={`mt-2 text-xs italic ${isUser ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-            (This answer is based on general knowledge. For the most accurate information, please contact me directly.)
-          </p>
-        )}
-
-        {!isUser && sources && sources.length > 0 && (
-          <div className="mt-2 border-t border-border pt-2">
-            <p className="mb-1 text-xs font-semibold text-muted-foreground">Sources:</p>
-            <ul className="space-y-1">
-              {sources.map((src, idx) => (
-                <li key={idx} className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <svg
-                    className="h-3 w-3 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                    />
-                  </svg>
-                  <span className="truncate">{src.source}</span>
-                  <span className="shrink-0 text-muted-foreground/60">
-                    ({Math.round(src.similarity * 100)}% match)
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <TypewriterText text={content} />
         )}
       </div>
     </div>

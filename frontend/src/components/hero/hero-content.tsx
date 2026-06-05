@@ -14,6 +14,7 @@ export default function HeroContent() {
   return (
     <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
       <motion.h1
+        data-mask-target
         className="max-w-4xl text-5xl font-bold tracking-tight text-foreground sm:text-7xl md:text-8xl"
         initial={{ y: 20 }}
         animate={{ y: 0 }}
@@ -35,6 +36,7 @@ export default function HeroContent() {
       </motion.h1>
 
       <motion.p
+        data-mask-target
         className="mt-6 max-w-xl text-lg text-muted-foreground"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

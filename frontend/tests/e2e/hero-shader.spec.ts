@@ -41,15 +41,6 @@ test.describe('Hero Shader (US7)', () => {
     await expect(viewProjects).toBeVisible()
   })
 
-  test('skip-to-content link exists and is accessible', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 })
-    await page.goto('/')
-
-    const skipLink = page.getByText('Skip to content')
-    await expect(skipLink).toBeAttached()
-    await expect(skipLink).toHaveAttribute('href', '#main-content')
-  })
-
   test('hero CTA links are reachable', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/')

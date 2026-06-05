@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useCanRender3D, useReducedMotion } from '@/hooks/use-reduced-motion'
 import HeroContent from '@/components/hero/hero-content'
 import HeroFallback from '@/components/hero/hero-fallback'
+import HeroMaskReveal from '@/components/hero/hero-mask-reveal'
 import ParallaxSection from '@/components/motion/parallax-section'
 
 const ParticleField = dynamic(() => import('@/components/hero/particle-field'), { ssr: false })
@@ -31,7 +32,9 @@ export default function HeroSection() {
           <HeroFallback />
         )}
       </ParallaxSection>
-      <HeroContent />
+      <HeroMaskReveal>
+        <HeroContent />
+      </HeroMaskReveal>
     </section>
   )
 }

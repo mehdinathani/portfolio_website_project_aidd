@@ -5,7 +5,6 @@ import { api } from '@/lib/api'
 export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
-  sources?: Array<{ source: string; similarity: number }>
 }
 
 const STORAGE_KEY = 'portfolio-chat-history'
@@ -58,7 +57,6 @@ export function useChat() {
       const botMsg: ChatMessage = {
         role: 'assistant',
         content: response.response,
-        sources: response.sources,
       }
       setMessages(prev => [...prev, botMsg])
       return { lead_intent: response.lead_intent, lead_prompt: response.lead_prompt }

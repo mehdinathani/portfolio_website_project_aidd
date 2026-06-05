@@ -89,12 +89,6 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <AnalyticsScript />
-        <a
-          href="#main-content"
-          className="fixed left-4 top-4 z-[9999] -translate-y-full rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0"
-        >
-          Skip to content
-        </a>
         <SmoothScroll />
         <PageProgress />
         <LiveRegion />
@@ -110,7 +104,7 @@ export default function RootLayout({
           }}
         />
         <Header />
-        <main id="main-content" className="flex-1 pt-16">
+        <main className="flex-1 pt-16">
           <PageTransition>{children}</PageTransition>
         </main>
         <ScrollToTop />
