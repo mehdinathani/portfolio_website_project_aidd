@@ -16,22 +16,11 @@ export default function HeroContent() {
       <motion.h1
         data-mask-target
         className="max-w-4xl text-5xl font-bold tracking-tight text-foreground sm:text-7xl md:text-8xl"
-        initial={{ y: 20 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        {headline.split(' ').map((word, i) => (
-          <motion.span
-            key={i}
-            className="inline-block"
-            initial={{ y: 20 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.4, delay: i * 0.1 }}
-          >
-            {word}{' '}
-          </motion.span>
-        ))}
-        <br />
+        {headline} <br />
         <span className="text-primary">{subline}</span>
       </motion.h1>
 
