@@ -40,6 +40,9 @@ export const metadata: Metadata = {
   },
   description:
     'Portfolio of Mehdi Abbas Nathani — Agentic AI & Software Engineer building intelligent, user-centric applications.',
+  icons: {
+    icon: '/favicon.svg',
+  },
   openGraph: {
     type: 'website',
     title: 'Mehdi Abbas Nathani — Portfolio',

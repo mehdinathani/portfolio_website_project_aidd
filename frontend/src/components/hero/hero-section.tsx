@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useCanRender3D, useReducedMotion } from '@/hooks/use-reduced-motion'
 import HeroContent from '@/components/hero/hero-content'
@@ -17,12 +17,23 @@ export default function HeroSection() {
   const canRender3D = useCanRender3D()
   const reducedMotion = useReducedMotion()
   const [shaderError, setShaderError] = useState(false)
+  const [deferred, setDeferred] = useState(false)
   const handleShaderError = useCallback(() => setShaderError(true), [])
+
+  useEffect(() => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => setDeferred(true), { timeout: 2000 })
+    } else {
+      setDeferred(true)
+    }
+  }, [])
+
+  const show3D = canRender3D && deferred
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden" aria-label="Hero">
       <ParallaxSection speed={-0.15}>
-        {canRender3D ? (
+        {show3D ? (
           SHADER_ENABLED && !shaderError ? (
             <ShaderHero uReducedMotion={reducedMotion} onError={handleShaderError} />
           ) : (

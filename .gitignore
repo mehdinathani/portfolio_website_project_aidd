@@ -126,3 +126,10 @@ C:\\Users\\*
 
 # Generated docs
 frontend/docs/
+.vercel
+
+# Playwright MCP artifacts
+.playwright-mcp/
+
+# Temporary screenshots
+*.png
