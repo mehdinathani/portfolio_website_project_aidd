@@ -32,6 +32,7 @@ const jetbrainsMono = JetBrains_Mono({
 const CustomCursor = dynamic(() => import('@/components/motion/custom-cursor'), { ssr: false })
 const CommandPalette = dynamic(() => import('@/components/motion/command-palette'), { ssr: false })
 const ChatSheet = dynamic(() => import('@/components/chat/chat-sheet'), { ssr: false })
+// const BlobTravelCanvas = dynamic(() => import('@/components/effects/blob-travel-canvas'), { ssr: false })
 
 export const metadata: Metadata = {
   title: {
@@ -93,7 +94,7 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <AnalyticsScript />
         <SmoothScroll />
-        <PageProgress />
+        {/* <BlobTravelCanvas /> */}        <PageProgress />
         <LiveRegion />
         <AnalyticsTracker />
         <Toaster

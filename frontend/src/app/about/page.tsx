@@ -25,16 +25,20 @@ export default async function AboutPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-24">
-      <div className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left md:gap-10">
-        {profile.profile_image_url && (
-          <Image
-            src={profile.profile_image_url}
-            alt={profile.full_name}
-            width={160}
-            height={160}
-            className="mb-6 shrink-0 rounded-2xl object-cover md:mb-0"
-          />
-        )}
+      <div className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left md:gap-14">
+        <div className="relative shrink-0">
+          <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-primary/40 via-purple-500/30 to-primary/40 blur-sm" />
+          <div className="relative rounded-3xl bg-gradient-to-b from-primary/20 via-transparent to-primary/10 p-[2px]">
+            <Image
+              src="/second_self_mehdi_enhanced.webp"
+              alt={profile.full_name}
+              width={320}
+              height={480}
+              className="h-auto max-h-[540px] w-[260px] rounded-3xl object-cover md:w-[320px]"
+              priority
+            />
+          </div>
+        </div>
         <div>
           <h1 className="text-3xl font-bold text-foreground md:text-4xl">
             {profile.full_name}

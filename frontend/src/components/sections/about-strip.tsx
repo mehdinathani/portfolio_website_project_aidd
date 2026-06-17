@@ -24,9 +24,13 @@ export default function AboutStrip({ profile }: AboutStripProps) {
               className="rounded-2xl object-cover"
             />
           ) : (
-            <div className="flex h-[120px] w-[120px] items-center justify-center rounded-2xl bg-secondary text-4xl font-bold text-primary">
-              {profile.full_name.charAt(0)}
-            </div>
+            <Image
+              src="/portrait_self_mehdi_enhanced.webp"
+              alt={profile.full_name}
+              width={120}
+              height={120}
+              className="rounded-2xl object-cover"
+            />
           )}
         </TiltCard>
         <div className="text-center md:text-left">

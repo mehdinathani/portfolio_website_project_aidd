@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
@@ -13,6 +14,24 @@ export default function HeroContent() {
 
   return (
     <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="mb-8"
+      >
+        <div className="rounded-full bg-gradient-to-b from-primary via-purple-500 to-primary p-[3px] shadow-lg shadow-primary/20">
+          <Image
+            src="/portrait_self_mehdi_enhanced.webp"
+            alt="Mehdi Nathani"
+            width={120}
+            height={120}
+            className="aspect-square rounded-full object-cover"
+            priority
+          />
+        </div>
+      </motion.div>
+
       <motion.h1
         data-mask-target
         className="max-w-4xl text-5xl font-bold tracking-tight text-foreground sm:text-7xl md:text-8xl"
