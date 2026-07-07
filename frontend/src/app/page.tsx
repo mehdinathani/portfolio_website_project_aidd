@@ -2,6 +2,9 @@ import { Suspense } from 'react'
 import HeroSection from '@/components/hero/hero-section'
 import AboutStrip from '@/components/sections/about-strip'
 import TrustStrip from '@/components/sections/trust-strip'
+import StatsStrip from '@/components/sections/stats-strip'
+import WhyChooseUs from '@/components/sections/why-choose-us'
+import ProcessSteps from '@/components/sections/process-steps'
 import ErrorBoundary from '@/components/shared/error-boundary'
 import FeaturedProject from '@/components/sections/featured-project'
 import ProjectsBento from '@/components/sections/projects-bento'
@@ -14,6 +17,13 @@ import { api } from '@/lib/api'
 import type { Profile, Project, Skill, Testimonial } from '@/types/api'
 
 export const revalidate = 60
+
+const defaultStats = [
+  { value: '15+', label: 'Years Experience', numeric: 15, suffix: '+' },
+  { value: '200+', label: 'Successful Projects', numeric: 200, suffix: '+' },
+  { value: '150+', label: 'Happy Clients', numeric: 150, suffix: '+' },
+  { value: '160', label: '5 Star Reviews', numeric: 160, suffix: '+' },
+]
 
 function SectionFallback({ height = '50vh' }: { height?: string }) {
   return (
@@ -57,6 +67,10 @@ export default async function HomePage() {
           </RevealSection>
         </ParallaxSection>
       )}
+
+      <StatsStrip stats={defaultStats} />
+
+      <WhyChooseUs />
 
       {featuredProject && (
         <RevealSection>
@@ -102,6 +116,8 @@ export default async function HomePage() {
           </RevealSection>
         </ParallaxSection>
       )}
+
+      <ProcessSteps />
 
       <RevealSection>
         <ContactCta />

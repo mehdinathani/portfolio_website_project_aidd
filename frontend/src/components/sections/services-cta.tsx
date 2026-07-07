@@ -5,16 +5,17 @@ import { ArrowRight } from 'lucide-react'
 import MagneticButton from '@/components/motion/magnetic-button'
 import { Button } from '@/components/ui/button'
 
-export default function ContactCta() {
+export default function ServicesCta() {
   return (
-    <section className="border-y border-border/40 bg-[#0c0c0e] px-6 py-28 text-center md:py-36">
+    <section className="bg-[#0c0c0e] px-6 py-28 text-center md:py-36">
       <div className="mx-auto max-w-4xl">
-        <h2 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-6xl">
-          Ready to Build Something Great?
+        <h2 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+          Ready to Transform Your Challenges
+          <br />
+          <span className="text-primary">Into Digital Triumphs?</span>
         </h2>
-        <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-          Whether you&apos;re a startup looking for your first MVP or an enterprise
-          needing digital modernization, I have the tools and talent to get you there.
+        <p className="mx-auto mt-6 max-w-lg text-muted-foreground">
+          Let&apos;s discuss how I can help you build the right solution for your business.
         </p>
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <MagneticButton>
@@ -30,9 +31,7 @@ export default function ContactCta() {
             </Button>
           </MagneticButton>
           <Button variant="outline" size="lg" asChild>
-            <Link href="/projects">
-              View My Projects
-            </Link>
+            <Link href="/projects">View My Projects</Link>
           </Button>
         </div>
       </div>

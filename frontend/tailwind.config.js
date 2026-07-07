@@ -19,6 +19,8 @@ export default {
         'muted-foreground': '#94a3b8',
         accent: '#3b82f6',
         'accent-foreground': '#ffffff',
+        'accent-orange': '#f58327',
+        'accent-orange-hover': '#e0701a',
         destructive: '#ef4444',
         'destructive-foreground': '#ffffff',
         border: '#2a2a3e',

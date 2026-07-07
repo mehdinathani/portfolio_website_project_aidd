@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/projects', label: 'Projects' },
+  { href: '/services', label: 'Services' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ]
@@ -34,7 +35,7 @@ export default function Header() {
               <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 bg-primary transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
-          <Button variant="default" size="sm" asChild>
+          <Button variant="default" size="sm" asChild className="transition-colors hover:bg-accent-orange">
             <a href="https://cal.com/mehdinathani" target="_blank" rel="noopener noreferrer">
               Book a call
             </a>
@@ -80,7 +81,7 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Button variant="default" size="sm" asChild>
+            <Button variant="default" size="sm" asChild className="transition-colors hover:bg-accent-orange">
               <a href="https://cal.com/mehdinathani" target="_blank" rel="noopener noreferrer">
                 Book a call
               </a>
