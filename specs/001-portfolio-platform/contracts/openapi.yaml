@@ -1,0 +1,1803 @@
+openapi: 3.1.0
+info:
+  title: Mehdi Portfolio API
+  version: 1.0.0
+paths:
+  /api/v1/profile/:
+    get:
+      tags:
+      - Profile
+      summary: Read Profile
+      operationId: read_profile_api_v1_profile__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+  /api/v1/projects/:
+    get:
+      tags:
+      - Projects
+      summary: Read Projects
+      operationId: read_projects_api_v1_projects__get
+      parameters:
+      - name: featured
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Featured
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectResponse'
+                title: Response Read Projects Api V1 Projects  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/projects/{project_id}:
+    get:
+      tags:
+      - Projects
+      summary: Read Project
+      operationId: read_project_api_v1_projects__project_id__get
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/skills/:
+    get:
+      tags:
+      - Skills
+      summary: Read Skills
+      operationId: read_skills_api_v1_skills__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SkillResponse'
+                type: array
+                title: Response Read Skills Api V1 Skills  Get
+  /api/v1/skills/grouped:
+    get:
+      tags:
+      - Skills
+      summary: Read Skills Grouped
+      operationId: read_skills_grouped_api_v1_skills_grouped_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SkillsGroupedResponse'
+                type: array
+                title: Response Read Skills Grouped Api V1 Skills Grouped Get
+  /api/v1/experience/:
+    get:
+      tags:
+      - Experience
+      summary: Read Experience
+      operationId: read_experience_api_v1_experience__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ExperienceResponse'
+                type: array
+                title: Response Read Experience Api V1 Experience  Get
+  /api/v1/certifications/:
+    get:
+      tags:
+      - Certifications
+      summary: Read Certifications
+      operationId: read_certifications_api_v1_certifications__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CertificationResponse'
+                type: array
+                title: Response Read Certifications Api V1 Certifications  Get
+  /api/v1/testimonials/:
+    get:
+      tags:
+      - Testimonials
+      summary: Read Testimonials
+      operationId: read_testimonials_api_v1_testimonials__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TestimonialResponse'
+                type: array
+                title: Response Read Testimonials Api V1 Testimonials  Get
+  /api/v1/chat/:
+    post:
+      tags:
+      - Chat
+      summary: Chat Endpoint
+      operationId: chat_endpoint_api_v1_chat__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/leads/:
+    post:
+      tags:
+      - Leads
+      summary: Create Lead Endpoint
+      operationId: create_lead_endpoint_api_v1_leads__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/health/:
+    get:
+      tags:
+      - Health
+      summary: Health Check
+      operationId: health_check_api_v1_health__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/admin/projects/:
+    post:
+      tags:
+      - Admin
+      - Admin Projects
+      summary: Create Project
+      operationId: create_project_api_v1_admin_projects__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/projects/{project_id}:
+    put:
+      tags:
+      - Admin
+      - Admin Projects
+      summary: Update Project
+      operationId: update_project_api_v1_admin_projects__project_id__put
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Admin
+      - Admin Projects
+      summary: Delete Project
+      operationId: delete_project_api_v1_admin_projects__project_id__delete
+      parameters:
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Project Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/skills/:
+    post:
+      tags:
+      - Admin
+      - Admin Skills
+      summary: Create Skill
+      operationId: create_skill_api_v1_admin_skills__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/skills/{skill_id}:
+    put:
+      tags:
+      - Admin
+      - Admin Skills
+      summary: Update Skill
+      operationId: update_skill_api_v1_admin_skills__skill_id__put
+      parameters:
+      - name: skill_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Skill Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Admin
+      - Admin Skills
+      summary: Delete Skill
+      operationId: delete_skill_api_v1_admin_skills__skill_id__delete
+      parameters:
+      - name: skill_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Skill Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/experience/:
+    post:
+      tags:
+      - Admin
+      - Admin Experience
+      summary: Create Experience
+      operationId: create_experience_api_v1_admin_experience__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/experience/{exp_id}:
+    put:
+      tags:
+      - Admin
+      - Admin Experience
+      summary: Update Experience
+      operationId: update_experience_api_v1_admin_experience__exp_id__put
+      parameters:
+      - name: exp_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Exp Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Admin
+      - Admin Experience
+      summary: Delete Experience
+      operationId: delete_experience_api_v1_admin_experience__exp_id__delete
+      parameters:
+      - name: exp_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Exp Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/certifications/:
+    post:
+      tags:
+      - Admin
+      - Admin Certifications
+      summary: Create Certification
+      operationId: create_certification_api_v1_admin_certifications__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificationCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/certifications/{cert_id}:
+    put:
+      tags:
+      - Admin
+      - Admin Certifications
+      summary: Update Certification
+      operationId: update_certification_api_v1_admin_certifications__cert_id__put
+      parameters:
+      - name: cert_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cert Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificationUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Admin
+      - Admin Certifications
+      summary: Delete Certification
+      operationId: delete_certification_api_v1_admin_certifications__cert_id__delete
+      parameters:
+      - name: cert_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Cert Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/testimonials/:
+    post:
+      tags:
+      - Admin
+      - Admin Testimonials
+      summary: Create Testimonial
+      operationId: create_testimonial_api_v1_admin_testimonials__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestimonialCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestimonialResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/testimonials/{test_id}:
+    put:
+      tags:
+      - Admin
+      - Admin Testimonials
+      summary: Update Testimonial
+      operationId: update_testimonial_api_v1_admin_testimonials__test_id__put
+      parameters:
+      - name: test_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Test Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestimonialUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestimonialResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Admin
+      - Admin Testimonials
+      summary: Delete Testimonial
+      operationId: delete_testimonial_api_v1_admin_testimonials__test_id__delete
+      parameters:
+      - name: test_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Test Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/knowledge-base/:
+    get:
+      tags:
+      - Admin
+      - Admin Knowledge Base
+      summary: List Knowledge Base
+      operationId: list_knowledge_base_api_v1_admin_knowledge_base__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/KnowledgeBaseResponse'
+                type: array
+                title: Response List Knowledge Base Api V1 Admin Knowledge Base  Get
+    post:
+      tags:
+      - Admin
+      - Admin Knowledge Base
+      summary: Create Kb Entry
+      operationId: create_kb_entry_api_v1_admin_knowledge_base__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KnowledgeBaseCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeBaseResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/knowledge-base/{entry_id}:
+    put:
+      tags:
+      - Admin
+      - Admin Knowledge Base
+      summary: Update Kb Entry
+      operationId: update_kb_entry_api_v1_admin_knowledge_base__entry_id__put
+      parameters:
+      - name: entry_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Entry Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KnowledgeBaseUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeBaseResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Admin
+      - Admin Knowledge Base
+      summary: Delete Kb Entry
+      operationId: delete_kb_entry_api_v1_admin_knowledge_base__entry_id__delete
+      parameters:
+      - name: entry_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Entry Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/leads/:
+    get:
+      tags:
+      - Admin
+      - Admin Leads
+      summary: List Leads
+      operationId: list_leads_api_v1_admin_leads__get
+      parameters:
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Category
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Status
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeadResponse'
+                title: Response List Leads Api V1 Admin Leads  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/leads/{lead_id}:
+    get:
+      tags:
+      - Admin
+      - Admin Leads
+      summary: Get Lead
+      operationId: get_lead_api_v1_admin_leads__lead_id__get
+      parameters:
+      - name: lead_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Lead Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - Admin
+      - Admin Leads
+      summary: Update Lead Status
+      operationId: update_lead_status_api_v1_admin_leads__lead_id__patch
+      parameters:
+      - name: lead_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Lead Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /:
+    get:
+      summary: Root
+      operationId: root__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    CertificationCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        issuer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Issuer
+        date_earned:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Date Earned
+        credential_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Url
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+      type: object
+      required:
+      - name
+      title: CertificationCreate
+    CertificationResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        issuer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Issuer
+        date_earned:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Date Earned
+        credential_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Url
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      title: CertificationResponse
+    CertificationUpdate:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        issuer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Issuer
+        date_earned:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Date Earned
+        credential_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Credential Url
+        order_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Order Index
+      type: object
+      title: CertificationUpdate
+    ChatMessage:
+      properties:
+        role:
+          type: string
+          title: Role
+        content:
+          type: string
+          title: Content
+      type: object
+      required:
+      - role
+      - content
+      title: ChatMessage
+    ChatRequest:
+      properties:
+        message:
+          type: string
+          title: Message
+        session_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Session Id
+        history:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ChatMessage'
+            type: array
+          - type: 'null'
+          title: History
+      type: object
+      required:
+      - message
+      title: ChatRequest
+    ChatResponse:
+      properties:
+        response:
+          type: string
+          title: Response
+        lead_intent:
+          type: boolean
+          title: Lead Intent
+          default: false
+        lead_prompt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Lead Prompt
+        sources:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/SourceRef'
+            type: array
+          - type: 'null'
+          title: Sources
+        fallback:
+          type: boolean
+          title: Fallback
+          default: false
+      type: object
+      required:
+      - response
+      title: ChatResponse
+    ExperienceCreate:
+      properties:
+        company:
+          type: string
+          title: Company
+        role:
+          type: string
+          title: Role
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+        responsibilites:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Responsibilites
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+      type: object
+      required:
+      - company
+      - role
+      title: ExperienceCreate
+    ExperienceResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        company:
+          type: string
+          title: Company
+        role:
+          type: string
+          title: Role
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+        responsibilites:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Responsibilites
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - company
+      - role
+      - created_at
+      title: ExperienceResponse
+    ExperienceUpdate:
+      properties:
+        company:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Company
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Role
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+        responsibilites:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Responsibilites
+        order_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Order Index
+      type: object
+      title: ExperienceUpdate
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    KnowledgeBaseCreate:
+      properties:
+        content:
+          type: string
+          title: Content
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+        source_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Source Id
+        metadata:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Metadata
+      type: object
+      required:
+      - content
+      title: KnowledgeBaseCreate
+    KnowledgeBaseResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        content:
+          type: string
+          title: Content
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+        source_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Source Id
+        metadata:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Metadata
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - content
+      - created_at
+      - updated_at
+      title: KnowledgeBaseResponse
+    KnowledgeBaseUpdate:
+      properties:
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+        source_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Source Id
+        metadata:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Metadata
+      type: object
+      title: KnowledgeBaseUpdate
+    LeadCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        email:
+          type: string
+          title: Email
+        message:
+          type: string
+          title: Message
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+      type: object
+      required:
+      - name
+      - email
+      - message
+      title: LeadCreate
+    LeadResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        email:
+          type: string
+          title: Email
+        message:
+          type: string
+          title: Message
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - name
+      - email
+      - message
+      - created_at
+      - updated_at
+      title: LeadResponse
+    LeadUpdate:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      type: object
+      title: LeadUpdate
+    ProfileResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        full_name:
+          type: string
+          title: Full Name
+        headline:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Headline
+        bio:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bio
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+        location:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Location
+        linkedin_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Linkedin Url
+        github_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Github Url
+        twitter_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Twitter Url
+        resume_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resume Url
+        profile_image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Profile Image Url
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - full_name
+      - created_at
+      - updated_at
+      title: ProfileResponse
+    ProjectCreate:
+      properties:
+        title:
+          type: string
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        short_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Short Description
+        tech_stack:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tech Stack
+        project_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Url
+        github_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Github Url
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+        featured:
+          type: boolean
+          title: Featured
+          default: false
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      type: object
+      required:
+      - title
+      title: ProjectCreate
+    ProjectResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        title:
+          type: string
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        short_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Short Description
+        tech_stack:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tech Stack
+        project_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Url
+        github_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Github Url
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+        featured:
+          type: boolean
+          title: Featured
+          default: false
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - title
+      - created_at
+      - updated_at
+      title: ProjectResponse
+    ProjectUpdate:
+      properties:
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        short_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Short Description
+        tech_stack:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Tech Stack
+        project_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Project Url
+        github_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Github Url
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+        featured:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Featured
+        order_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Order Index
+        start_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: End Date
+      type: object
+      title: ProjectUpdate
+    SkillCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        category:
+          type: string
+          title: Category
+        proficiency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Proficiency
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+      type: object
+      required:
+      - name
+      - category
+      title: SkillCreate
+    SkillResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        category:
+          type: string
+          title: Category
+        proficiency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Proficiency
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+      type: object
+      required:
+      - id
+      - name
+      - category
+      title: SkillResponse
+    SkillUpdate:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        proficiency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Proficiency
+        order_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Order Index
+      type: object
+      title: SkillUpdate
+    SkillsGroupedResponse:
+      properties:
+        category:
+          type: string
+          title: Category
+        skills:
+          items:
+            $ref: '#/components/schemas/SkillResponse'
+          type: array
+          title: Skills
+      type: object
+      required:
+      - category
+      - skills
+      title: SkillsGroupedResponse
+    SourceRef:
+      properties:
+        source:
+          type: string
+          title: Source
+        similarity:
+          type: number
+          title: Similarity
+      type: object
+      required:
+      - source
+      - similarity
+      title: SourceRef
+    TestimonialCreate:
+      properties:
+        author_name:
+          type: string
+          title: Author Name
+        author_role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Role
+        author_company:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Company
+        quote:
+          type: string
+          title: Quote
+        linkedin_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Linkedin Url
+        date:
+          type: 'null'
+          title: Date
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+      type: object
+      required:
+      - author_name
+      - quote
+      title: TestimonialCreate
+    TestimonialResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        author_name:
+          type: string
+          title: Author Name
+        author_role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Role
+        author_company:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Company
+        quote:
+          type: string
+          title: Quote
+        linkedin_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Linkedin Url
+        date:
+          type: 'null'
+          title: Date
+        order_index:
+          type: integer
+          title: Order Index
+          default: 0
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+      type: object
+      required:
+      - id
+      - author_name
+      - quote
+      - created_at
+      title: TestimonialResponse
+    TestimonialUpdate:
+      properties:
+        author_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Name
+        author_role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Role
+        author_company:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Company
+        quote:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quote
+        linkedin_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Linkedin Url
+        date:
+          type: 'null'
+          title: Date
+        order_index:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Order Index
+      type: object
+      title: TestimonialUpdate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
