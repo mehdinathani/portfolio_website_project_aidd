@@ -39,7 +39,7 @@ function TypewriterText({ text }: { text: string }) {
   return (
     <div className="prose prose-sm prose-invert max-w-none break-words">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayed}</ReactMarkdown>
-      <span className="inline-block h-4 w-0.5 animate-pulse bg-foreground ml-0.5" />
+      <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-accent" />
     </div>
   )
 }
@@ -52,8 +52,8 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
       <div
         className={`max-w-[80%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? 'bg-primary text-primary-foreground rounded-br-sm'
-            : 'bg-secondary text-secondary-foreground rounded-bl-sm'
+            ? 'bg-accent text-black rounded-br-sm'
+            : 'bg-white/[0.06] text-white/80 rounded-bl-sm'
         }`}
       >
         {isUser ? (

@@ -4,27 +4,27 @@
 
 @layer base {
   :root {
-    --background: 240 5% 4%;
-    --foreground: 60 5% 96%;
-    --card: 240 5% 4%;
-    --card-foreground: 60 5% 96%;
-    --popover: 240 5% 4%;
-    --popover-foreground: 60 5% 96%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 15%;
+    --background: 0 0% 0%;
+    --foreground: 240 8% 96%;
+    --card: 0 0% 0%;
+    --card-foreground: 240 8% 96%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 240 8% 96%;
+    --primary: 160 100% 72%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 7%;
     --secondary-foreground: 210 20% 92%;
-    --muted: 240 5% 15%;
-    --muted-foreground: 215 16% 60%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 43%;
+    --muted-foreground: 0 0% 43%;
+    --accent: 160 100% 72%;
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 68% 56%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 5% 20%;
-    --input: 240 5% 20%;
-    --ring: 217 91% 60%;
+    --border: 0 0% 100% / 0.08;
+    --input: 0 0% 100% / 0.08;
+    --ring: 160 100% 72%;
     --radius: 0.5rem;
-    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-display: 'Google Sans', var(--font-inter), system-ui, sans-serif;
   }
 
   * {
@@ -33,11 +33,14 @@
     margin: 0;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     color: hsl(var(--foreground));
     background: hsl(var(--background));
     font-family: var(--font-inter), system-ui, sans-serif;
-    scroll-behavior: smooth;
   }
 
   h1, h2, h3 {
@@ -67,6 +70,132 @@
 
   .keyframes-pulse-soft {
     animation: pulseSoft 3s ease-in-out infinite;
+  }
+
+  /* ---- SwiftSolve-style section surfaces ---- */
+
+  .section-surface {
+    background-color: #040404;
+  }
+
+  .section-glow {
+    background-color: #000;
+    background-image:
+      radial-gradient(ellipse 80% 42% at 50% 100%, #70ffd80d 0%, transparent 58%),
+      radial-gradient(ellipse 85% 50% at 50% -12%, #ffffff07 0%, transparent 58%),
+      radial-gradient(ellipse 65% 38% at 50% 0%, #70ffd808 0%, transparent 55%);
+  }
+
+  /* ---- Full-viewport snap-section ---- */
+
+  .snap-container {
+    scroll-snap-type: y proximity;
+    scroll-behavior: smooth;
+  }
+
+  .snap-section {
+    min-height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  /* ---- SwiftSolve type scale ---- */
+
+  .type-headline {
+    font-size: clamp(1.875rem, 4.5vw, 2.75rem);
+    line-height: 1.25;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .type-title {
+    font-size: 1.125rem;
+    line-height: 1.375;
+    font-weight: 600;
+  }
+
+  .type-card-title {
+    font-size: 1.625rem;
+    line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .type-body {
+    font-size: 1rem;
+    line-height: 1.625;
+    font-weight: 400;
+  }
+
+  .type-card-lead {
+    font-size: 1rem;
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  .type-card-body {
+    font-size: 0.875rem;
+    line-height: 1.75;
+    font-weight: 400;
+  }
+
+  .type-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .type-caption {
+    font-size: 0.875rem;
+    line-height: 1.625;
+    font-weight: 400;
+  }
+
+  /* ---- Gradient logo wordmark ---- */
+
+  .logo-wordmark {
+    background-image: linear-gradient(
+      115deg,
+      #e8fff8 0%,
+      #b8ffed 18%,
+      #a8ffe8 32%,
+      #70ffd8 50%,
+      #2dd4bf 68%,
+      #70ffd8 82%,
+      #a8ffe8 100%
+    );
+    background-size: 220% 220%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: logo-gradient-flow 8s ease-in-out infinite;
+  }
+
+  /* ---- Section divider ---- */
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+  }
+
+  /* ---- Marquee fade mask ---- */
+
+  .marquee-fade {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 26%, black 74%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 26%, black 74%, transparent 100%);
+  }
+}
+
+@keyframes logo-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
@@ -108,68 +237,75 @@
   }
 }
 
-.hero-fallback-gradient {
-  background: linear-gradient(135deg, hsl(240 5% 4%), hsl(217 91% 60% / 0.15), hsl(240 5% 4%));
-  background-size: 200% 200%;
-  animation: gradientShift 16s ease-in-out infinite;
-}
+/* ---- Aurora drift animations ---- */
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-fallback-gradient {
-    animation: none;
+@keyframes aurora-drift-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(6%, -5%, 0) rotate(2deg);
+  }
+  66% {
+    transform: translate3d(-5%, 4%, 0) rotate(-2deg);
   }
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes aurora-drift-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(-6%, 5%, 0) rotate(-2deg) scale(1.06);
+  }
 }
 
-/* Hero spotlight mask reveal — radius is an animatable custom property so the
-   reveal eases in/out instead of snapping. x/y track the cursor crisply. */
-@property --mask-r {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 0px;
+@keyframes aurora-drift-3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -6%, 0) scale(0.95);
+  }
 }
 
-.hero-mask-overlay {
-  --mask-x: 50%;
-  --mask-y: 50%;
-  --mask-r: 0px;
-  -webkit-mask-image: radial-gradient(
-    circle var(--mask-r) at var(--mask-x) var(--mask-y),
-    black 0%,
-    black 55%,
-    transparent 78%
-  );
-  mask-image: radial-gradient(
-    circle var(--mask-r) at var(--mask-x) var(--mask-y),
-    black 0%,
-    black 55%,
-    transparent 78%
-  );
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  transition: --mask-r 0.35s ease;
+.aurora-curtain {
+  position: absolute;
+  inset: -25%;
+  filter: blur(60px);
+  opacity: 0.55;
+  will-change: transform;
 }
 
-/* Gradient text fill applied only to the masked overlay copy of the heading. */
-.hero-mask-overlay h1 {
-  color: transparent;
-  background-image: linear-gradient(
-    100deg,
-    hsl(217 91% 68%),
-    hsl(265 85% 72%),
-    hsl(199 90% 64%)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
+.aurora-curtain-1 {
+  background:
+    radial-gradient(ellipse 45% 50% at 15% 30%, #70ffd8 / 0.14 0%, transparent 60%),
+    radial-gradient(ellipse 40% 45% at 78% 62%, #38bdf8 / 0.1 0%, transparent 60%);
+  animation: aurora-drift-1 18s ease-in-out infinite;
+}
+
+.aurora-curtain-2 {
+  background:
+    radial-gradient(ellipse 55% 40% at 60% 20%, #5eead4 / 0.12 0%, transparent 62%),
+    radial-gradient(ellipse 35% 42% at 30% 70%, #6366f1 / 0.08 0%, transparent 60%);
+  animation: aurora-drift-2 24s ease-in-out infinite;
+  animation-delay: -8s;
+}
+
+.aurora-curtain-3 {
+  background:
+    radial-gradient(ellipse 40% 55% at 48% 85%, #2dd4bf / 0.12 0%, transparent 60%),
+    radial-gradient(ellipse 30% 35% at 85% 25%, #70ffd8 / 0.08 0%, transparent 55%);
+  animation: aurora-drift-3 20s ease-in-out infinite;
+  animation-delay: -4s;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-mask-overlay {
-    transition: none;
+  .aurora-curtain,
+  .aurora-curtain-1,
+  .aurora-curtain-2,
+  .aurora-curtain-3,
+  .logo-wordmark {
+    animation: none;
   }
 }

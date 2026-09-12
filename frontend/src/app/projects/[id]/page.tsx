@@ -61,7 +61,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     <main className="mx-auto max-w-4xl px-6 py-24">
       <Link
         href="/projects"
-        className="group mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="group mb-8 inline-flex items-center gap-1 text-sm text-white/40 transition-colors hover:text-white"
       >
         <svg
           className="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
@@ -75,7 +75,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       </Link>
 
       {project.image_url && (
-        <div className="relative mb-10 aspect-video w-full overflow-hidden rounded-xl border border-border">
+        <div className="relative mb-10 aspect-video w-full overflow-hidden rounded-2xl border border-white/[0.08]">
           <Image
             src={project.image_url}
             alt={project.title}
@@ -87,8 +87,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
       )}
 
-      <div className="border-b border-border pb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+      <div className="border-b border-white/[0.08] pb-8">
+        <h1 className="type-headline text-white">
           {project.title}
         </h1>
 
@@ -96,7 +96,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           {project.tech_stack.map((tech) => (
             <span
               key={tech}
-              className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+              className="rounded-full border border-primary/40 px-3 py-1 text-xs font-medium text-white/50"
             >
               {tech}
             </span>
@@ -104,11 +104,11 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
 
         {project.short_description && (
-          <p className="mt-4 text-lg text-muted-foreground">{project.short_description}</p>
+          <p className="mt-4 text-lg font-light text-white/50">{project.short_description}</p>
         )}
 
         {getDateLabel(project) && (
-          <p className="mt-4 text-sm text-muted-foreground">{getDateLabel(project)}</p>
+          <p className="mt-4 text-sm text-white/40">{getDateLabel(project)}</p>
         )}
       </div>
 
@@ -117,9 +117,9 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           {sections.map((section, idx) => (
             <section key={idx}>
               {section.heading && (
-                <h2 className="mb-4 text-2xl font-bold text-foreground">{section.heading}</h2>
+                <h2 className="mb-4 text-2xl font-semibold text-white">{section.heading}</h2>
               )}
-              <div className="space-y-4 leading-relaxed text-muted-foreground">
+              <div className="space-y-4 leading-relaxed text-white/50">
                 {section.body.map((paragraph, pi) => (
                   <p key={pi}>{paragraph}</p>
                 ))}
@@ -128,7 +128,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           ))}
         </div>
       ) : project.description ? (
-        <div className="mt-8 leading-relaxed text-muted-foreground">
+        <div className="mt-8 leading-relaxed text-white/50">
           {project.description.split('\n').map((paragraph, idx) => (
             paragraph.trim() ? (
               <p key={idx} className="mb-4 last:mb-0">{paragraph}</p>
@@ -138,13 +138,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       ) : null}
 
       {(project.project_url || project.github_url) && (
-        <div className="mt-10 flex flex-wrap gap-4 border-t border-border pt-8">
+        <div className="mt-10 flex flex-wrap gap-4 border-t border-white/[0.08] pt-8">
           {project.project_url && (
             <a
               href={project.project_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow transition-colors hover:bg-primary/90"
+              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:brightness-110"
             >
               Live Demo &rarr;
             </a>
@@ -154,7 +154,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               href={project.github_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="rounded-full border border-white/[0.15] px-6 py-3 text-sm font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white"
             >
               GitHub &rarr;
             </a>

@@ -58,17 +58,17 @@ export default function AdminDashboard() {
   ]
 
   const colorMap: Record<string, string> = {
-    blue: 'bg-blue-50 text-blue-700 border-blue-200',
+    blue: 'bg-accent/10 text-accent border-accent/30',
     green: 'bg-green-50 text-green-700 border-green-200',
     yellow: 'bg-yellow-50 text-yellow-700 border-yellow-200',
   }
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Dashboard</h1>
+      <h1 className="mb-6 text-2xl font-bold text-black">Dashboard</h1>
 
       {loading ? (
-        <p className="text-gray-500">Loading stats...</p>
+        <p className="text-white/40">Loading stats...</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card) => (

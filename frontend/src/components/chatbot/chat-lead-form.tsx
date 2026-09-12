@@ -53,9 +53,9 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
 
   if (success) {
     return (
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+      <div className="rounded-lg border border-accent/20 bg-accent/5 p-4 text-center">
         <svg
-          className="mx-auto mb-2 h-8 w-8 text-primary"
+          className="mx-auto mb-2 h-8 w-8 text-accent"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -67,8 +67,8 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <p className="text-sm font-medium text-foreground">Thank you!</p>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="text-sm font-medium text-white">Thank you!</p>
+        <p className="mt-1 text-xs text-white/50">
           Your message has been sent. I'll get back to you soon.
         </p>
       </div>
@@ -76,8 +76,8 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
   }
 
   return (
-    <div className="rounded-lg border border-border bg-secondary/30 p-4">
-      <p className="mb-3 text-sm font-medium text-foreground">
+    <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] p-4">
+      <p className="mb-3 text-sm font-medium text-white">
         I'd love to hear from you! Please leave your details below.
       </p>
 
@@ -89,7 +89,7 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label htmlFor="lead-name" className="mb-1 block text-xs font-medium text-muted-foreground">
+          <label htmlFor="lead-name" className="mb-1 block text-xs font-medium text-white/50">
             Name
           </label>
           <input
@@ -98,13 +98,13 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-accent/50"
             placeholder="Your name"
           />
         </div>
 
         <div>
-          <label htmlFor="lead-email" className="mb-1 block text-xs font-medium text-muted-foreground">
+          <label htmlFor="lead-email" className="mb-1 block text-xs font-medium text-white/50">
             Email
           </label>
           <input
@@ -113,13 +113,13 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-accent/50"
             placeholder="your@email.com"
           />
         </div>
 
         <div>
-          <label htmlFor="lead-message" className="mb-1 block text-xs font-medium text-muted-foreground">
+          <label htmlFor="lead-message" className="mb-1 block text-xs font-medium text-white/50">
             Message
           </label>
           <textarea
@@ -128,7 +128,7 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
             rows={3}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full resize-none rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-accent/50"
             placeholder="What would you like to discuss?"
           />
         </div>
@@ -136,7 +136,7 @@ export function ChatLeadForm({ onSubmitSuccess }: ChatLeadFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-full bg-accent px-4 py-2 text-sm font-medium text-black transition-all hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? 'Sending...' : 'Send Message'}
         </button>

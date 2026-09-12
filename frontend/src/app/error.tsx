@@ -27,28 +27,28 @@ export default function ErrorPage({
           <circle cx="50" cy="55" r="10" stroke="currentColor" strokeWidth="1" />
           <path d="M35 70 L40 75 L50 65" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
         </svg>
-        <h1 className="mt-6 text-4xl font-bold tracking-tight text-foreground">
+        <h1 className="mt-6 text-4xl font-bold tracking-tight text-white">
           Something glitched
         </h1>
-        <p className="mt-3 text-muted-foreground">
+        <p className="mt-3 text-white/50">
           {error.message || 'An unexpected error occurred. Please try again.'}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <button
             onClick={reset}
-            className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-black transition-all hover:brightness-110"
           >
             Try again
           </button>
           <Link
             href="/"
-            className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            className="rounded-full border border-white/[0.15] px-5 py-2.5 text-sm font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white"
           >
             Home
           </Link>
           <Link
             href="/projects"
-            className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            className="rounded-full border border-white/[0.15] px-5 py-2.5 text-sm font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white"
           >
             Projects
           </Link>

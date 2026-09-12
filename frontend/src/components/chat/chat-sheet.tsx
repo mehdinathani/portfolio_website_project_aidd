@@ -59,23 +59,21 @@ export default function ChatSheet() {
           role="dialog"
           aria-modal="true"
           aria-label="Chat with Mehdi&apos;s AI assistant"
-          className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col bg-background border-l border-border shadow-2xl transition-transform duration-300 sm:w-96 ${
+          className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col bg-[#0b0b0c] border-l border-white/[0.08] shadow-2xl transition-transform duration-300 sm:w-96 ${
             open ? 'translate-x-0' : 'translate-x-full'
           }`}
           style={{
-            backgroundImage: 'radial-gradient(ellipse at 20% 50%, hsla(217 91% 60% / 0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, hsla(280 91% 60% / 0.04) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, hsla(180 91% 60% / 0.03) 0%, transparent 50%)',
-            backgroundSize: '200% 200%',
-            animation: 'gradientShift 16s ease-in-out infinite',
+            backgroundImage: 'radial-gradient(ellipse at 20% 50%, hsla(174 100% 72% / 0.04) 0%, transparent 50%)',
           }}
         >
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
             <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-primary animate-[pulseSoft_2s_ease-in-out_infinite]" />
-              <span className="text-sm font-medium text-foreground">Chat with Me</span>
+              <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-sm font-medium text-white">Chat with Me</span>
             </div>
             <button
               onClick={() => setOpen(false)}
-              className="rounded p-1 text-muted-foreground transition-colors hover:text-foreground"
+              className="rounded p-1 text-white/40 transition-colors hover:text-white"
               aria-label="Close chat"
             >
               <X className="h-5 w-5" />
@@ -91,7 +89,7 @@ export default function ChatSheet() {
           )}
 
           {showLeadForm && (
-            <div className="border-t border-border p-3">
+            <div className="border-t border-white/[0.08] p-3">
               <ChatLeadForm
                 onSubmitSuccess={() => {
                   setTimeout(() => setShowLeadForm(false), 3000)

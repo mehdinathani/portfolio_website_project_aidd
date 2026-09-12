@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'motion/react'
-import RevealSection from '@/components/motion/reveal-section'
 
 const stats = [
   { value: '5+', label: 'Projects Delivered' },
@@ -12,27 +11,24 @@ const stats = [
 
 export default function TrustStrip() {
   return (
-    <RevealSection>
-      <section className="border-y border-border/40 bg-secondary/30 px-6 py-12">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <motion.p
-                  className="text-3xl font-bold text-primary md:text-4xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
-                >
-                  {stat.value}
-                </motion.p>
-                <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+    <section className="flex items-center justify-center px-6 py-12">
+      <div className="mx-auto max-w-5xl">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {stats.map((stat) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 text-center"
+            >
+              <p className="type-headline text-white">{stat.value}</p>
+              <p className="type-caption mt-1 text-white/50">{stat.label}</p>
+            </motion.div>
+          ))}
         </div>
-      </section>
-    </RevealSection>
+      </div>
+    </section>
   )
 }

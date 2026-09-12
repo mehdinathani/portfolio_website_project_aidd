@@ -18,10 +18,10 @@ interface Lead {
 
 const STATUS_OPTIONS: LeadStatus[] = ['new', 'reviewed', 'replied', 'archived']
 const STATUS_COLORS: Record<LeadStatus, string> = {
-  new: 'bg-blue-100 text-blue-700',
+  new: 'bg-accent/10 text-accent',
   reviewed: 'bg-yellow-100 text-yellow-700',
-  replied: 'bg-green-100 text-green-700',
-  archived: 'bg-gray-100 text-gray-700',
+  replied: 'bg-green-600/10 text-green-700',
+  archived: 'bg-white/[0.06] text-white/70',
 }
 
 export default function AdminLeadsPage() {
@@ -65,14 +65,14 @@ export default function AdminLeadsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Leads Management</h1>
+      <h1 className="mb-6 text-2xl font-bold text-black">Leads Management</h1>
 
       {/* Filters */}
       <div className="mb-4 flex flex-wrap gap-3">
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="rounded border border-gray-300 px-3 py-2 text-sm"
+          className="rounded border border-white/10 px-3 py-2 text-sm"
         >
           <option value="">All Categories</option>
           {categories.map((c) => (
@@ -83,7 +83,7 @@ export default function AdminLeadsPage() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value as LeadStatus | '')}
-          className="rounded border border-gray-300 px-3 py-2 text-sm"
+          className="rounded border border-white/10 px-3 py-2 text-sm"
         >
           <option value="">All Statuses</option>
           {STATUS_OPTIONS.map((s) => (
@@ -93,19 +93,19 @@ export default function AdminLeadsPage() {
 
         <button
           onClick={() => { setFilterCategory(''); setFilterStatus('') }}
-          className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50"
+          className="rounded border border-white/10 px-3 py-2 text-sm text-white/60 hover:bg-white/[0.02]"
         >
           Clear Filters
         </button>
       </div>
 
       {loading ? (
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-white/40">Loading...</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="border-b border-gray-200 bg-gray-50 text-left">
+              <tr className="border-b border-white/10 bg-white/[0.02] text-left">
                 <th className="px-3 py-2">Name</th>
                 <th className="px-3 py-2">Email</th>
                 <th className="px-3 py-2">Category</th>
@@ -116,7 +116,7 @@ export default function AdminLeadsPage() {
             </thead>
             <tbody>
               {filteredLeads.map((lead) => (
-                <tr key={lead.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr key={lead.id} className="border-b border-white/[0.06] hover:bg-white/[0.02]">
                   <td className="px-3 py-2 font-medium">{lead.name}</td>
                   <td className="px-3 py-2">{lead.email}</td>
                   <td className="px-3 py-2">{lead.category}</td>
@@ -130,7 +130,7 @@ export default function AdminLeadsPage() {
                     <select
                       value={lead.status}
                       onChange={(e) => updateStatus(lead.id, e.target.value as LeadStatus)}
-                      className="rounded border border-gray-300 px-2 py-1 text-xs"
+                      className="rounded border border-white/10 px-2 py-1 text-xs"
                     >
                       {STATUS_OPTIONS.map((s) => (
                         <option key={s} value={s}>{s}</option>
@@ -138,7 +138,7 @@ export default function AdminLeadsPage() {
                     </select>
                     <button
                       onClick={() => handleDelete(lead.id)}
-                      className="text-sm text-red-600 hover:underline"
+                      className="text-sm text-red-400 hover:underline"
                     >
                       Delete
                     </button>
@@ -147,7 +147,7 @@ export default function AdminLeadsPage() {
               ))}
               {filteredLeads.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-3 py-4 text-center text-gray-500">
+                  <td colSpan={6} className="px-3 py-4 text-center text-white/40">
                     No leads found.
                   </td>
                 </tr>

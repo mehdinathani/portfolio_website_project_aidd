@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import RevealSection from '@/components/motion/reveal-section'
+import { Target, FlaskConical, Rocket } from 'lucide-react'
 
 interface Step {
   number: string
@@ -36,53 +36,45 @@ const defaultSteps: Step[] = [
   },
 ]
 
+const STEP_ICONS = [Target, FlaskConical, Rocket]
+
 export default function ProcessSteps({
   steps = defaultSteps,
-  title = 'Here\'s How It Works',
+  title = 'From idea to production',
   subtitle,
 }: ProcessStepsProps) {
   return (
-    <RevealSection>
-      <section className="mx-auto max-w-6xl px-6 py-24">
-        <div className="mb-16 text-center">
-          <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
-            {title}
-          </h2>
-          {subtitle && (
-            <p className="mt-3 text-muted-foreground">{subtitle}</p>
-          )}
-        </div>
+    <section className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center">
+      <p className="type-label mb-4 text-accent/80">How I work</p>
+      <h2 className="type-headline mx-auto max-w-3xl text-center text-white">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="type-caption mt-3 text-muted-foreground">{subtitle}</p>
+      )}
 
-        <div className="grid gap-8 md:grid-cols-3 md:gap-12">
-          {steps.map((step, i) => (
+      <div className="mt-14 grid w-full gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+        {steps.map((step, i) => {
+          const Icon = STEP_ICONS[i % STEP_ICONS.length]
+          return (
             <motion.div
               key={step.number}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 32, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
-              className="relative text-center md:text-left"
+              transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="text-center md:text-left"
             >
-              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                Step
-              </span>
-              <span className="font-display block text-6xl font-bold tracking-tighter text-primary/15 md:text-7xl">
-                {step.number}
-              </span>
-              <h3 className="mt-2 text-xl font-semibold text-foreground">
-                {step.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {step.description}
-              </p>
-
-              {i < steps.length - 1 && (
-                <div className="mt-6 hidden h-px bg-border/60 md:block" />
-              )}
+              <div className="mb-3 flex items-center justify-center gap-2 md:justify-start">
+                <Icon className="h-4 w-4 text-accent" />
+                <span className="type-label text-accent/80">Step {step.number}</span>
+              </div>
+              <h3 className="type-title mb-2 text-white">{step.title}</h3>
+              <p className="type-body text-muted">{step.description}</p>
             </motion.div>
-          ))}
-        </div>
-      </section>
-    </RevealSection>
+          )
+        })}
+      </div>
+    </section>
   )
 }

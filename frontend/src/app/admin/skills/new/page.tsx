@@ -43,37 +43,37 @@ export default function NewSkillPage() {
     <div>
       <Link
         href="/admin/skills"
-        className="mb-6 inline-block text-sm text-blue-600 transition-colors hover:text-blue-700"
+        className="mb-6 inline-block text-sm text-accent transition-colors hover:text-accent"
       >
         &larr; Back to Skills
       </Link>
 
       <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
-        <h1 className="text-2xl font-bold text-gray-900">New Skill</h1>
+        <h1 className="text-2xl font-bold text-black">New Skill</h1>
 
         {error && (
-          <div className="rounded-lg bg-red-50 border border-red-200 p-3">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+            <p className="text-sm text-red-400">{error}</p>
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label className="block text-sm font-medium text-white/70">Name</label>
           <input
             type="text"
             required
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 w-full rounded-lg border border-white/10 px-4 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Category</label>
+          <label className="block text-sm font-medium text-white/70">Category</label>
           <select
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 w-full rounded-lg border border-white/10 px-4 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -82,7 +82,7 @@ export default function NewSkillPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-white/70">
             Proficiency: {form.proficiency}%
           </label>
           <input
@@ -97,12 +97,12 @@ export default function NewSkillPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Display Order</label>
+          <label className="block text-sm font-medium text-white/70">Display Order</label>
           <input
             type="number"
             value={form.order_index}
             onChange={(e) => setForm({ ...form, order_index: parseInt(e.target.value) || 0 })}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 w-full rounded-lg border border-white/10 px-4 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </div>
 
@@ -110,13 +110,13 @@ export default function NewSkillPage() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+            className="rounded-lg bg-accent px-6 py-2 text-sm font-semibold text-black transition-colors hover:brightness-110 disabled:opacity-50"
           >
             {saving ? 'Creating...' : 'Create Skill'}
           </button>
           <Link
             href="/admin/skills"
-            className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+            className="rounded-lg border border-white/10 px-6 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.02]"
           >
             Cancel
           </Link>

@@ -70,10 +70,9 @@ export default function ServiceGrid() {
     <RevealSection>
       <section className="mx-auto max-w-6xl px-6 py-24">
         <div className="mb-14">
-          <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
-            My Core Services
-          </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="type-label mb-3 text-accent/80">Engagements mapped to real needs</p>
+          <h2 className="type-headline text-white">My Core Services</h2>
+          <p className="type-caption mt-3 text-muted-foreground">
             What I can do for you and your business
           </p>
         </div>
@@ -84,24 +83,24 @@ export default function ServiceGrid() {
             return (
               <motion.div
                 key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 28, filter: 'blur(8px)' }}
+                whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="group flex flex-col rounded-lg border border-border/60 bg-background p-6 transition-colors hover:border-border hover:bg-secondary/30"
+                transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                className="group flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-secondary/50 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-accent">
                   <Icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">
+                <h3 className="type-title text-white">
                   {service.title}
                 </h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                <p className="type-card-body mt-2 flex-1 text-muted">
                   {service.description}
                 </p>
                 <Link
                   href={service.href}
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                  className="type-caption mt-4 inline-flex items-center gap-1.5 font-medium text-accent transition hover:text-accent/80"
                 >
                   Explore Service
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />

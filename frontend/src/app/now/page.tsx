@@ -51,7 +51,7 @@ export default function NowPage() {
             href="https://nownownow.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary underline underline-offset-4"
+            className="text-accent underline underline-offset-4"
           >
             /now page movement
           </a>

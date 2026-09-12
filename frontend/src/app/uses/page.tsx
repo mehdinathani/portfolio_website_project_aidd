@@ -64,7 +64,7 @@ export default function UsesPage() {
           href="https://uses.tech"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary underline underline-offset-4"
+          className="text-accent underline underline-offset-4"
         >
           /uses page movement
         </a>

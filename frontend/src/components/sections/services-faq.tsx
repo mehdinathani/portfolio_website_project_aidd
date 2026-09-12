@@ -47,17 +47,17 @@ function FaqAccordion({ item }: { item: FaqItem }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="border-b border-border/40">
+    <div className="border-b border-white/[0.08]">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-foreground"
+        className="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-white"
         aria-expanded={open}
       >
-        <span className="text-sm font-medium text-foreground md:text-base">
+        <span className="text-sm font-medium text-white/80 md:text-base">
           {item.question}
         </span>
         <ChevronDown
-          className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
+          className={`h-4 w-4 shrink-0 text-white/40 transition-transform duration-200 ${
             open ? 'rotate-180' : ''
           }`}
         />
@@ -71,7 +71,7 @@ function FaqAccordion({ item }: { item: FaqItem }) {
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <p className="pb-5 text-sm leading-relaxed text-muted-foreground">
+            <p className="pb-5 text-sm leading-relaxed text-white/50">
               {item.answer}
             </p>
           </motion.div>
@@ -86,10 +86,11 @@ export default function ServicesFaq() {
     <RevealSection>
       <section className="mx-auto max-w-6xl px-6 py-24">
         <div className="mb-14">
-          <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
+          <p className="type-label mb-3 text-accent/80">Home to every answer</p>
+          <h2 className="type-headline text-white">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="type-caption mt-3 text-white/50">
             Everything you need to know about working with me
           </p>
         </div>

@@ -70,8 +70,8 @@ export default async function AboutPage() {
     <main className="mx-auto max-w-6xl px-6 py-24">
       <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
         <div className="relative shrink-0">
-          <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-primary/40 via-purple-500/30 to-primary/40 blur-sm" />
-          <div className="relative rounded-3xl bg-gradient-to-b from-primary/20 via-transparent to-primary/10 p-[2px]">
+          <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-accent/25 via-white/5 to-accent/25 blur-md" />
+          <div className="relative rounded-3xl border border-white/[0.08] p-[2px]">
             <Image
               src="/second_self_mehdi_enhanced.webp"
               alt={profile.full_name}
@@ -83,13 +83,13 @@ export default async function AboutPage() {
           </div>
         </div>
         <div className="text-center md:text-left">
-          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-foreground md:text-5xl md:leading-[1.1]">
+          <h1 className="type-headline text-white">
             Redefining the
             <br />
-            <span className="text-primary">Digital Narrative.</span>
+            <span className="text-white/70">Digital Narrative.</span>
           </h1>
-          <p className="mt-2 text-lg text-primary/80">{profile.headline}</p>
-          <p className="mt-6 max-w-2xl text-muted-foreground leading-relaxed">
+          <p className="mt-2 text-lg text-accent/80">{profile.headline}</p>
+          <p className="type-body mt-6 max-w-2xl font-light text-white/50 leading-relaxed">
             {profile.bio}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4 md:justify-start">
@@ -98,7 +98,7 @@ export default async function AboutPage() {
                 href={profile.linkedin_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                className="rounded-full border border-white/[0.15] px-6 py-2.5 text-sm font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white"
               >
                 LinkedIn
               </Link>
@@ -108,7 +108,7 @@ export default async function AboutPage() {
                 href={profile.github_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                className="rounded-full border border-white/[0.15] px-6 py-2.5 text-sm font-medium text-white/70 transition-colors hover:border-white/30 hover:text-white"
               >
                 GitHub
               </Link>
@@ -118,7 +118,7 @@ export default async function AboutPage() {
                 href={profile.resume_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow transition-colors hover:bg-primary/90"
+                className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-black transition-all hover:brightness-110"
               >
                 Download Resume
               </Link>
@@ -130,17 +130,18 @@ export default async function AboutPage() {
       <StatsStrip stats={aboutStats} className="mt-20" />
 
       <section className="mt-20">
-        <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
+        <p className="type-label mb-3 text-accent/80">The story</p>
+        <h2 className="type-headline text-white">
           From Finance to Agentic AI
         </h2>
-        <p className="mt-3 max-w-2xl text-muted-foreground leading-relaxed">
+        <p className="type-body mt-3 max-w-2xl font-light text-white/50 leading-relaxed">
           After building a strong foundation in finance and data analysis, I transitioned
           into software engineering with a focus on Agentic AI systems. I combine analytical
           rigor with modern engineering practices to build intelligent, user-centric applications.
         </p>
 
         {sortedExperiences.length > 0 && (
-          <div className="relative ml-1.5 mt-10 border-l border-border pl-6">
+          <div className="relative ml-1.5 mt-10 border-l border-white/[0.08] pl-6">
             {sortedExperiences.map((exp, i) => (
               <TimelineItem key={exp.id} experience={exp} isLast={i === sortedExperiences.length - 1} />
             ))}

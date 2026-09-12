@@ -1,9 +1,5 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
-import '@fontsource/space-grotesk/400.css'
-import '@fontsource/space-grotesk/500.css'
-import '@fontsource/space-grotesk/600.css'
-import '@fontsource/space-grotesk/700.css'
 import Header from '@/components/layout/header'
 import Footer from '@/components/layout/footer'
 import PageTransition from '@/components/motion/page-transition'
@@ -29,10 +25,8 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
-const CustomCursor = dynamic(() => import('@/components/motion/custom-cursor'), { ssr: false })
 const CommandPalette = dynamic(() => import('@/components/motion/command-palette'), { ssr: false })
 const ChatSheet = dynamic(() => import('@/components/chat/chat-sheet'), { ssr: false })
-// const BlobTravelCanvas = dynamic(() => import('@/components/effects/blob-travel-canvas'), { ssr: false })
 
 export const metadata: Metadata = {
   title: {
@@ -91,29 +85,28 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="flex min-h-screen flex-col font-sans antialiased">
+      <body className="snap-container flex min-h-screen flex-col font-sans antialiased">
         <AnalyticsScript />
         <SmoothScroll />
-        {/* <BlobTravelCanvas /> */}        <PageProgress />
+        <PageProgress />
         <LiveRegion />
         <AnalyticsTracker />
         <Toaster
           position="bottom-right"
           toastOptions={{
             style: {
-              background: 'hsl(240 5% 4%)',
-              color: 'hsl(60 5% 96%)',
-              border: '1px solid hsl(240 5% 20%)',
+              background: '#000',
+              color: '#f5f5f7',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
             },
           }}
         />
         <Header />
-        <main className="flex-1 pt-16">
+        <main className="flex-1">
           <PageTransition>{children}</PageTransition>
         </main>
         <ScrollToTop />
         <Footer />
-        <CustomCursor />
         <CommandPalette />
         <ChatSheet />
       </body>

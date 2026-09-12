@@ -2,7 +2,6 @@
 
 import { motion } from 'motion/react'
 import { ShieldCheck, Building2, Users, MessageSquareText, HeadphonesIcon, Lightbulb } from 'lucide-react'
-import RevealSection from '@/components/motion/reveal-section'
 
 const features = [
   {
@@ -45,43 +44,33 @@ const features = [
 
 export default function WhyChooseUs() {
   return (
-    <RevealSection>
-      <section className="mx-auto max-w-6xl px-6 py-24">
-        <div className="mb-14 text-center md:text-left">
-          <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
-            Why Choose Me
-          </h2>
-          <p className="mt-3 text-muted-foreground">
-            What sets my approach apart from the rest
-          </p>
-        </div>
+    <section className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center">
+      <p className="type-label mb-4 text-accent/80">Why teams choose me</p>
+      <h2 className="type-headline mx-auto max-w-3xl text-center text-white">
+        Built for teams that need AI to work in the real world
+      </h2>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, i) => {
-            const Icon = feature.icon
-            return (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="group rounded-lg border border-border/60 bg-background p-8 transition-colors hover:border-border hover:bg-secondary/30"
-              >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md border border-border/60 bg-secondary/50 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
-                  {feature.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {feature.description}
-                </p>
-              </motion.div>
-            )
-          })}
-        </div>
-      </section>
-    </RevealSection>
+      <div className="mt-14 grid w-full gap-6 md:grid-cols-3">
+        {features.map((feature, i) => {
+          const Icon = feature.icon
+          return (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 32, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 text-center"
+            >
+              <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-accent">
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="type-title mb-3 text-white">{feature.title}</h3>
+              <p className="type-body text-muted">{feature.description}</p>
+            </motion.div>
+          )
+        })}
+      </div>
+    </section>
   )
 }

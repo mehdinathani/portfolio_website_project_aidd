@@ -38,7 +38,7 @@ export function ChatInput({
   }
 
   return (
-    <div className="flex gap-2 border-t border-border bg-background px-3 py-3">
+    <div className="flex gap-2 border-t border-white/[0.08] px-3 py-3">
       <input
         ref={inputRef}
         type="text"
@@ -53,12 +53,12 @@ export function ChatInput({
         disabled={isLoading}
         maxLength={maxLength}
         aria-label="Chat message"
-        className="flex-1 rounded-full border border-input bg-background px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+        className="flex-1 rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-accent/50 disabled:opacity-50"
       />
       <button
         onClick={handleSend}
         disabled={isLoading || !input.trim()}
-        className="rounded-full bg-primary p-2 text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded-full bg-accent p-2 text-black transition-all hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
         aria-label="Send message"
       >
         <svg

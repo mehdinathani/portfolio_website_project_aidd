@@ -70,41 +70,41 @@ export default function AdminSkillsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Skills</h1>
+        <h1 className="text-2xl font-bold text-black">Skills</h1>
         <Link
           href="/admin/skills/new"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-700 inline-block"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-black shadow transition-colors hover:brightness-110 inline-block"
         >
           Add Skill
         </Link>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-6">
-          <h2 className="text-lg font-semibold text-gray-900">{editing ? 'Edit Skill' : 'New Skill'}</h2>
+        <form onSubmit={handleSubmit} className="mb-6 space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-6">
+          <h2 className="text-lg font-semibold text-black">{editing ? 'Edit Skill' : 'New Skill'}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              <label className="block text-sm font-medium text-white/70">Name</label>
+              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="mt-1 w-full rounded-lg border border-white/10 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
-              <input type="text" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              <label className="block text-sm font-medium text-white/70">Category</label>
+              <input type="text" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required className="mt-1 w-full rounded-lg border border-white/10 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Proficiency ({form.proficiency}%)</label>
+              <label className="block text-sm font-medium text-white/70">Proficiency ({form.proficiency}%)</label>
               <input type="range" min={0} max={100} value={form.proficiency} onChange={(e) => setForm({ ...form, proficiency: Number(e.target.value) })} className="mt-1 w-full" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Order</label>
-              <input type="number" value={form.order_index} onChange={(e) => setForm({ ...form, order_index: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              <label className="block text-sm font-medium text-white/70">Order</label>
+              <input type="number" value={form.order_index} onChange={(e) => setForm({ ...form, order_index: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-white/10 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
             </div>
           </div>
           <div className="flex gap-3 pt-2">
-            <button type="submit" className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700">
+            <button type="submit" className="rounded-lg bg-accent px-6 py-2 text-sm font-semibold text-black transition-colors hover:brightness-110">
               {editing ? 'Save Changes' : 'Create Skill'}
             </button>
-            <button type="button" onClick={resetForm} className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">Cancel</button>
+            <button type="button" onClick={resetForm} className="rounded-lg border border-white/10 px-6 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-white/[0.02]">Cancel</button>
           </div>
         </form>
       )}

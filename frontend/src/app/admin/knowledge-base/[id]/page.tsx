@@ -75,60 +75,60 @@ export default function EditKBEntryPage() {
   }
 
   if (loading) {
-    return <div className="py-8 text-center text-gray-500">Loading...</div>
+    return <div className="py-8 text-center text-white/40">Loading...</div>
   }
 
   return (
     <div>
       <Link
         href="/admin/knowledge-base"
-        className="mb-6 inline-block text-sm text-blue-600 transition-colors hover:text-blue-700"
+        className="mb-6 inline-block text-sm text-accent transition-colors hover:text-accent"
       >
         &larr; Back to Knowledge Base
       </Link>
 
       <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
-        <h1 className="text-2xl font-bold text-gray-900">Edit Knowledge Base Entry</h1>
+        <h1 className="text-2xl font-bold text-black">Edit Knowledge Base Entry</h1>
 
         {error && (
-          <div className="rounded-lg bg-red-50 border border-red-200 p-3">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+            <p className="text-sm text-red-400">{error}</p>
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Source</label>
+          <label className="block text-sm font-medium text-white/70">Source</label>
           <input
             type="text"
             value={form.source || ''}
             onChange={(e) => setForm({ ...form, source: e.target.value })}
             placeholder="e.g., resume, project_description, bio"
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 w-full rounded-lg border border-white/10 px-4 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Content</label>
+          <label className="block text-sm font-medium text-white/70">Content</label>
           <textarea
             rows={8}
             required
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
             placeholder="Enter the knowledge base content chunk..."
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 w-full rounded-lg border border-white/10 px-4 py-2 text-sm font-mono focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-white/40">
             This content will be embedded using Gemini text-embedding-004 when saved.
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Metadata (JSON)</label>
+          <label className="block text-sm font-medium text-white/70">Metadata (JSON)</label>
           <textarea
             rows={4}
             value={form.metadata}
             onChange={(e) => setForm({ ...form, metadata: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-mono focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 w-full rounded-lg border border-white/10 px-4 py-2 text-sm font-mono focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </div>
 
@@ -136,7 +136,7 @@ export default function EditKBEntryPage() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+            className="rounded-lg bg-accent px-6 py-2 text-sm font-semibold text-black transition-colors hover:brightness-110 disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save & Re-embed'}
           </button>
@@ -144,13 +144,13 @@ export default function EditKBEntryPage() {
             type="button"
             onClick={handleDelete}
             disabled={deleting}
-            className="rounded-lg border border-red-300 px-6 py-2 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
+            className="rounded-lg border border-red-500/30 px-6 py-2 text-sm font-semibold text-red-400 transition-colors hover:bg-red-500/10 disabled:opacity-50"
           >
             {deleting ? 'Deleting...' : 'Delete'}
           </button>
           <Link
             href="/admin/knowledge-base"
-            className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+            className="rounded-lg border border-white/10 px-6 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.02]"
           >
             Cancel
           </Link>

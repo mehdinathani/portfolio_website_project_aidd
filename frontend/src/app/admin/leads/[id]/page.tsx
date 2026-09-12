@@ -45,16 +45,16 @@ export default async function LeadDetailPage({
     <div className="max-w-2xl">
       <Link
         href="/admin/leads"
-        className="mb-6 inline-block text-sm text-blue-600 transition-colors hover:text-blue-700"
+        className="mb-6 inline-block text-sm text-accent transition-colors hover:text-accent"
       >
         &larr; Back to Leads
       </Link>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 shadow-sm">
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{lead.name}</h1>
-            <p className="mt-1 text-sm text-gray-500">{lead.email}</p>
+            <h1 className="text-2xl font-bold text-black">{lead.name}</h1>
+            <p className="mt-1 text-sm text-white/40">{lead.email}</p>
           </div>
           <form action={updateStatus}>
             <StatusBadge status={lead.status} onChange={(s) => {}} />
@@ -66,7 +66,7 @@ export default async function LeadDetailPage({
                 form.append('status', e.target.value)
                 updateStatus(form)
               }}
-              className="ml-2 rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="ml-2 rounded border border-white/10 px-2 py-1 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
             >
               <option value="new">New</option>
               <option value="reviewed">Reviewed</option>
@@ -78,23 +78,23 @@ export default async function LeadDetailPage({
 
         <div className="mb-6 grid gap-4 sm:grid-cols-3">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Category</p>
-            <p className="mt-1 text-sm font-medium text-gray-900">{categoryLabel}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-white/40">Category</p>
+            <p className="mt-1 text-sm font-medium text-black">{categoryLabel}</p>
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Source</p>
-            <p className="mt-1 text-sm text-gray-900">{lead.source}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-white/40">Source</p>
+            <p className="mt-1 text-sm text-black">{lead.source}</p>
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Date</p>
-            <p className="mt-1 text-sm text-gray-900">{leadDate}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-white/40">Date</p>
+            <p className="mt-1 text-sm text-black">{leadDate}</p>
           </div>
         </div>
 
         <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-500">Message</p>
-          <div className="rounded-lg bg-gray-50 p-4">
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700">{lead.message}</p>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-white/40">Message</p>
+          <div className="rounded-lg bg-white/[0.02] p-4">
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-white/70">{lead.message}</p>
           </div>
         </div>
       </div>

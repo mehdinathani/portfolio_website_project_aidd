@@ -98,38 +98,38 @@ export default function AdminKnowledgeBasePage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Knowledge Base</h1>
+        <h1 className="text-2xl font-bold text-black">Knowledge Base</h1>
         <Link
           href="/admin/knowledge-base/new"
-          className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 inline-block"
+          className="rounded bg-accent px-4 py-2 text-sm text-black hover:brightness-110 inline-block"
         >
           Add Entry
         </Link>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 space-y-4 rounded border border-gray-200 bg-gray-50 p-4">
+        <form onSubmit={handleSubmit} className="mb-6 space-y-4 rounded border border-white/10 bg-white/[0.02] p-4">
           <h2 className="text-lg font-semibold">{editing ? 'Edit Entry' : 'New Entry'}</h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Content</label>
+            <label className="block text-sm font-medium text-white/70">Content</label>
             <textarea
               value={form.content}
               onChange={(e) => setForm({ ...form, content: e.target.value })}
               required
               rows={5}
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded border border-white/10 px-3 py-2 text-sm"
               placeholder="Enter knowledge base content..."
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Source</label>
+              <label className="block text-sm font-medium text-white/70">Source</label>
               <select
                 value={form.source}
                 onChange={(e) => setForm({ ...form, source: e.target.value })}
-                className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded border border-white/10 px-3 py-2 text-sm"
               >
                 {SOURCE_OPTIONS.map((s) => (
                   <option key={s} value={s}>{s}</option>
@@ -139,23 +139,23 @@ export default function AdminKnowledgeBasePage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-white/70">
               Metadata (JSON)
             </label>
             <textarea
               value={form.metadata}
               onChange={(e) => setForm({ ...form, metadata: e.target.value })}
               rows={3}
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm font-mono"
+              className="mt-1 w-full rounded border border-white/10 px-3 py-2 text-sm font-mono"
               placeholder='{"key": "value"}'
             />
           </div>
 
           <div className="flex gap-2">
-            <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+            <button type="submit" className="rounded bg-accent px-4 py-2 text-sm text-black hover:brightness-110">
               {editing ? 'Update' : 'Create'}
             </button>
-            <button type="button" onClick={resetForm} className="rounded border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <button type="button" onClick={resetForm} className="rounded border border-white/10 px-4 py-2 text-sm text-white/70 hover:bg-white/[0.02]">
               Cancel
             </button>
           </div>
@@ -163,12 +163,12 @@ export default function AdminKnowledgeBasePage() {
       )}
 
       {loading ? (
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-white/40">Loading...</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="border-b border-gray-200 bg-gray-50 text-left">
+              <tr className="border-b border-white/10 bg-white/[0.02] text-left">
                 <th className="px-3 py-2">Content Preview</th>
                 <th className="px-3 py-2">Source</th>
                 <th className="px-3 py-2">Date</th>
@@ -177,7 +177,7 @@ export default function AdminKnowledgeBasePage() {
             </thead>
             <tbody>
               {entries.map((entry) => (
-                <tr key={entry.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr key={entry.id} className="border-b border-white/[0.06] hover:bg-white/[0.02]">
                   <td className="max-w-md px-3 py-2">
                     <p className="truncate text-sm">
                       {entry.content.length > 100
@@ -186,16 +186,16 @@ export default function AdminKnowledgeBasePage() {
                     </p>
                   </td>
                   <td className="px-3 py-2">
-                    <span className="inline-block rounded bg-gray-100 px-2 py-0.5 text-xs font-medium">
+                    <span className="inline-block rounded bg-white/[0.06] px-2 py-0.5 text-xs font-medium">
                       {entry.source}
                     </span>
                   </td>
                   <td className="px-3 py-2">{entry.created_at ? entry.created_at.slice(0, 10) : ''}</td>
                   <td className="px-3 py-2 space-x-2">
-                    <button onClick={() => openEdit(entry)} className="text-sm text-blue-600 hover:underline">
+                    <button onClick={() => openEdit(entry)} className="text-sm text-accent hover:underline">
                       Edit
                     </button>
-                    <button onClick={() => handleDelete(entry.id)} className="text-sm text-red-600 hover:underline">
+                    <button onClick={() => handleDelete(entry.id)} className="text-sm text-red-400 hover:underline">
                       Delete
                     </button>
                   </td>
@@ -203,7 +203,7 @@ export default function AdminKnowledgeBasePage() {
               ))}
               {entries.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-3 py-4 text-center text-gray-500">
+                  <td colSpan={4} className="px-3 py-4 text-center text-white/40">
                     No knowledge base entries yet.
                   </td>
                 </tr>
