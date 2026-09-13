@@ -17,7 +17,7 @@ export default async function CertificationsPage() {
   const sorted = [...certifications].sort((a, b) => a.order_index - b.order_index)
 
   return (
-    <main className="px-6 py-24">
+    <div className="px-6 py-24">
       <div className="mx-auto max-w-5xl">
         <h1 className="type-headline mb-12 text-center text-white">Certifications</h1>
 
@@ -49,6 +49,6 @@ export default async function CertificationsPage() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   )
 }

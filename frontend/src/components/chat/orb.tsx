@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { MessageSquare, Sparkles } from 'lucide-react'
 
 interface ChatOrbProps {
@@ -10,13 +11,16 @@ interface ChatOrbProps {
 
 export default function ChatOrb({ onClick, isOpen }: ChatOrbProps) {
   const [showTooltip, setShowTooltip] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const timer = setTimeout(() => setShowTooltip(true), 3000)
     return () => clearTimeout(timer)
   }, [])
 
-  if (isOpen) return null
+  // The fixed orb sits over the full-width "Send Message" button on mobile,
+  // so it is hidden on the contact page where the contact CTAs are front and center.
+  if (isOpen || pathname === '/contact') return null
 
   return (
     <div className="fixed bottom-6 right-6 z-40">

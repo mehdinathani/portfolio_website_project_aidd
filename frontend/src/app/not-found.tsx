@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-[70vh] flex-col items-center justify-center px-6">
+    <div className="flex min-h-[70vh] flex-col items-center justify-center px-6">
       <div className="relative mx-auto max-w-md text-center">
         <svg
           className="mx-auto h-40 w-40 text-muted-foreground/10"
@@ -46,6 +46,6 @@ export default function NotFound() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

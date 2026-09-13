@@ -99,6 +99,20 @@
     scroll-snap-stop: always;
   }
 
+  /* On small screens sections overrun the viewport (e.g. #trust on a 390px
+     phone is ~2.3 screens tall). Forced snap stops mid-section make mobile
+     scrolling feel sticky/trapped, so disable snap below the md breakpoint. */
+  @media (max-width: 767px) {
+    .snap-container {
+      scroll-snap-type: none;
+    }
+
+    .snap-section {
+      scroll-snap-align: none;
+      scroll-snap-stop: normal;
+    }
+  }
+
   /* ---- SwiftSolve type scale ---- */
 
   .type-headline {

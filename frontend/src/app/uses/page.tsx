@@ -36,7 +36,7 @@ const categories = [
 
 export default function UsesPage() {
   return (
-    <main className="mx-auto max-w-2xl px-6 py-24">
+    <div className="mx-auto max-w-2xl px-6 py-24">
       <h1 className="text-4xl font-bold tracking-tight text-foreground">Uses</h1>
       <p className="mt-2 text-muted-foreground">
         Tools, software, and gear I use daily.
@@ -70,6 +70,6 @@ export default function UsesPage() {
         </a>
         .
       </p>
-    </main>
+    </div>
   )
 }

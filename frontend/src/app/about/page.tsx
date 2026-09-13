@@ -67,7 +67,7 @@ export default async function AboutPage() {
   const sortedExperiences = [...experiences].sort((a, b) => a.order_index - b.order_index)
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-24">
+    <div className="mx-auto max-w-6xl px-6 py-24">
       <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
         <div className="relative shrink-0">
           <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-accent/25 via-white/5 to-accent/25 blur-md" />
@@ -78,6 +78,7 @@ export default async function AboutPage() {
               width={320}
               height={480}
               className="h-auto max-h-[540px] w-[260px] rounded-3xl object-cover md:w-[320px]"
+              style={{ width: 'auto', height: 'auto' }}
               priority
             />
           </div>
@@ -152,6 +153,6 @@ export default async function AboutPage() {
       {skills.length > 0 && <SkillsCluster skills={skills} />}
 
       <ProcessSteps steps={aboutSteps} title="How I Work" />
-    </main>
+    </div>
   )
 }

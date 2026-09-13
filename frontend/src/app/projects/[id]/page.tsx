@@ -58,7 +58,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   const sections = project.description ? parseSections(project.description) : []
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-24">
+    <div className="mx-auto max-w-4xl px-6 py-24">
       <Link
         href="/projects"
         className="group mb-8 inline-flex items-center gap-1 text-sm text-white/40 transition-colors hover:text-white"
@@ -161,6 +161,6 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           )}
         </div>
       )}
-    </main>
+    </div>
   )
 }

@@ -15,7 +15,7 @@ export default function ErrorPage({
   }, [error])
 
   return (
-    <main className="flex min-h-[70vh] flex-col items-center justify-center px-6">
+    <div className="flex min-h-[70vh] flex-col items-center justify-center px-6">
       <div className="relative mx-auto max-w-md text-center">
         <svg
           className="mx-auto h-32 w-32 text-destructive/20"
@@ -54,6 +54,6 @@ export default function ErrorPage({
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

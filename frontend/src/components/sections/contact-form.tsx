@@ -142,7 +142,7 @@ export default function ContactForm() {
           value={form.category}
           onValueChange={(value) => setForm({ ...form, category: value })}
         >
-          <SelectTrigger id="category">
+          <SelectTrigger id="category" aria-label="Category">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
           <SelectContent>

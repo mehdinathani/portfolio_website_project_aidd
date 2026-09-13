@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 
@@ -15,9 +15,28 @@ const navLinks = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    // Window scroll events don't fire reliably while Lenis drives the
+    // scroll in some browsers/environments, so poll scrollY each frame.
+    let raf = 0
+    const tick = () => {
+      setScrolled(window.scrollY > 12)
+      raf = requestAnimationFrame(tick)
+    }
+    tick()
+    return () => cancelAnimationFrame(raf)
+  }, [])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-transparent">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        scrolled
+          ? 'border-b border-white/[0.06] bg-black/70 backdrop-blur-md'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6">
         <Link
           href="/"
@@ -43,7 +62,6 @@ export default function Header() {
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
-          aria-controls="mobile-nav"
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="px-6 py-24">
+    <div className="px-6 py-24">
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
           <p className="type-label mb-4 text-accent/80">Say hello</p>
@@ -54,6 +54,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
