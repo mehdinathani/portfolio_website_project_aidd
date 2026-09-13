@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import Header from '@/components/layout/header'
 import Footer from '@/components/layout/footer'
 import PageTransition from '@/components/motion/page-transition'
@@ -109,6 +110,7 @@ export default function RootLayout({
         <Footer />
         <CommandPalette />
         <ChatSheet />
+        <Analytics />
       </body>
     </html>
   )
