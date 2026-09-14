@@ -4,7 +4,7 @@ import HeroContent from '@/components/hero/hero-content'
 describe('HeroContent', () => {
   it('renders headline text', () => {
     render(<HeroContent />)
-    expect(screen.getByText(/intersection of AI/)).toBeInTheDocument()
+    expect(screen.getByText(/Building production AI/)).toBeInTheDocument()
   })
 
   it('renders CTA links', () => {

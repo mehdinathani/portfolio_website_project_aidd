@@ -13,12 +13,13 @@ export default function HeroContent() {
     'I design, build, and deploy LLM, computer vision, automation, and ML infrastructure products for startups and product teams.'
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center md:px-6">
-      <motion.div
-        initial={{ opacity: 0, y: 14, filter: 'blur(8px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      >
+    <div className="relative z-10 flex min-h-screen flex-col items-center px-4 pb-10 pt-20 text-center md:px-6">
+      <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 14, filter: 'blur(8px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        >
         <span className="type-label inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-white/60 backdrop-blur-sm">
           AI Product Engineer
         </span>
@@ -96,9 +97,10 @@ export default function HeroContent() {
           View selected work
         </Link>
       </motion.div>
+      </div>
 
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="flex shrink-0 flex-col items-center pt-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1.2 }}
