@@ -1,7 +1,8 @@
+import { supabase } from './supabase-client'
+
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
 async function authHeaders(): Promise<Record<string, string>> {
-  const { supabase } = await import('./supabase-client')
   const {
     data: { session },
   } = await supabase.auth.getSession()
