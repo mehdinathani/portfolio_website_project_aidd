@@ -4,8 +4,17 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
 async function authHeaders(): Promise<Record<string, string>> {
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    throw new Error('No authenticated user')
+  }
+
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session?.access_token) {
+    throw new Error('No session token available')
+  }
 
   if (!session?.access_token) {
     throw new Error('No authenticated session')

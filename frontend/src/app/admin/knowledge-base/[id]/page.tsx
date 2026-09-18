@@ -21,18 +21,24 @@ export default function EditKBEntryPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!id) return
-    apiAdmin.getKnowledgeBase().then((items: any[]) => {
-      const item = items.find((k: any) => k.id === id)
-      if (item) {
-        setForm({
+    async function load() {
+      if (!id) return
+      try {
+        const items = await apiAdmin.getKnowledgeBase() as any[]
+        const item = items.find((k: any) => k.id === id)
+        if (item) {
+          setForm({
           content: item.content || '',
           source: item.source || '',
           metadata: item.metadata ? JSON.stringify(item.metadata, null, 2) : '{}',
         })
+        }
+      } catch (e: any) {
+        setError(e.message || 'Failed to load')
       }
       setLoading(false)
-    })
+    }
+    load()
   }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {

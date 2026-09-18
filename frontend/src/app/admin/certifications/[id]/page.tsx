@@ -18,20 +18,26 @@ export default function EditCertificationPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!id) return
-    apiAdmin.getCertifications().then((items: any[]) => {
-      const item = items.find((c: any) => c.id === id)
-      if (item) {
-        setForm({
+    async function load() {
+      if (!id) return
+      try {
+        const items = await apiAdmin.getCertifications() as any[]
+        const item = items.find((c: any) => c.id === id)
+        if (item) {
+          setForm({
           name: item.name || '',
           issuer: item.issuer || '',
           date_earned: item.date_earned || '',
           credential_url: item.credential_url || '',
           order_index: item.order_index || 0,
         })
+        }
+      } catch (e: any) {
+        setError(e.message || 'Failed to load')
       }
       setLoading(false)
-    })
+    }
+    load()
   }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {

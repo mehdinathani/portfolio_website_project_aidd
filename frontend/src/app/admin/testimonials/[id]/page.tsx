@@ -18,11 +18,13 @@ export default function EditTestimonialPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!id) return
-    apiAdmin.getTestimonials().then((items: any[]) => {
-      const item = items.find((t: any) => t.id === id)
-      if (item) {
-        setForm({
+    async function load() {
+      if (!id) return
+      try {
+        const items = await apiAdmin.getTestimonials() as any[]
+        const item = items.find((t: any) => t.id === id)
+        if (item) {
+          setForm({
           author_name: item.author_name || '',
           author_role: item.author_role || '',
           author_company: item.author_company || '',
@@ -31,9 +33,13 @@ export default function EditTestimonialPage() {
           linkedin_url: item.linkedin_url || '',
           order_index: item.order_index || 0,
         })
+        }
+      } catch (e: any) {
+        setError(e.message || 'Failed to load')
       }
       setLoading(false)
-    })
+    }
+    load()
   }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {

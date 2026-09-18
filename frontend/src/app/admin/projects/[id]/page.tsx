@@ -18,26 +18,32 @@ export default function EditProjectPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!id) return
-    apiAdmin.getProjects().then((projects: any[]) => {
-      const project = projects.find((p: any) => p.id === id)
-      if (project) {
-        setForm({
-          title: project.title || '',
-          description: project.description || '',
-          short_description: project.short_description || '',
-          tech_stack: project.tech_stack || [],
-          project_url: project.project_url || '',
-          github_url: project.github_url || '',
-          image_url: project.image_url || '',
-          featured: project.featured || false,
-          order_index: project.order_index || 0,
-          start_date: project.start_date || '',
-          end_date: project.end_date || '',
-        })
+    async function load() {
+      if (!id) return
+      try {
+        const projects = await apiAdmin.getProjects() as any[]
+        const project = projects.find((p: any) => p.id === id)
+        if (project) {
+          setForm({
+            title: project.title || '',
+            description: project.description || '',
+            short_description: project.short_description || '',
+            tech_stack: project.tech_stack || [],
+            project_url: project.project_url || '',
+            github_url: project.github_url || '',
+            image_url: project.image_url || '',
+            featured: project.featured || false,
+            order_index: project.order_index || 0,
+            start_date: project.start_date || '',
+            end_date: project.end_date || '',
+          })
+        }
+      } catch (e: any) {
+        setError(e.message || 'Failed to load')
       }
       setLoading(false)
-    })
+    }
+    load()
   }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -19,20 +19,26 @@ export default function EditSkillPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!id) return
-    apiAdmin.getSkills().then((skills: any[]) => {
-      const skill = skills.find((s: any) => s.id === id)
-      if (skill) {
-        setForm({
-          name: skill.name || '',
-          category: skill.category || 'Other',
-          proficiency: skill.proficiency || 50,
-          icon_url: skill.icon_url || '',
-          order_index: skill.order_index || 0,
-        })
+    async function load() {
+      if (!id) return
+      try {
+        const skills = await apiAdmin.getSkills() as any[]
+        const skill = skills.find((s: any) => s.id === id)
+        if (skill) {
+          setForm({
+            name: skill.name || '',
+            category: skill.category || 'Other',
+            proficiency: skill.proficiency || 50,
+            icon_url: skill.icon_url || '',
+            order_index: skill.order_index || 0,
+          })
+        }
+      } catch (e: any) {
+        setError(e.message || 'Failed to load')
       }
       setLoading(false)
-    })
+    }
+    load()
   }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {

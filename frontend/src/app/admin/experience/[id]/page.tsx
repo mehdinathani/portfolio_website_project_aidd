@@ -18,11 +18,13 @@ export default function EditExperiencePage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!id) return
-    apiAdmin.getExperience().then((items: any[]) => {
-      const item = items.find((e: any) => e.id === id)
-      if (item) {
-        setForm({
+    async function load() {
+      if (!id) return
+      try {
+        const items = await apiAdmin.getExperience() as any[]
+        const item = items.find((e: any) => e.id === id)
+        if (item) {
+          setForm({
           company: item.company || '',
           role: item.role || '',
           start_date: item.start_date || '',
@@ -30,9 +32,13 @@ export default function EditExperiencePage() {
           responsibilities: item.responsibilities || '',
           order_index: item.order_index || 0,
         })
+        }
+      } catch (e: any) {
+        setError(e.message || 'Failed to load')
       }
       setLoading(false)
-    })
+    }
+    load()
   }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {
