@@ -1,8 +1,16 @@
 from fastapi import APIRouter, HTTPException, status
 from src.schemas.experience import ExperienceCreate, ExperienceUpdate, ExperienceResponse
 from src.db.session import get_supabase
+from typing import List
 
 router = APIRouter(prefix="/experience", tags=["Admin Experience"])
+
+
+@router.get("/", response_model=list[ExperienceResponse])
+async def read_experience():
+    supabase = get_supabase()
+    result = supabase.table("experience").select("*").order("order_index").execute()
+    return [ExperienceResponse(**item) for item in result.data]
 
 
 @router.post("/", response_model=ExperienceResponse)

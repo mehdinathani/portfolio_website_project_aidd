@@ -1,8 +1,16 @@
 from fastapi import APIRouter, HTTPException, status
 from src.schemas.skill import SkillCreate, SkillUpdate, SkillResponse
 from src.db.session import get_supabase
+from typing import List
 
 router = APIRouter(prefix="/skills", tags=["Admin Skills"])
+
+
+@router.get("/", response_model=list[SkillResponse])
+async def read_skills():
+    supabase = get_supabase()
+    result = supabase.table("skills").select("*").order("order_index").execute()
+    return [SkillResponse(**item) for item in result.data]
 
 
 @router.post("/", response_model=SkillResponse)

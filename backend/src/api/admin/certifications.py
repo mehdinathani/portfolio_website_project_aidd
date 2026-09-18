@@ -1,8 +1,16 @@
 from fastapi import APIRouter, HTTPException, status
 from src.schemas.certification import CertificationCreate, CertificationUpdate, CertificationResponse
 from src.db.session import get_supabase
+from typing import List
 
 router = APIRouter(prefix="/certifications", tags=["Admin Certifications"])
+
+
+@router.get("/", response_model=list[CertificationResponse])
+async def read_certifications():
+    supabase = get_supabase()
+    result = supabase.table("certifications").select("*").order("order_index").execute()
+    return [CertificationResponse(**item) for item in result.data]
 
 
 @router.post("/", response_model=CertificationResponse)

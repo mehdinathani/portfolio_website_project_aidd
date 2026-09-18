@@ -1,8 +1,16 @@
 from fastapi import APIRouter, HTTPException, status
 from src.schemas.testimonial import TestimonialCreate, TestimonialUpdate, TestimonialResponse
 from src.db.session import get_supabase
+from typing import List
 
 router = APIRouter(prefix="/testimonials", tags=["Admin Testimonials"])
+
+
+@router.get("/", response_model=list[TestimonialResponse])
+async def read_testimonials():
+    supabase = get_supabase()
+    result = supabase.table("testimonials").select("*").order("order_index").execute()
+    return [TestimonialResponse(**item) for item in result.data]
 
 
 @router.post("/", response_model=TestimonialResponse)
