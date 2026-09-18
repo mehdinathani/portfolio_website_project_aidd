@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic'
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Project | null>(null)
 
@@ -30,10 +31,12 @@ export default function AdminProjectsPage() {
 
   async function fetchProjects() {
     setLoading(true)
+    setError(null)
     try {
       const data = await apiAdmin.getProjects()
       setProjects(data as Project[])
-    } catch (err) {
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch projects')
       console.error('Failed to fetch projects:', err)
     } finally {
       setLoading(false)
@@ -169,14 +172,21 @@ export default function AdminProjectsPage() {
       )}
 
       {!showForm && (
-        <AdminTable
-          columns={columns}
-          data={projects}
-          getKey={(p) => p.id}
-          onEdit={(p) => openEdit(p)}
-          onDelete={(p) => handleDelete(p.id)}
-          emptyMessage="No projects yet. Click 'Add Project' to create one."
-        />
+        <>
+          {error && (
+            <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+          <AdminTable
+            columns={columns}
+            data={projects}
+            getKey={(p) => p.id}
+            onEdit={(p) => openEdit(p)}
+            onDelete={(p) => handleDelete(p.id)}
+            emptyMessage="No projects yet. Click 'Add Project' to create one."
+          />
+        </>
       )}
     </div>
   )

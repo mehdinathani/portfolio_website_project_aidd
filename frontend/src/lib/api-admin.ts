@@ -7,206 +7,124 @@ async function authHeaders(): Promise<Record<string, string>> {
     data: { session },
   } = await supabase.auth.getSession()
 
+  if (!session?.access_token) {
+    throw new Error('No authenticated session')
+  }
+
   return {
     'Content-Type': 'application/json',
-    ...(session?.access_token
-      ? { Authorization: `Bearer ${session.access_token}` }
-      : {}),
+    Authorization: `Bearer ${session.access_token}`,
   }
+}
+
+async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
+  const headers = await authHeaders()
+  const res = await fetch(url, { ...options, headers })
+  if (!res.ok) {
+    throw new Error(`API error: ${res.status} ${res.statusText}`)
+  }
+  return res.json()
 }
 
 export const apiAdmin = {
   // Projects
-  getProjects: async () => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/projects`, { headers })
-    return res.json()
-  },
-  createProject: async (data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/projects`, {
+  getProjects: async () => apiFetch(`${BASE_URL}/api/v1/admin/projects`),
+  createProject: async (data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/projects`, {
       method: 'POST',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  updateProject: async (id: string, data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/projects/${id}`, {
+    }),
+  updateProject: async (id: string, data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/projects/${id}`, {
       method: 'PUT',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  deleteProject: async (id: string) => {
-    const headers = await authHeaders()
-    await fetch(`${BASE_URL}/api/v1/admin/projects/${id}`, {
-      method: 'DELETE',
-      headers,
-    })
-  },
+    }),
+  deleteProject: async (id: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/projects/${id}`, { method: 'DELETE' }),
 
   // Skills
-  getSkills: async () => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/skills`, { headers })
-    return res.json()
-  },
-  createSkill: async (data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/skills`, {
+  getSkills: async () => apiFetch(`${BASE_URL}/api/v1/admin/skills`),
+  createSkill: async (data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/skills`, {
       method: 'POST',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  updateSkill: async (id: string, data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/skills/${id}`, {
+    }),
+  updateSkill: async (id: string, data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/skills/${id}`, {
       method: 'PUT',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  deleteSkill: async (id: string) => {
-    const headers = await authHeaders()
-    await fetch(`${BASE_URL}/api/v1/admin/skills/${id}`, {
-      method: 'DELETE',
-      headers,
-    })
-  },
+    }),
+  deleteSkill: async (id: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/skills/${id}`, { method: 'DELETE' }),
 
   // Experience
-  getExperience: async () => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/experience`, { headers })
-    return res.json()
-  },
-  createExperience: async (data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/experience`, {
+  getExperience: async () => apiFetch(`${BASE_URL}/api/v1/admin/experience`),
+  createExperience: async (data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/experience`, {
       method: 'POST',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  updateExperience: async (id: string, data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/experience/${id}`, {
+    }),
+  updateExperience: async (id: string, data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/experience/${id}`, {
       method: 'PUT',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  deleteExperience: async (id: string) => {
-    const headers = await authHeaders()
-    await fetch(`${BASE_URL}/api/v1/admin/experience/${id}`, {
-      method: 'DELETE',
-      headers,
-    })
-  },
+    }),
+  deleteExperience: async (id: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/experience/${id}`, { method: 'DELETE' }),
 
   // Certifications
-  getCertifications: async () => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/certifications`, { headers })
-    return res.json()
-  },
-  createCertification: async (data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/certifications`, {
+  getCertifications: async () =>
+    apiFetch(`${BASE_URL}/api/v1/admin/certifications`),
+  createCertification: async (data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/certifications`, {
       method: 'POST',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  updateCertification: async (id: string, data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/certifications/${id}`, {
+    }),
+  updateCertification: async (id: string, data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/certifications/${id}`, {
       method: 'PUT',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  deleteCertification: async (id: string) => {
-    const headers = await authHeaders()
-    await fetch(`${BASE_URL}/api/v1/admin/certifications/${id}`, {
+    }),
+  deleteCertification: async (id: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/certifications/${id}`, {
       method: 'DELETE',
-      headers,
-    })
-  },
+    }),
 
   // Testimonials
-  getTestimonials: async () => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/testimonials`, { headers })
-    return res.json()
-  },
-  createTestimonial: async (data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/testimonials`, {
+  getTestimonials: async () =>
+    apiFetch(`${BASE_URL}/api/v1/admin/testimonials`),
+  createTestimonial: async (data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/testimonials`, {
       method: 'POST',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  updateTestimonial: async (id: string, data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/testimonials/${id}`, {
+    }),
+  updateTestimonial: async (id: string, data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/testimonials/${id}`, {
       method: 'PUT',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  deleteTestimonial: async (id: string) => {
-    const headers = await authHeaders()
-    await fetch(`${BASE_URL}/api/v1/admin/testimonials/${id}`, {
+    }),
+  deleteTestimonial: async (id: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/testimonials/${id}`, {
       method: 'DELETE',
-      headers,
-    })
-  },
+    }),
 
   // Knowledge Base
-  getKnowledgeBase: async () => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/knowledge-base`, { headers })
-    return res.json()
-  },
-  createKBEntry: async (data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/knowledge-base`, {
+  getKnowledgeBase: async () =>
+    apiFetch(`${BASE_URL}/api/v1/admin/knowledge-base`),
+  createKBEntry: async (data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/knowledge-base`, {
       method: 'POST',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  updateKBEntry: async (id: string, data: any) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/knowledge-base/${id}`, {
+    }),
+  updateKBEntry: async (id: string, data: any) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/knowledge-base/${id}`, {
       method: 'PUT',
-      headers,
       body: JSON.stringify(data),
-    })
-    return res.json()
-  },
-  deleteKBEntry: async (id: string) => {
-    const headers = await authHeaders()
-    await fetch(`${BASE_URL}/api/v1/admin/knowledge-base/${id}`, {
+    }),
+  deleteKBEntry: async (id: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/knowledge-base/${id}`, {
       method: 'DELETE',
-      headers,
-    })
-  },
+    }),
 
   // Leads
   getLeads: async (params?: Record<string, string>) => {
@@ -214,24 +132,13 @@ export const apiAdmin = {
     if (params) {
       Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
     }
-    const headers = await authHeaders()
-    const res = await fetch(url.toString(), { headers })
-    return res.json()
+    return apiFetch(url.toString())
   },
-  updateLeadStatus: async (id: string, status: string) => {
-    const headers = await authHeaders()
-    const res = await fetch(`${BASE_URL}/api/v1/admin/leads/${id}`, {
+  updateLeadStatus: async (id: string, status: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/leads/${id}`, {
       method: 'PATCH',
-      headers,
       body: JSON.stringify({ status }),
-    })
-    return res.json()
-  },
-  deleteLead: async (id: string) => {
-    const headers = await authHeaders()
-    await fetch(`${BASE_URL}/api/v1/admin/leads/${id}`, {
-      method: 'DELETE',
-      headers,
-    })
-  },
+    }),
+  deleteLead: async (id: string) =>
+    apiFetch(`${BASE_URL}/api/v1/admin/leads/${id}`, { method: 'DELETE' }),
 }
