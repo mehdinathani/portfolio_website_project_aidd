@@ -1,7 +1,6 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  // Dynamic import to avoid SSR issues
+async function authHeaders(): Promise<Record<string, string>> {
   const { supabase } = await import('./supabase-client')
   const {
     data: { session },
@@ -9,18 +8,21 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 
   return {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${session?.access_token ?? ''}`,
+    ...(session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : {}),
   }
 }
 
 export const apiAdmin = {
   // Projects
-  getProjects: () =>
-    fetch(`${BASE_URL}/api/v1/admin/projects`, {
-      headers: {} as Record<string, string>,
-    }).then((r) => r.json()),
+  getProjects: async () => {
+    const headers = await authHeaders()
+    const res = await fetch(`${BASE_URL}/api/v1/admin/projects`, { headers })
+    return res.json()
+  },
   createProject: async (data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/projects`, {
       method: 'POST',
       headers,
@@ -29,7 +31,7 @@ export const apiAdmin = {
     return res.json()
   },
   updateProject: async (id: string, data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/projects/${id}`, {
       method: 'PUT',
       headers,
@@ -38,7 +40,7 @@ export const apiAdmin = {
     return res.json()
   },
   deleteProject: async (id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     await fetch(`${BASE_URL}/api/v1/admin/projects/${id}`, {
       method: 'DELETE',
       headers,
@@ -46,12 +48,13 @@ export const apiAdmin = {
   },
 
   // Skills
-  getSkills: () =>
-    fetch(`${BASE_URL}/api/v1/admin/skills`, {
-      headers: {} as Record<string, string>,
-    }).then((r) => r.json()),
+  getSkills: async () => {
+    const headers = await authHeaders()
+    const res = await fetch(`${BASE_URL}/api/v1/admin/skills`, { headers })
+    return res.json()
+  },
   createSkill: async (data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/skills`, {
       method: 'POST',
       headers,
@@ -60,7 +63,7 @@ export const apiAdmin = {
     return res.json()
   },
   updateSkill: async (id: string, data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/skills/${id}`, {
       method: 'PUT',
       headers,
@@ -69,7 +72,7 @@ export const apiAdmin = {
     return res.json()
   },
   deleteSkill: async (id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     await fetch(`${BASE_URL}/api/v1/admin/skills/${id}`, {
       method: 'DELETE',
       headers,
@@ -77,12 +80,13 @@ export const apiAdmin = {
   },
 
   // Experience
-  getExperience: () =>
-    fetch(`${BASE_URL}/api/v1/admin/experience`, {
-      headers: {} as Record<string, string>,
-    }).then((r) => r.json()),
+  getExperience: async () => {
+    const headers = await authHeaders()
+    const res = await fetch(`${BASE_URL}/api/v1/admin/experience`, { headers })
+    return res.json()
+  },
   createExperience: async (data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/experience`, {
       method: 'POST',
       headers,
@@ -91,7 +95,7 @@ export const apiAdmin = {
     return res.json()
   },
   updateExperience: async (id: string, data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/experience/${id}`, {
       method: 'PUT',
       headers,
@@ -100,7 +104,7 @@ export const apiAdmin = {
     return res.json()
   },
   deleteExperience: async (id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     await fetch(`${BASE_URL}/api/v1/admin/experience/${id}`, {
       method: 'DELETE',
       headers,
@@ -108,12 +112,13 @@ export const apiAdmin = {
   },
 
   // Certifications
-  getCertifications: () =>
-    fetch(`${BASE_URL}/api/v1/admin/certifications`, {
-      headers: {} as Record<string, string>,
-    }).then((r) => r.json()),
+  getCertifications: async () => {
+    const headers = await authHeaders()
+    const res = await fetch(`${BASE_URL}/api/v1/admin/certifications`, { headers })
+    return res.json()
+  },
   createCertification: async (data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/certifications`, {
       method: 'POST',
       headers,
@@ -122,7 +127,7 @@ export const apiAdmin = {
     return res.json()
   },
   updateCertification: async (id: string, data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/certifications/${id}`, {
       method: 'PUT',
       headers,
@@ -131,7 +136,7 @@ export const apiAdmin = {
     return res.json()
   },
   deleteCertification: async (id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     await fetch(`${BASE_URL}/api/v1/admin/certifications/${id}`, {
       method: 'DELETE',
       headers,
@@ -139,12 +144,13 @@ export const apiAdmin = {
   },
 
   // Testimonials
-  getTestimonials: () =>
-    fetch(`${BASE_URL}/api/v1/admin/testimonials`, {
-      headers: {} as Record<string, string>,
-    }).then((r) => r.json()),
+  getTestimonials: async () => {
+    const headers = await authHeaders()
+    const res = await fetch(`${BASE_URL}/api/v1/admin/testimonials`, { headers })
+    return res.json()
+  },
   createTestimonial: async (data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/testimonials`, {
       method: 'POST',
       headers,
@@ -153,7 +159,7 @@ export const apiAdmin = {
     return res.json()
   },
   updateTestimonial: async (id: string, data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/testimonials/${id}`, {
       method: 'PUT',
       headers,
@@ -162,7 +168,7 @@ export const apiAdmin = {
     return res.json()
   },
   deleteTestimonial: async (id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     await fetch(`${BASE_URL}/api/v1/admin/testimonials/${id}`, {
       method: 'DELETE',
       headers,
@@ -170,12 +176,13 @@ export const apiAdmin = {
   },
 
   // Knowledge Base
-  getKnowledgeBase: () =>
-    fetch(`${BASE_URL}/api/v1/admin/knowledge-base`, {
-      headers: {} as Record<string, string>,
-    }).then((r) => r.json()),
+  getKnowledgeBase: async () => {
+    const headers = await authHeaders()
+    const res = await fetch(`${BASE_URL}/api/v1/admin/knowledge-base`, { headers })
+    return res.json()
+  },
   createKBEntry: async (data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/knowledge-base`, {
       method: 'POST',
       headers,
@@ -184,7 +191,7 @@ export const apiAdmin = {
     return res.json()
   },
   updateKBEntry: async (id: string, data: any) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/knowledge-base/${id}`, {
       method: 'PUT',
       headers,
@@ -193,7 +200,7 @@ export const apiAdmin = {
     return res.json()
   },
   deleteKBEntry: async (id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     await fetch(`${BASE_URL}/api/v1/admin/knowledge-base/${id}`, {
       method: 'DELETE',
       headers,
@@ -201,17 +208,17 @@ export const apiAdmin = {
   },
 
   // Leads
-  getLeads: (params?: Record<string, string>) => {
+  getLeads: async (params?: Record<string, string>) => {
     const url = new URL(`${BASE_URL}/api/v1/admin/leads`)
     if (params) {
       Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
     }
-    return fetch(url.toString(), {
-      headers: {} as Record<string, string>,
-    }).then((r) => r.json())
+    const headers = await authHeaders()
+    const res = await fetch(url.toString(), { headers })
+    return res.json()
   },
   updateLeadStatus: async (id: string, status: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     const res = await fetch(`${BASE_URL}/api/v1/admin/leads/${id}`, {
       method: 'PATCH',
       headers,
@@ -220,7 +227,7 @@ export const apiAdmin = {
     return res.json()
   },
   deleteLead: async (id: string) => {
-    const headers = await getAuthHeaders()
+    const headers = await authHeaders()
     await fetch(`${BASE_URL}/api/v1/admin/leads/${id}`, {
       method: 'DELETE',
       headers,
