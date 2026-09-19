@@ -21,8 +21,8 @@ export default function EditExperiencePage() {
     async function load() {
       if (!id) return
       try {
-        const items = await apiAdmin.getExperience() as any[]
-        const item = items.find((e: any) => e.id === id)
+        const items = await apiAdmin.getExperience() as Experience[]
+        const item = items.find((e) => e.id === id)
         if (item) {
           setForm({
           company: item.company || '',

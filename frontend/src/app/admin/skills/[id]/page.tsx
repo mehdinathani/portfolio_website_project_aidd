@@ -22,8 +22,8 @@ export default function EditSkillPage() {
     async function load() {
       if (!id) return
       try {
-        const skills = await apiAdmin.getSkills() as any[]
-        const skill = skills.find((s: any) => s.id === id)
+        const skills = await apiAdmin.getSkills() as Skill[]
+        const skill = skills.find((s) => s.id === id)
         if (skill) {
           setForm({
             name: skill.name || '',

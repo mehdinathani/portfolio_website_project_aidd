@@ -21,8 +21,8 @@ export default function EditTestimonialPage() {
     async function load() {
       if (!id) return
       try {
-        const items = await apiAdmin.getTestimonials() as any[]
-        const item = items.find((t: any) => t.id === id)
+        const items = await apiAdmin.getTestimonials() as Testimonial[]
+        const item = items.find((t) => t.id === id)
         if (item) {
           setForm({
           author_name: item.author_name || '',

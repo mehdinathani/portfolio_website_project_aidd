@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor Styles Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+    p { color: #888; margin-bottom: 2rem; text-align: center; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1000px;
+    }
+    .card {
+      background: #14141f;
+      border: 1px solid #2a2a3a;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: border-color 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover { border-color: #5555ff; }
+    .card .preview {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .card h3 { font-size: 1rem; margin-bottom: 0.25rem; color: #fff; }
+    .card p { font-size: 0.8rem; color: #888; margin-bottom: 0; }
+    .card.active { border-color: #5555ff; background: #1a1a2e; }
+    .card .badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #5555ff;
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card.active .badge { opacity: 1; }
+    .back-link {
+      margin-top: 2rem;
+      color: #5555ff;
+      text-decoration: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .cursor { pointer-events: none; position: fixed; z-index: 9999; }
+
+    /* Style 1: Ring */
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 2px solid rgba(255,255,255,0.7);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, border-color 0.2s;
+    }
+    .cursor-ring.clicking {
+      width: 24px; height: 24px;
+      border-color: #5555ff;
+    }
+
+    /* Style 2: Dot + Ring */
+    .cursor-dotring-dot {
+      width: 6px; height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-dotring-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, border-color 0.3s;
+    }
+    .cursor-dotring-ring.clicking {
+      width: 28px; height: 28px;
+      border-color: #5555ff;
+    }
+
+    /* Style 3: Glow */
+    .cursor-glow {
+      width: 40px; height: 40px;
+      background: radial-gradient(circle, rgba(85,85,255,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-glow-dot {
+      width: 4px; height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Style 4: Trailing dots */
+    .trail-dot {
+      position: fixed;
+      pointer-events: none;
+      width: 4px; height: 4px;
+      background: rgba(85,85,255,0.6);
+      border-radius: 50%;
+      z-index: 9998;
+      transition: opacity 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Cursor Styles</h1>
+  <p>Hover over each card to preview, click anywhere to test click effect</p>
+
+  <div class="grid">
+    <div class="card" data-cursor="ring">
+      <div class="preview">◯</div>
+      <h3>Ring Follower</h3>
+      <p>Hollow ring that follows cursor, shrinks on click</p>
+      <span class="badge">Active</span>
+    </div>
+
+    <div class="card" data-cursor="dotring">
+      <div class="preview">●◯</div>
+      <h3>Dot + Ring</h3>
+      <p>Small solid dot with trailing ring</p>
+      <span class="badge">Active</span>
+    </div>
+
+    <div class="card" data-cursor="glow">
+      <div class="preview">✦</div>
+      <h3>Glow Aura</h3>
+      <p>Soft diffused glow around cursor</p>
+      <span class="badge">Active</span>
+    </div>
+
+    <div class="card" data-cursor="trail">
+      <div class="preview">···</div>
+      <h3>Trailing Dots</h3>
+      <p>Subtle particle trail following cursor</p>
+      <span class="badge">Active</span>
+    </div>
+  </div>
+
+  <a class="back-link" onclick="document.getElementById('result').textContent = 'Let me know which style you prefer!'">Tell me which style you like →</a>
+  <p id="result" style="margin-top:1rem;font-size:0.85rem;color:#5555ff"></p>
+
+  <script>
+    let currentStyle = 'ring'
+    let cursors = {}
+    let trails = []
+    let mouseX = 0, mouseY = 0
+
+    function createCursorElements() {
+      // Remove existing cursors
+      document.querySelectorAll('.cursor, .trail-dot').forEach(el => el.remove())
+      trails = []
+
+      // Ring
+      const ring = document.createElement('div')
+      ring.className = 'cursor cursor-ring'
+      ring.id = 'cursor-ring'
+      document.body.appendChild(ring)
+
+      // Dot + Ring
+      const dot = document.createElement('div')
+      dot.className = 'cursor cursor-dotring-dot'
+      dot.id = 'cursor-dotring-dot'
+      document.body.appendChild(dot)
+      const dotring = document.createElement('div')
+      dotring.className = 'cursor cursor-dotring-ring'
+      dotring.id = 'cursor-dotring-ring'
+      document.body.appendChild(dotring)
+
+      // Glow
+      const glow = document.createElement('div')
+      glow.className = 'cursor cursor-glow'
+      glow.id = 'cursor-glow'
+      document.body.appendChild(glow)
+      const glowDot = document.createElement('div')
+      glowDot.className = 'cursor cursor-glow-dot'
+      glowDot.id = 'cursor-glow-dot'
+      document.body.appendChild(glowDot)
+
+      updateVisibility()
+    }
+
+    function updateVisibility() {
+      const all = ['cursor-ring', 'cursor-dotring-dot', 'cursor-dotring-ring', 'cursor-glow', 'cursor-glow-dot']
+      all.forEach(id => {
+        const el = document.getElementById(id)
+        if (el) el.style.display = 'none'
+      })
+
+      switch(currentStyle) {
+        case 'ring':
+          document.getElementById('cursor-ring').style.display = 'block'
+          break
+        case 'dotring':
+          document.getElementById('cursor-dotring-dot').style.display = 'block'
+          document.getElementById('cursor-dotring-ring').style.display = 'block'
+          break
+        case 'glow':
+          document.getElementById('cursor-glow').style.display = 'block'
+          document.getElementById('cursor-glow-dot').style.display = 'block'
+          break
+        case 'trail':
+          // no persistent cursor element
+          break
+      }
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX
+      mouseY = e.clientY
+
+      const ring = document.getElementById('cursor-ring')
+      if (ring) {
+        ring.style.left = mouseX + 'px'
+        ring.style.top = mouseY + 'px'
+      }
+
+      const dot = document.getElementById('cursor-dotring-dot')
+      if (dot) {
+        dot.style.left = mouseX + 'px'
+        dot.style.top = mouseY + 'px'
+      }
+      const dotring = document.getElementById('cursor-dotring-ring')
+      if (dotring) {
+        dotring.style.left = mouseX + 'px'
+        dotring.style.top = mouseY + 'px'
+      }
+
+      const glow = document.getElementById('cursor-glow')
+      if (glow) {
+        glow.style.left = mouseX + 'px'
+        glow.style.top = mouseY + 'px'
+      }
+      const glowDot = document.getElementById('cursor-glow-dot')
+      if (glowDot) {
+        glowDot.style.left = mouseX + 'px'
+        glowDot.style.top = mouseY + 'px'
+      }
+
+      if (currentStyle === 'trail') {
+        const dot = document.createElement('div')
+        dot.className = 'trail-dot'
+        dot.style.left = mouseX + 'px'
+        dot.style.top = mouseY + 'px'
+        document.body.appendChild(dot)
+        trails.push(dot)
+        if (trails.length > 20) {
+          const old = trails.shift()
+          old.remove()
+        }
+        trails.forEach((t, i) => {
+          t.style.opacity = (i / trails.length) * 0.6
+          t.style.transform = `scale(${0.5 + (i / trails.length) * 0.5})`
+        })
+      }
+    })
+
+    document.addEventListener('mousedown', () => {
+      const ring = document.getElementById('cursor-ring')
+      if (ring) ring.classList.add('clicking')
+      const dotring = document.getElementById('cursor-dotring-ring')
+      if (dotring) dotring.classList.add('clicking')
+    })
+
+    document.addEventListener('mouseup', () => {
+      const ring = document.getElementById('cursor-ring')
+      if (ring) ring.classList.remove('clicking')
+      const dotring = document.getElementById('cursor-dotring-ring')
+      if (dotring) dotring.classList.remove('clicking')
+    })
+
+    // Card switching
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'))
+        card.classList.add('active')
+        currentStyle = card.dataset.cursor
+        updateVisibility()
+        document.getElementById('result').textContent = `Previewing: ${card.querySelector('h3').textContent}`
+      })
+    })
+
+    // Activate first by default
+    document.querySelector('.card').classList.add('active')
+
+    createCursorElements()
+  </script>
+</body>
+</html>

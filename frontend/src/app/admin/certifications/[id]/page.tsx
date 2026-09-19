@@ -21,8 +21,8 @@ export default function EditCertificationPage() {
     async function load() {
       if (!id) return
       try {
-        const items = await apiAdmin.getCertifications() as any[]
-        const item = items.find((c: any) => c.id === id)
+        const items = await apiAdmin.getCertifications() as Certification[]
+        const item = items.find((c) => c.id === id)
         if (item) {
           setForm({
           name: item.name || '',

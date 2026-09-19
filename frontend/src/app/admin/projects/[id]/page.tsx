@@ -21,8 +21,8 @@ export default function EditProjectPage() {
     async function load() {
       if (!id) return
       try {
-        const projects = await apiAdmin.getProjects() as any[]
-        const project = projects.find((p: any) => p.id === id)
+        const projects = await apiAdmin.getProjects() as Project[]
+        const project = projects.find((p) => p.id === id)
         if (project) {
           setForm({
             title: project.title || '',

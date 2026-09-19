@@ -24,8 +24,8 @@ export default function EditKBEntryPage() {
     async function load() {
       if (!id) return
       try {
-        const items = await apiAdmin.getKnowledgeBase() as any[]
-        const item = items.find((k: any) => k.id === id)
+        const items = await apiAdmin.getKnowledgeBase() as { id: string; content: string; source: string; metadata: any }[]
+        const item = items.find((k) => k.id === id)
         if (item) {
           setForm({
           content: item.content || '',
