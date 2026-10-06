@@ -27,7 +27,10 @@ async function authHeaders(): Promise<Record<string, string>> {
 }
 
 async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const headers = await authHeaders()
+  let headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (options.method && options.method !== 'GET') {
+    headers = await authHeaders()
+  }
   const res = await fetch(url, { ...options, headers })
   if (!res.ok) {
     throw new Error(`API error: ${res.status} ${res.statusText}`)
