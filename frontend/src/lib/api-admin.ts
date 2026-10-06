@@ -37,7 +37,7 @@ async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
 
 export const apiAdmin = {
   // Projects
-  getProjects: async () => apiFetch(`${BASE_URL}/api/v1/admin/projects`),
+  getProjects: async () => apiFetch(`${BASE_URL}/api/v1/projects/`),
   createProject: async (data: any) =>
     apiFetch(`${BASE_URL}/api/v1/admin/projects`, {
       method: 'POST',
@@ -52,7 +52,7 @@ export const apiAdmin = {
     apiFetch(`${BASE_URL}/api/v1/admin/projects/${id}`, { method: 'DELETE' }),
 
   // Skills
-  getSkills: async () => apiFetch(`${BASE_URL}/api/v1/admin/skills`),
+  getSkills: async () => apiFetch(`${BASE_URL}/api/v1/skills/`),
   createSkill: async (data: any) =>
     apiFetch(`${BASE_URL}/api/v1/admin/skills`, {
       method: 'POST',
@@ -67,7 +67,7 @@ export const apiAdmin = {
     apiFetch(`${BASE_URL}/api/v1/admin/skills/${id}`, { method: 'DELETE' }),
 
   // Experience
-  getExperience: async () => apiFetch(`${BASE_URL}/api/v1/admin/experience`),
+  getExperience: async () => apiFetch(`${BASE_URL}/api/v1/experience/`),
   createExperience: async (data: any) =>
     apiFetch(`${BASE_URL}/api/v1/admin/experience`, {
       method: 'POST',
@@ -83,7 +83,7 @@ export const apiAdmin = {
 
   // Certifications
   getCertifications: async () =>
-    apiFetch(`${BASE_URL}/api/v1/admin/certifications`),
+    apiFetch(`${BASE_URL}/api/v1/certifications/`),
   createCertification: async (data: any) =>
     apiFetch(`${BASE_URL}/api/v1/admin/certifications`, {
       method: 'POST',
@@ -101,7 +101,7 @@ export const apiAdmin = {
 
   // Testimonials
   getTestimonials: async () =>
-    apiFetch(`${BASE_URL}/api/v1/admin/testimonials`),
+    apiFetch(`${BASE_URL}/api/v1/testimonials/`),
   createTestimonial: async (data: any) =>
     apiFetch(`${BASE_URL}/api/v1/admin/testimonials`, {
       method: 'POST',
@@ -137,7 +137,7 @@ export const apiAdmin = {
 
   // Leads
   getLeads: async (params?: Record<string, string>) => {
-    const url = new URL(`${BASE_URL}/api/v1/admin/leads`)
+    const url = new URL(`${BASE_URL}/api/v1/leads/`)
     if (params) {
       Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
     }
